@@ -1,0 +1,24 @@
+{
+  "name": "@karagoz/puppeteer",
+  "private": false,
+  "version": "0.0.0",
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/karagoz-puppeteer.umd.cjs",
+  "module": "./dist/karagoz-puppeteer.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/karagoz-puppeteer.js",
+      "require": "./dist/karagoz-puppeteer.umd.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "pnpm --parallel /^watch:/",
+    "dev-hmr": "vite",
+    "build": "vite build && vue-tsc --emitDeclarationOnly",
+    "preview": "vite preview",
+    "watch:vite": "vite build --watch",
+    "watch:vue-tsc": "vue-tsc --emitDeclarationOnly --watch"
+  }
+}

@@ -1,5 +1,10 @@
+<script setup lang="ts">
+import { KaragozPuppeteer } from '@karagoz/puppeteer'
+</script>
+
 <template>
   <div>
-    <NuxtWelcome />
+    <h1>Puppeteer docs</h1>
+    <KaragozPuppeteer />
   </div>
 </template>
