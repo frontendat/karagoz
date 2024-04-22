@@ -6,19 +6,25 @@
   "files": ["dist"],
   "main": "./dist/karagoz-puppeteer.umd.cjs",
   "module": "./dist/karagoz-puppeteer.js",
-  "types": "./dist/index.d.ts",
+  "types": "./dist/types.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/karagoz-puppeteer.js",
-      "require": "./dist/karagoz-puppeteer.umd.cjs"
+      "import": {
+        "default": "./dist/karagoz-puppeteer.js",
+        "types": "./dist/types.d.ts"
+      },
+      "require": {
+        "default": "./dist/karagoz-puppeteer.umd.cjs",
+        "types": "./dist/types.d.ts"
+      }
     }
   },
   "scripts": {
     "dev": "pnpm --parallel /^watch:/",
     "dev-hmr": "vite",
-    "build": "vite build && vue-tsc --emitDeclarationOnly",
+    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
     "preview": "vite preview",
     "watch:vite": "vite build --watch",
-    "watch:vue-tsc": "vue-tsc --emitDeclarationOnly --watch"
+    "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch"
   }
 }
