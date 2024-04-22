@@ -2,5 +2,8 @@
   "extends": "../../.eslintrc",
   "parserOptions": {
     "project": "./tsconfig.json"
+  },
+  "globals": {
+    "defineNuxtConfig": true
   }
 }

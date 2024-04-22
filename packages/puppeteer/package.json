@@ -25,6 +25,7 @@
     "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
     "preview": "vite preview",
     "watch:vite": "vite build --watch",
-    "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch"
+    "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
+    "lint": "eslint \"src/**/*.{ts,vue}\""
   }
 }

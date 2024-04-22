@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+
 import { type KaragozStory } from '../models.ts'
 
 const props = defineProps<{ story?: KaragozStory }>()
