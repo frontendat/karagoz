@@ -1,5 +1,5 @@
-import KaragozPuppeteer from './components/KaragozPuppeteer.vue'
+import KrgzPuppeteer from './components/Puppeteer.vue'
 
 export * from './models.ts'
 
-export { KaragozPuppeteer }
+export { KrgzPuppeteer }

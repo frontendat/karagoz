@@ -17,6 +17,10 @@
         "default": "./dist/karagoz-puppeteer.umd.cjs",
         "types": "./dist/types.d.ts"
       }
+    },
+    "./dist/style.css": {
+      "import": "./dist/style.css",
+      "require": "./dist/style.css"
     }
   },
   "scripts": {

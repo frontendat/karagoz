@@ -5,7 +5,14 @@ import dts from 'vite-plugin-dts'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), dts({ insertTypesEntry: true, rollupTypes: true })],
+  plugins: [
+    vue({
+      script: {
+        defineModel: true,
+      },
+    }),
+    dts({ insertTypesEntry: true, rollupTypes: true }),
+  ],
   build: {
     lib: {
       // src/indext.ts is where we have exported the component(s)

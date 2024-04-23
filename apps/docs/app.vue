@@ -1,11 +1,27 @@
 <script setup lang="ts">
-import { KaragozPuppeteer, type KaragozStory } from '@karagoz/puppeteer'
+import '@karagoz/puppeteer/dist/style.css'
 
-const story: KaragozStory = {
+import { KrgzPuppeteer, type KrgzStory } from '@karagoz/puppeteer'
+
+const story: KrgzStory = {
   subject: 'Demo Story',
   topics: [
     {
-      slides: [],
+      slides: [
+        {
+          explanation: 'Slide 1 explanation',
+          files: [
+            {
+              code: `console.log(document.querySelector('h1').innerText)`,
+              path: 'script.js',
+            },
+            {
+              code: `<h1>Slide 1 Headline<h1/><${'script'} src="./script.js"><${'/script'}>`,
+              path: 'index.html',
+            },
+          ],
+        },
+      ],
       subject: 'Demo Main Topic',
       type: 'main',
     },
@@ -16,6 +32,6 @@ const story: KaragozStory = {
 <template>
   <div>
     <h1>Puppeteer docs</h1>
-    <KaragozPuppeteer :story="story" />
+    <KrgzPuppeteer :story="story" />
   </div>
 </template>

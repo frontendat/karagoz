@@ -1,24 +1,32 @@
-export const karagozTopicTypes = {
+export const krgzTopicTypes = {
   MainTopic: 'main',
   SubTopic: 'sub',
 } as const
 
-export type KaragozTopicTypeKey = keyof typeof karagozTopicTypes
+export type KrgzTopicTypeKey = keyof typeof krgzTopicTypes
 
-export type KaragozTopicType = (typeof karagozTopicTypes)[KaragozTopicTypeKey]
+export type KrgzTopicType = (typeof krgzTopicTypes)[KrgzTopicTypeKey]
 
-export type KaragozSlide = {
-  code: string
+export type KrgzSlide = {
   explanation: string
+  files: KrgzSlideFile[]
 }
 
-export type KaragozTopic = {
-  slides: KaragozSlide[]
-  subject: string
-  type: KaragozTopicType
+export type KrgzSlideFile = {
+  code: string
+  highlightedLines?: (number | [number, number])[]
+  isHidden?: boolean
+  isReadonly?: boolean
+  path: string
 }
 
-export type KaragozStory = {
+export type KrgzTopic = {
+  slides: KrgzSlide[]
   subject: string
-  topics: KaragozTopic[]
+  type: KrgzTopicType
+}
+
+export type KrgzStory = {
+  subject: string
+  topics: KrgzTopic[]
 }
