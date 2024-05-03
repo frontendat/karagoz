@@ -13,6 +13,7 @@ export type KrgzSlide = {
 }
 
 export type KrgzSlideFile = {
+  autoFocus?: boolean
   code: string
   highlightedLines?: (number | [number, number])[]
   isHidden?: boolean

@@ -3,6 +3,7 @@ import { computed } from 'vue'
 
 import { useControlledModel } from '../composables/useControlledModel.ts'
 import { KrgzSlide, type KrgzStory, KrgzTopic } from '../models.ts'
+import KrgzFileset from './KrgzFileset.vue'
 
 const topicModel = defineModel<number | undefined>('topic', {
   default: undefined,
@@ -74,7 +75,9 @@ const onSlideNavClick = (_: KrgzSlide, index: number) => {
             >
           </nav>
         </div>
-        <div class="krgz-fileset">{{ selectedSlide.files }}</div>
+        <div class="krgz-fileset">
+          <KrgzFileset :fileset="selectedSlide.files"></KrgzFileset>
+        </div>
       </template>
     </div>
   </div>
