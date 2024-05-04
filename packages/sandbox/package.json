@@ -1,22 +1,22 @@
 {
-  "name": "@karagoz/puppeteer",
+  "name": "@karagoz/sandbox",
   "private": false,
   "version": "0.0.0",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/karagoz-puppeteer.umd.cjs",
-  "module": "./dist/karagoz-puppeteer.js",
+  "main": "./dist/karagoz-sandbox.umd.cjs",
+  "module": "./dist/karagoz-sandbox.js",
   "types": "./dist/types.d.ts",
   "exports": {
     ".": {
       "import": {
-        "default": "./dist/karagoz-puppeteer.js",
+        "default": "./dist/karagoz-sandbox.js",
         "types": "./dist/types.d.ts"
       },
       "require": {
-        "default": "./dist/karagoz-puppeteer.umd.cjs",
+        "default": "./dist/karagoz-sandbox.umd.cjs",
         "types": "./dist/types.d.ts"
       }
     },
@@ -36,8 +36,5 @@
   },
   "peerDependencies": {
     "@webcontainer/api": "^1.1.9"
-  },
-  "dependencies": {
-    "@karagoz/sandbox": "workspace:^"
   }
 }

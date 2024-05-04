@@ -1,6 +1,37 @@
 <script setup lang="ts">
+import { FileSystemTree } from '@webcontainer/api'
+
 import KrgzPuppeteer from './components/KrgzPuppeteer.vue'
 import { type KrgzStory } from './models.ts'
+
+const index = `
+import express from 'express';
+const app = express();
+const port = 3111;
+
+app.get('/xxx', (req, res) => {
+     res.send('Welcome to a WebContainers app! 🥳');
+});
+app.use('/', express.static('.'));
+
+app.listen(port, () => {
+    console.log('App is live at http://localhost:' + port);
+  }
+);
+`
+
+const pkgJson = `
+{
+  "name": "example-app",
+  "type": "module",
+  "dependencies": {
+    "express": "latest",
+    "nodemon": "latest"
+  },
+  "scripts": {
+    "start": "nodemon index.js"
+  }
+}`
 
 const explanation1 = `
 # Slide 1
@@ -44,6 +75,11 @@ function doSomethingElse() {
 }
 `
 
+const setupFiles: FileSystemTree = {
+  'package.json': { file: { contents: pkgJson } },
+  'index.js': { file: { contents: index } },
+}
+
 const story: KrgzStory = {
   subject: 'Demo Story',
   topics: [
@@ -51,29 +87,19 @@ const story: KrgzStory = {
       slides: [
         {
           explanation: explanation1,
-          files: [
-            {
-              code: script1,
-              path: 'script.js',
-            },
-            {
-              code: html1,
-              path: 'index.html',
-            },
-          ],
+          tree: {
+            ...setupFiles,
+            'index.html': { file: { contents: html1 } },
+            'script.js': { file: { contents: script1 } },
+          },
         },
         {
           explanation: explanation2,
-          files: [
-            {
-              code: script2,
-              path: 'script.js',
-            },
-            {
-              code: html2,
-              path: 'index.html',
-            },
-          ],
+          tree: {
+            ...setupFiles,
+            'index.html': { file: { contents: html2 } },
+            'script.js': { file: { contents: script2 } },
+          },
         },
       ],
       subject: 'Demo Main Topic',
@@ -83,29 +109,19 @@ const story: KrgzStory = {
       slides: [
         {
           explanation: explanation1,
-          files: [
-            {
-              code: script1,
-              path: 'script.js',
-            },
-            {
-              code: html1,
-              path: 'index.html',
-            },
-          ],
+          tree: {
+            ...setupFiles,
+            'index.html': { file: { contents: html1 } },
+            'script.js': { file: { contents: script1 } },
+          },
         },
         {
           explanation: explanation2,
-          files: [
-            {
-              code: script2,
-              path: 'script.js',
-            },
-            {
-              code: html2,
-              path: 'index.html',
-            },
-          ],
+          tree: {
+            ...setupFiles,
+            'index.html': { file: { contents: html2 } },
+            'script.js': { file: { contents: script2 } },
+          },
         },
       ],
       subject: 'Demo Sub Topic',

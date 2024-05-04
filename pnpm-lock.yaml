@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@webcontainer/api':
+        specifier: ^1.1.9
+        version: 1.1.9
       vue:
         specifier: ^3.4.21
         version: 3.4.21(typescript@5.2.2)
@@ -64,7 +67,20 @@ importers:
         specifier: ^3.11.2
         version: 3.11.2(@types/node@20.12.7)(@unocss/reset@0.59.2)(eslint@8.57.0)(floating-vue@5.2.2)(typescript@5.2.2)(unocss@0.59.2)(vite@5.2.8)(vue-tsc@2.0.6)
 
-  packages/puppeteer: {}
+  packages/puppeteer:
+    dependencies:
+      '@karagoz/sandbox':
+        specifier: workspace:^
+        version: link:../sandbox
+      '@webcontainer/api':
+        specifier: ^1.1.9
+        version: 1.1.9
+
+  packages/sandbox:
+    dependencies:
+      '@webcontainer/api':
+        specifier: ^1.1.9
+        version: 1.1.9
 
 packages:
 
@@ -2595,6 +2611,10 @@ packages:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
+    dev: false
+
+  /@webcontainer/api@1.1.9:
+    resolution: {integrity: sha512-Sp6PV0K9D/3f8fSbCubqhfmBFH8XbngZCBOCF+aExyGqnz2etmw+KYvbQ/JxYvYX5KPaSxM+asFQwoP2RHl5cg==}
     dev: false
 
   /abbrev@1.1.1:

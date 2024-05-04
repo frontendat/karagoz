@@ -1,3 +1,5 @@
+import { FileSystemTree } from '@webcontainer/api'
+
 export const krgzTopicTypes = {
   MainTopic: 'main',
   SubTopic: 'sub',
@@ -9,16 +11,7 @@ export type KrgzTopicType = (typeof krgzTopicTypes)[KrgzTopicTypeKey]
 
 export type KrgzSlide = {
   explanation: string
-  files: KrgzSlideFile[]
-}
-
-export type KrgzSlideFile = {
-  autoFocus?: boolean
-  code: string
-  highlightedLines?: (number | [number, number])[]
-  isHidden?: boolean
-  isReadonly?: boolean
-  path: string
+  tree: FileSystemTree
 }
 
 export type KrgzTopic = {

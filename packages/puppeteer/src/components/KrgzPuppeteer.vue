@@ -1,9 +1,9 @@
 <script setup lang="ts">
+import { KrgzSandbox } from '@karagoz/sandbox'
 import { computed } from 'vue'
 
 import { useControlledModel } from '../composables/useControlledModel.ts'
 import { KrgzSlide, type KrgzStory, KrgzTopic } from '../models.ts'
-import KrgzFileset from './KrgzFileset.vue'
 
 const topicModel = defineModel<number | undefined>('topic', {
   default: undefined,
@@ -76,7 +76,7 @@ const onSlideNavClick = (_: KrgzSlide, index: number) => {
           </nav>
         </div>
         <div class="krgz-fileset">
-          <KrgzFileset :fileset="selectedSlide.files"></KrgzFileset>
+          <KrgzSandbox :tree="selectedSlide.tree"></KrgzSandbox>
         </div>
       </template>
     </div>

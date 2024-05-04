@@ -5,9 +5,11 @@
   "scripts": {
     "@docs": "pnpm --filter @karagoz/docs",
     "@puppeteer": "pnpm --filter @karagoz/puppeteer",
+    "@sandbox": "pnpm --filter @karagoz/sandbox",
     "dev": "pnpm --recursive --parallel --stream run dev"
   },
   "dependencies": {
+    "@webcontainer/api": "^1.1.9",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
