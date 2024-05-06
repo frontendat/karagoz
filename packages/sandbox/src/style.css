@@ -1,1 +1,8 @@
-/* karagoz styles */
+body {
+    height: 100dvh;
+    margin: 0;
+}
+
+#app {
+    height: 100%;
+}

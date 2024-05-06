@@ -8,7 +8,7 @@ const isDirectory = (tree: DirectoryNode | FileNode): tree is DirectoryNode =>
 </script>
 
 <template>
-  <ul v-if="tree">
+  <ul v-if="tree" class="krgz-explorer">
     <li v-for="(node, nodeName) in tree" :key="nodeName">
       <a>{{ nodeName }}</a>
       <KrgzExplorer
