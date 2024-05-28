@@ -9,6 +9,7 @@
     "dev": "pnpm --recursive --parallel --stream run dev"
   },
   "dependencies": {
+    "@vueuse/core": "^10.9.0",
     "@webcontainer/api": "^1.1.9",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"

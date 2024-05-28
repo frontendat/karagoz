@@ -1,11 +1,8 @@
 <script setup lang="ts">
-import {
-  type FileSystemTree,
-  WebContainer,
-  WebContainerProcess,
-} from '@webcontainer/api'
-import { onBeforeUnmount, ref, watch } from 'vue'
+import { type FileSystemTree } from '@webcontainer/api'
+import { onBeforeUnmount, watch } from 'vue'
 
+import { useWebContainer } from '../composables/useWebContainer.ts'
 import KrgzExplorer from './KrgzExplorer.vue'
 
 //const selectedPath = defineModel<string | undefined>({ default: undefined })
@@ -15,71 +12,26 @@ const props = defineProps<{
   tree: FileSystemTree
 }>()
 
-const container = ref<WebContainer>()
-const runningProcesses = new Map<string, WebContainerProcess>()
-const processKeys = {
-  install: 'install',
-  devServer: 'devServer',
-} as const
-const previewUrl = ref<string>()
+const webContainer = useWebContainer()
 
 watch(
   () => props.tree,
   async (value, oldValue) => {
-    if (!container.value) {
-      container.value = await WebContainer.boot()
-    }
-
-    container.value.mount(props.tree)
-
     const shouldReinstall =
       value['package.json'] &&
       value['package.json'] !== oldValue?.['package.json']
-
-    if (shouldReinstall) {
-      runningProcesses.get(processKeys.install)?.kill()
-      runningProcesses.get(processKeys.devServer)?.kill()
-
-      const existCode = await installDeps()
-      if (existCode !== 0) {
-        throw new Error('Installation failed')
-      }
-
-      await startDevServer()
-    }
+    await webContainer.mount(value, { shouldReinstall })
   },
   { deep: true, immediate: true },
 )
 
-onBeforeUnmount(() => container.value?.teardown())
+watch(
+  () => webContainer.previewUrl.value,
+  (v) => console.log(v),
+  { immediate: true },
+)
 
-async function installDeps() {
-  const installProcess = await container.value?.spawn('npm', ['install'])
-  runningProcesses.set(processKeys.install, installProcess)
-  installProcess.output.pipeTo(
-    new WritableStream({
-      write(data) {
-        console.log(data)
-      },
-    }),
-  )
-  return installProcess.exit
-}
-
-async function startDevServer() {
-  const devServerProcess = await container.value.spawn('npm', ['run', 'start'])
-  runningProcesses.set(processKeys.devServer, devServerProcess)
-  devServerProcess.output.pipeTo(
-    new WritableStream({
-      write(data) {
-        console.log(data)
-      },
-    }),
-  )
-  container.value.on('server-ready', (_, url) => {
-    previewUrl.value = url
-  })
-}
+onBeforeUnmount(() => webContainer.ensureInstance().then((c) => c.teardown()))
 </script>
 
 <template>
@@ -100,8 +52,8 @@ async function startDevServer() {
 
       <div class="krgz-result">
         <iframe
-          v-if="previewUrl"
-          :src="previewUrl"
+          v-if="webContainer.previewUrl.value"
+          :src="webContainer.previewUrl.value"
           class="krgz-result-frame"
         ></iframe>
         <div v-else>Initialising...</div>
@@ -150,7 +102,7 @@ async function startDevServer() {
 
 @container sandbox style(--krgz-sandbox-layout: three-cols) {
   :where(.krgz-sandbox-layout) {
-    grid-template-columns: 1fr 2fr 2fr;
+    grid-template-columns: minmax(200px, 250px) 3fr 3fr;
   }
 }
 

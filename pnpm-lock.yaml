@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@vueuse/core':
+        specifier: ^10.9.0
+        version: 10.9.0(vue@3.4.21)
       '@webcontainer/api':
         specifier: ^1.1.9
         version: 1.1.9
