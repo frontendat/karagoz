@@ -1,41 +1,36 @@
 <script setup lang="ts">
-import type {
-  DirectoryNode,
-  FileNode,
-  FileSystemTree,
-  WebContainer,
-} from '@webcontainer/api'
-import { watch } from 'vue'
+import type { DirEnt, WebContainer } from '@webcontainer/api'
+import { ref } from 'vue'
+
+import { useSharedWebContainer } from '../composables/useSharedWebContainer.ts'
 
 const props = withDefaults(
   defineProps<{
-    container: WebContainer
     path?: string
-    tree: FileSystemTree
   }>(),
   { path: '.' },
 )
 
-watch(
-  () => props.container,
-  (value) => {
-    if (value) {
-      value.fs.readdir(props.path, { withFileTypes: true }).then(console.log)
-    }
-  },
-)
+const webContainer = useSharedWebContainer()
+const dirEnts = ref<DirEnt<string>[]>([])
 
-const isDirectory = (tree: DirectoryNode | FileNode): tree is DirectoryNode =>
-  Object.prototype.hasOwnProperty.call(tree, 'directory')
+const readDirEnts = async ({ container }: { container: WebContainer }) => {
+  dirEnts.value = await container.fs.readdir(props.path, {
+    withFileTypes: true,
+  })
+}
+
+webContainer.on('fileTreeChange', readDirEnts)
+webContainer.on('init', readDirEnts)
 </script>
 
 <template>
-  <ul v-if="tree" class="krgz-explorer">
-    <li v-for="(node, nodeName) in tree" :key="nodeName">
-      <a>{{ nodeName }}</a>
+  <ul v-if="dirEnts" class="krgz-explorer">
+    <li v-for="ent in dirEnts" :key="ent.name">
+      <a>{{ ent.name }}</a>
       <KrgzExplorer
-        v-if="isDirectory(node)"
-        :tree="node.directory"
+        v-if="ent.isDirectory()"
+        :path="`${path}/${ent.name}`"
       ></KrgzExplorer>
     </li>
   </ul>

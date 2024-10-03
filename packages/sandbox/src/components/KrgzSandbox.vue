@@ -1,29 +1,16 @@
 <script setup lang="ts">
-import { type FileSystemTree } from '@webcontainer/api'
 import { onBeforeUnmount, watch } from 'vue'
 
-import { useWebContainer } from '../composables/useWebContainer.ts'
+import { useSharedWebContainer } from '../composables/useSharedWebContainer.ts'
 import KrgzExplorer from './KrgzExplorer.vue'
 
 //const selectedPath = defineModel<string | undefined>({ default: undefined })
 
-const props = defineProps<{
+defineProps<{
   suppressDefaultLayout?: boolean
-  tree: FileSystemTree
 }>()
 
-const webContainer = useWebContainer()
-
-watch(
-  () => props.tree,
-  async (value, oldValue) => {
-    const shouldReinstall =
-      value['package.json'] &&
-      value['package.json'] !== oldValue?.['package.json']
-    await webContainer.mount(value, { shouldReinstall })
-  },
-  { deep: true, immediate: true },
-)
+const webContainer = useSharedWebContainer()
 
 watch(
   () => webContainer.previewUrl.value,
@@ -41,7 +28,7 @@ onBeforeUnmount(() => webContainer.ensureInstance().then((c) => c.teardown()))
   >
     <div class="krgz-sandbox-layout">
       <slot name="explorer">
-        <KrgzExplorer :tree="tree" />
+        <KrgzExplorer />
       </slot>
 
       <div class="krgz-editor">

@@ -3,6 +3,7 @@ import { FileSystemTree } from '@webcontainer/api'
 import { ref } from 'vue'
 
 import KrgzSandbox from './components/KrgzSandbox.vue'
+import { useSharedWebContainer } from './composables/useSharedWebContainer.ts'
 
 const index = `
 import express from 'express';
@@ -75,7 +76,7 @@ function doSomething() {
 }
 `
 
-const tree: FileSystemTree = ref<FileSystemTree>({
+const tree = ref<FileSystemTree>({
   'index.js': { file: { contents: index } },
   'package.json': { file: { contents: pkgJson } },
   public: {
@@ -85,6 +86,10 @@ const tree: FileSystemTree = ref<FileSystemTree>({
     },
   },
 })
+
+const wc = useSharedWebContainer()
+
+wc.mount(tree.value, { shouldReinstall: true })
 
 const onClick = () => {
   tree.value = {
@@ -97,9 +102,10 @@ const onClick = () => {
       },
     },
   }
+  wc.mount(tree.value, { shouldReinstall: true })
 }
 </script>
 
 <template>
-  <KrgzSandbox :tree="tree" @click="onClick" />
+  <KrgzSandbox @click="onClick" />
 </template>

@@ -4,7 +4,7 @@ import {
   WebContainer,
   WebContainerProcess,
 } from '@webcontainer/api'
-import { computed, ComputedRef, ref } from 'vue'
+import { computed, Ref, ref, toRef } from 'vue'
 
 type UseWebContainerOptions = {
   manualBoot?: boolean
@@ -62,7 +62,7 @@ export type UseWebContainerReturn = {
       shouldRestart?: boolean
     },
   ): Promise<void>
-  previewUrl: ComputedRef<string | undefined>
+  previewUrl: Ref<string | undefined>
   startDevServer(): Promise<void>
 
   // Event handling - on
@@ -283,7 +283,7 @@ export function useWebContainer(
     off,
     on,
     once,
-    previewUrl: computed(() => previewUrl.value ?? ''),
+    previewUrl: toRef(computed(() => previewUrl.value ?? '')),
     startDevServer,
   }
 }
