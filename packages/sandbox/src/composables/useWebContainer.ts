@@ -4,110 +4,21 @@ import {
   WebContainer,
   WebContainerProcess,
 } from '@webcontainer/api'
-import { computed, Ref, ref, toRef } from 'vue'
+import { computed, ref, toRef } from 'vue'
 
-type UseWebContainerOptions = {
-  manualBoot?: boolean
-}
+import type {
+  UseWebContainerOptions,
+  WCErrorListenerParams,
+  WCEventListener,
+  WCEventListenerParams,
+  WCFileTreeChangeListenerParams,
+  WCInitListenerParams,
+  WCPortListenerParams,
+  WCServerReadyListenerParams,
+} from '../types'
+import { WCEventReg } from '../types/EventReg.ts'
 
-type WebContainerEvents =
-  | 'error'
-  | 'fileTreeChange'
-  | 'init'
-  | 'port'
-  | 'serverReady'
-
-type ErrorListenerParams = {
-  container?: WebContainer
-  error: { message: string }
-}
-
-type InitListenerParams = {
-  container: WebContainer
-}
-
-type FileTreeChangeListenerParams = {
-  container: WebContainer
-}
-
-type PortListenerParams = {
-  container: WebContainer
-  port: number
-  type: 'open' | 'close'
-  url: string
-}
-
-type ServerReadyListenerParams = {
-  container: WebContainer
-  port: number
-  url: string
-}
-
-type WebContainerEventListenerParams =
-  | ErrorListenerParams
-  | InitListenerParams
-  | FileTreeChangeListenerParams
-  | PortListenerParams
-  | ServerReadyListenerParams
-
-export type UseWebContainerReturn = {
-  boot(restart?: boolean): Promise<void>
-  ensureInstance(): Promise<WebContainer>
-  installDeps(): Promise<number>
-  mount(
-    snapshotOrTree: FileSystemTree | Uint8Array | ArrayBuffer,
-    options?: {
-      mountPoint?: string
-      shouldReinstall?: boolean
-      shouldRestart?: boolean
-    },
-  ): Promise<void>
-  previewUrl: Ref<string | undefined>
-  startDevServer(): Promise<void>
-
-  // Event handling - on
-  on(event: 'error', listener: (params: ErrorListenerParams) => void): void
-  on(
-    event: 'fileTreeChange',
-    listener: (params: FileTreeChangeListenerParams) => void,
-  ): void
-  on(event: 'init', listener: (params: InitListenerParams) => void): void
-  on(event: 'port', listener: (params: PortListenerParams) => void): void
-  on(
-    event: 'serverReady',
-    listener: (params: ServerReadyListenerParams) => void,
-  ): void
-
-  // Event handling - once
-  once(event: 'error', listener: (params: ErrorListenerParams) => void): void
-  once(
-    event: 'fileTreeChange',
-    listener: (params: FileTreeChangeListenerParams) => void,
-  ): void
-  once(event: 'init', listener: (params: InitListenerParams) => void): void
-  once(event: 'port', listener: (params: PortListenerParams) => void): void
-  once(
-    event: 'serverReady',
-    listener: (params: ServerReadyListenerParams) => void,
-  ): void
-
-  // Event handling - off
-  off(event: 'error', listener: (params: ErrorListenerParams) => void): void
-  off(
-    event: 'fileTreeChange',
-    listener: (params: FileTreeChangeListenerParams) => void,
-  ): void
-  off(event: 'init', listener: (params: InitListenerParams) => void): void
-  off(event: 'port', listener: (params: PortListenerParams) => void): void
-  off(
-    event: 'serverReady',
-    listener: (params: ServerReadyListenerParams) => void,
-  ): void
-}
-
-export function useWebContainer(
-  options?: UseWebContainerOptions,
-): UseWebContainerReturn {
+export function useWebContainer(options?: UseWebContainerOptions) {
   const instance = ref<WebContainer>()
   const processKeys = {
     install: 'install',
@@ -119,43 +30,28 @@ export function useWebContainer(
   >()
   const previewUrl = ref<string>()
   const bus = {
-    error: createEventHook<ErrorListenerParams>(),
-    init: createEventHook<InitListenerParams>(),
-    fileTreeChange: createEventHook<FileTreeChangeListenerParams>(),
-    port: createEventHook<PortListenerParams>(),
-    serverReady: createEventHook<ServerReadyListenerParams>(),
+    error: createEventHook<WCErrorListenerParams>(),
+    init: createEventHook<WCInitListenerParams>(),
+    fileTreeChange: createEventHook<WCFileTreeChangeListenerParams>(),
+    port: createEventHook<WCPortListenerParams>(),
+    serverReady: createEventHook<WCServerReadyListenerParams>(),
   }
 
   // event handling
 
-  const on = ((
-    event: WebContainerEvents,
-    listener: (params: WebContainerEventListenerParams) => void,
-  ) => {
-    bus[event].on((params) => {
-      listener(params)
-    })
-  }) as UseWebContainerReturn['on']
+  const on = ((event, listener: WCEventListener) =>
+    bus[event].on(listener)) as WCEventReg
 
-  const off = ((
-    event: WebContainerEvents,
-    listener: (params: WebContainerEventListenerParams) => void,
-  ) => {
-    bus[event].off((params) => {
-      listener(params)
-    })
-  }) as UseWebContainerReturn['off']
+  const off = ((event, listener: WCEventListener) =>
+    bus[event].off(listener)) as WCEventReg
 
-  const once = ((
-    event: WebContainerEvents,
-    listener: (params: WebContainerEventListenerParams) => void,
-  ) => {
-    const onceListener = (params: WebContainerEventListenerParams) => {
+  const once = ((event, listener: WCEventListener) => {
+    const onceListener = (params: WCEventListenerParams) => {
       listener(params)
       bus[event].off(onceListener)
     }
     bus[event].on(onceListener)
-  }) as UseWebContainerReturn['once']
+  }) as WCEventReg
 
   // instance handling
 
