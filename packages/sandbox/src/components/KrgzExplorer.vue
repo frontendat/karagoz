@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { DirEnt, WebContainer } from '@webcontainer/api'
-import { ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 import { useSharedWebContainer } from '../composables/useSharedWebContainer.ts'
+import KrgzExplorerEntity from './KrgzExplorerEntity.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -20,18 +21,34 @@ const readDirEnts = async ({ container }: { container: WebContainer }) => {
   })
 }
 
-webContainer.on('fileTreeChange', readDirEnts)
-webContainer.on('init', readDirEnts)
+onMounted(() => {
+  webContainer.on('fileTreeChange', readDirEnts)
+  webContainer.on('init', readDirEnts)
+  webContainer.ensureInstance().then((container) => readDirEnts({ container }))
+})
+
+onUnmounted(() => {
+  webContainer.off('fileTreeChange', readDirEnts)
+  webContainer.off('init', readDirEnts)
+})
 </script>
 
 <template>
   <ul v-if="dirEnts" class="krgz-explorer">
-    <li v-for="ent in dirEnts" :key="ent.name">
-      <a>{{ ent.name }}</a>
-      <KrgzExplorer
-        v-if="ent.isDirectory()"
-        :path="`${path}/${ent.name}`"
-      ></KrgzExplorer>
-    </li>
+    <KrgzExplorerEntity
+      v-for="entity in dirEnts"
+      :key="entity.name"
+      :path="path"
+      :entity="entity"
+    ></KrgzExplorerEntity>
   </ul>
 </template>
+
+<style>
+@layer karagoz {
+  .krgz-explorer {
+    list-style-type: none;
+    padding-inline-start: 0.6rem;
+  }
+}
+</style>

@@ -49,63 +49,61 @@ onBeforeUnmount(() => webContainer.ensureInstance().then((c) => c.teardown()))
   </section>
 </template>
 
-<style scoped>
-/* styles */
-
-:where(.krgz-sandbox) {
-  height: 100%;
-}
-
-:where(.krgz-sandbox-layout) {
-  display: grid;
-  font-family: Menlo, Monaco, 'Courier New', monospace;
-  font-size: 12px;
-  gap: 1rem;
-  height: 100%;
-}
-
-:where(.krgz-editor textarea) {
-  height: 100%;
-  width: 100%;
-}
-
-:where(.krgz-result-frame) {
-  border: none;
-  height: 100%;
-  width: 100%;
-}
-
-/* layout */
-
-@container sandbox style(--krgz-sandbox-layout: two-cols) {
-  :where(.krgz-sandbox-layout) {
-    grid-template-columns: 1fr 3fr;
+<style>
+@layer karagoz {
+  .krgz-sandbox {
+    height: 100%;
   }
 
-  :where(.krgz-result) {
-    grid-row: span 2;
-  }
-}
-
-@container sandbox style(--krgz-sandbox-layout: three-cols) {
-  :where(.krgz-sandbox-layout) {
-    grid-template-columns: minmax(200px, 250px) 3fr 3fr;
-  }
-}
-
-/* default layout */
-
-:where(.krgz-sandbox.as-default-layout) {
-  --krgz-sandbox-layout: stacked;
-
-  container: sandbox / inline-size;
-
-  @media screen and (min-width: 768px) {
-    --krgz-sandbox-layout: two-cols;
+  .krgz-sandbox-layout {
+    display: grid;
+    font-family: Menlo, Monaco, 'Courier New', monospace;
+    font-size: 12px;
+    gap: 1rem;
+    height: 100%;
   }
 
-  @media screen and (min-width: 992px) {
-    --krgz-sandbox-layout: three-cols;
+  .krgz-editor textarea {
+    height: 100%;
+    width: 100%;
+  }
+
+  .krgz-result-frame {
+    border: none;
+    height: 100%;
+    width: 100%;
+  }
+
+  /* layout */
+  @container sandbox style(--krgz-sandbox-layout: two-cols) {
+    .krgz-sandbox-layout {
+      grid-template-columns: 1fr 3fr;
+    }
+
+    .krgz-result {
+      grid-row: span 2;
+    }
+  }
+
+  @container sandbox style(--krgz-sandbox-layout: three-cols) {
+    .krgz-sandbox-layout {
+      grid-template-columns: minmax(200px, 250px) 3fr 3fr;
+    }
+  }
+
+  /* default layout */
+  .krgz-sandbox.as-default-layout {
+    --krgz-sandbox-layout: stacked;
+
+    container: sandbox / inline-size;
+
+    @media screen and (min-width: 768px) {
+      --krgz-sandbox-layout: two-cols;
+    }
+
+    @media screen and (min-width: 992px) {
+      --krgz-sandbox-layout: three-cols;
+    }
   }
 }
 </style>

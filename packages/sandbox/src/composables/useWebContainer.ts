@@ -141,6 +141,12 @@ export function useWebContainer(options?: UseWebContainerOptions) {
   ) =>
     ensureInstance().then(async (container) => {
       await container.mount(snapshotOrTree, options)
+      // watch entire directory to emit fileTreeChange events
+      container.fs.watch('.', { recursive: true }, () =>
+        bus.fileTreeChange.trigger({
+          container,
+        }),
+      )
       if (options?.shouldReinstall) {
         runningProcesses.get(processKeys.install)?.kill()
         runningProcesses.get(processKeys.devServer)?.kill()
@@ -150,9 +156,6 @@ export function useWebContainer(options?: UseWebContainerOptions) {
         runningProcesses.get(processKeys.devServer)?.kill()
         await startDevServer()
       }
-      await bus.fileTreeChange.trigger({
-        container,
-      })
     })
 
   const startDevServer = () =>
