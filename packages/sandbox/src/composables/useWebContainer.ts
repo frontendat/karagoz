@@ -11,6 +11,7 @@ import type {
   WCErrorListenerParams,
   WCEventListener,
   WCEventListenerParams,
+  WCFileListenerParams,
   WCFileTreeChangeListenerParams,
   WCInitListenerParams,
   WCPortListenerParams,
@@ -31,6 +32,7 @@ export function useWebContainer(options?: UseWebContainerOptions) {
   const previewUrl = ref<string>()
   const bus = {
     error: createEventHook<WCErrorListenerParams>(),
+    file: createEventHook<WCFileListenerParams>(),
     init: createEventHook<WCInitListenerParams>(),
     fileTreeChange: createEventHook<WCFileTreeChangeListenerParams>(),
     port: createEventHook<WCPortListenerParams>(),
@@ -174,9 +176,21 @@ export function useWebContainer(options?: UseWebContainerOptions) {
       )
     })
 
+  const triggerFileOperation =
+    (operation: WCFileListenerParams['operation']) => (path: string) =>
+      ensureInstance().then(async (container) =>
+        bus.file.trigger({
+          container,
+          operation,
+          path,
+        }),
+      )
+
   return {
     boot,
     ensureInstance,
+    fileClose: triggerFileOperation('close'),
+    fileOpen: triggerFileOperation('open'),
     installDeps,
     mount,
     off,

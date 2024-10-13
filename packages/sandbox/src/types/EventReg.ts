@@ -1,5 +1,6 @@
 import {
   WCErrorListenerParams,
+  WCFileListenerParams,
   WCFileTreeChangeListenerParams,
   WCInitListenerParams,
   WCPortListenerParams,
@@ -9,6 +10,10 @@ import {
 declare function eventReg(
   event: 'error',
   listener: (params: WCErrorListenerParams) => void,
+): void
+declare function eventReg(
+  event: 'file',
+  listener: (params: WCFileListenerParams) => void,
 ): void
 declare function eventReg(
   event: 'fileTreeChange',

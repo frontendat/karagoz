@@ -2,6 +2,7 @@
 import { onBeforeUnmount, watch } from 'vue'
 
 import { useSharedWebContainer } from '../composables/useSharedWebContainer.ts'
+import KrgzEditorTabs from './KrgzEditorTabs.vue'
 import KrgzExplorer from './KrgzExplorer.vue'
 
 //const selectedPath = defineModel<string | undefined>({ default: undefined })
@@ -32,6 +33,7 @@ onBeforeUnmount(() => webContainer.ensureInstance().then((c) => c.teardown()))
       </slot>
 
       <div class="krgz-editor">
+        <KrgzEditorTabs></KrgzEditorTabs>
         <slot name="editor">
           <textarea>code here</textarea>
         </slot>

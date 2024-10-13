@@ -10,6 +10,10 @@ const props = defineProps<{
   path: string
 }>()
 
+const emit = defineEmits<{
+  (e: 'fileClick', path: string): void
+}>()
+
 const isExpanded = ref(false)
 
 const toggleClass = computed(() => {
@@ -25,7 +29,7 @@ const iconClass = computed(() =>
 
 const onClick = () => {
   if (props.entity.isFile()) {
-    console.log('open file', props.entity.name)
+    emit('fileClick', `${props.path}/${props.entity.name}`)
   } else {
     isExpanded.value = !isExpanded.value
   }
@@ -37,7 +41,9 @@ const onClick = () => {
     <a class="krgz-explorer-entity-header" @click="onClick">
       <span class="krgz-explorer-entity-toggle" :class="toggleClass"></span>
       <span class="krgz-explorer-entity-icon" :class="iconClass"></span>
-      <span>{{ entity.name }}</span>
+      <span class="krgz-explorer-entity-name" :title="entity.name">{{
+        entity.name
+      }}</span>
     </a>
     <KrgzExplorer
       v-if="isExpanded && entity.isDirectory()"
@@ -84,6 +90,12 @@ const onClick = () => {
   }
   .krgz-explorer-entity-icon:where(.as-directory)::before {
     content: '🗂️';
+  }
+
+  .krgz-explorer-entity-name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }
 </style>

@@ -2,6 +2,7 @@ import type { WebContainer } from '@webcontainer/api'
 
 export type WCEvents =
   | 'error'
+  | 'file'
   | 'fileTreeChange'
   | 'init'
   | 'port'
@@ -10,6 +11,12 @@ export type WCEvents =
 export type WCErrorListenerParams = {
   container?: WebContainer
   error: { message: string }
+}
+
+export type WCFileListenerParams = {
+  container?: WebContainer
+  operation: 'open' | 'close'
+  path: string
 }
 
 export type WCInitListenerParams = {
@@ -35,8 +42,9 @@ export type WCServerReadyListenerParams = {
 
 export type WCEventListenerParams =
   | WCErrorListenerParams
-  | WCInitListenerParams
+  | WCFileListenerParams
   | WCFileTreeChangeListenerParams
+  | WCInitListenerParams
   | WCPortListenerParams
   | WCServerReadyListenerParams
 

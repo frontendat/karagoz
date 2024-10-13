@@ -42,6 +42,7 @@ onUnmounted(() => {
       :depth="depth"
       :path="path"
       :entity="entity"
+      @file-click="webContainer.fileOpen($event)"
     ></KrgzExplorerEntity>
   </ul>
 </template>
@@ -50,6 +51,7 @@ onUnmounted(() => {
 @layer karagoz {
   .krgz-explorer {
     list-style-type: none;
+    margin: 0;
     padding: 0;
   }
 }
