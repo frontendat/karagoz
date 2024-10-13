@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { DirEnt } from '@webcontainer/api'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import KrgzExplorer from './KrgzExplorer.vue'
 
@@ -14,7 +14,19 @@ const emit = defineEmits<{
   (e: 'fileClick', path: string): void
 }>()
 
+const isRendered = ref(false)
 const isExpanded = ref(false)
+
+const isExpandedWatcher = watch(
+  isExpanded,
+  (value) => {
+    if (value) {
+      isRendered.value = true
+      isExpandedWatcher()
+    }
+  },
+  { immediate: true },
+)
 
 const toggleClass = computed(() => {
   if (props.entity.isFile()) {
@@ -46,7 +58,8 @@ const onClick = () => {
       }}</span>
     </a>
     <KrgzExplorer
-      v-if="isExpanded && entity.isDirectory()"
+      v-if="isRendered && entity.isDirectory()"
+      v-show="isExpanded"
       :depth="depth + 1"
       :path="`${path}/${entity.name}`"
     ></KrgzExplorer>
@@ -69,8 +82,8 @@ const onClick = () => {
 
   .krgz-explorer-entity-toggle {
     box-sizing: border-box;
-    height: 4px;
-    width: 4px;
+    height: 5px;
+    width: 5px;
   }
   .krgz-explorer-entity-toggle:where(:not(.as-file)) {
     border: solid #000;
