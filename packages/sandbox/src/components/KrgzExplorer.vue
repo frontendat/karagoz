@@ -7,9 +7,10 @@ import KrgzExplorerEntity from './KrgzExplorerEntity.vue'
 
 const props = withDefaults(
   defineProps<{
+    depth?: number
     path?: string
   }>(),
-  { path: '.' },
+  { depth: 1, path: '' },
 )
 
 const webContainer = useSharedWebContainer()
@@ -38,6 +39,7 @@ onUnmounted(() => {
     <KrgzExplorerEntity
       v-for="entity in dirEnts"
       :key="entity.name"
+      :depth="depth"
       :path="path"
       :entity="entity"
     ></KrgzExplorerEntity>
@@ -48,7 +50,7 @@ onUnmounted(() => {
 @layer karagoz {
   .krgz-explorer {
     list-style-type: none;
-    padding-inline-start: 0.6rem;
+    padding: 0;
   }
 }
 </style>
