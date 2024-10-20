@@ -2,24 +2,17 @@
 import { onBeforeUnmount, watch } from 'vue'
 
 import { useSharedWebContainer } from '../composables/useSharedWebContainer.ts'
-import KrgzEditorTabs from './KrgzEditorTabs.vue'
+import KrgzEditor from './KrgzEditor.vue'
 import KrgzExplorer from './KrgzExplorer.vue'
-
-//const selectedPath = defineModel<string | undefined>({ default: undefined })
 
 defineProps<{
   suppressDefaultLayout?: boolean
 }>()
 
-const webContainer = useSharedWebContainer()
+const wc = useSharedWebContainer()
+const previewFrame = wc.previewFrame
 
-watch(
-  () => webContainer.previewUrl.value,
-  (v) => console.log(v),
-  { immediate: true },
-)
-
-onBeforeUnmount(() => webContainer.ensureInstance().then((c) => c.teardown()))
+onBeforeUnmount(() => wc.ensureInstance().then((c) => c.teardown()))
 </script>
 
 <template>
@@ -32,17 +25,15 @@ onBeforeUnmount(() => webContainer.ensureInstance().then((c) => c.teardown()))
         <KrgzExplorer />
       </slot>
 
-      <div class="krgz-editor">
-        <KrgzEditorTabs></KrgzEditorTabs>
-        <slot name="editor">
-          <textarea>code here</textarea>
-        </slot>
-      </div>
+      <slot name="editor">
+        <KrgzEditor></KrgzEditor>
+      </slot>
 
       <div class="krgz-result">
         <iframe
-          v-if="webContainer.previewUrl.value"
-          :src="webContainer.previewUrl.value"
+          v-if="wc.previewUrl.value"
+          ref="previewFrame"
+          :src="wc.previewUrl.value"
           class="krgz-result-frame"
         ></iframe>
         <div v-else>Initialising...</div>

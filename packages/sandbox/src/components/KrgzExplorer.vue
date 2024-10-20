@@ -13,24 +13,31 @@ const props = withDefaults(
   { depth: 1, path: '' },
 )
 
-const webContainer = useSharedWebContainer()
+const wc = useSharedWebContainer()
 const dirEnts = ref<DirEnt<string>[]>([])
 
 const readDirEnts = async ({ container }: { container: WebContainer }) => {
-  dirEnts.value = await container.fs.readdir(props.path, {
-    withFileTypes: true,
+  dirEnts.value = (
+    await container.fs.readdir(props.path, {
+      withFileTypes: true,
+    })
+  ).sort((a, b) => {
+    if (a.isDirectory() && b.isFile()) {
+      return -1
+    }
+    return 0
   })
 }
 
 onMounted(() => {
-  webContainer.on('fileTreeChange', readDirEnts)
-  webContainer.on('init', readDirEnts)
-  webContainer.ensureInstance().then((container) => readDirEnts({ container }))
+  wc.on('fileTreeChange', readDirEnts)
+  wc.on('init', readDirEnts)
+  wc.ensureInstance().then((container) => readDirEnts({ container }))
 })
 
 onUnmounted(() => {
-  webContainer.off('fileTreeChange', readDirEnts)
-  webContainer.off('init', readDirEnts)
+  wc.off('fileTreeChange', readDirEnts)
+  wc.off('init', readDirEnts)
 })
 </script>
 
@@ -42,7 +49,7 @@ onUnmounted(() => {
       :depth="depth"
       :path="path"
       :entity="entity"
-      @file-click="webContainer.fileOpen($event)"
+      @file-click="wc.fileOpen($event)"
     ></KrgzExplorerEntity>
   </ul>
 </template>

@@ -1,67 +1,25 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue'
-
 import { useSharedWebContainer } from '../composables/useSharedWebContainer.ts'
-import { WCEditorTab, WCFileListenerParams } from '../types'
 
 const wc = useSharedWebContainer()
-const tabs = ref<WCEditorTab[]>([])
-const maxOrder = computed(() =>
-  tabs.value.length
-    ? Math.max.apply(
-        undefined,
-        tabs.value.map(({ order }) => order),
-      )
-    : 0,
-)
-
-const onWCFileEvent = ({ operation, path }: WCFileListenerParams) => {
-  const index = tabs.value.findIndex((f) => path === f.path)
-  if (operation === 'open') {
-    if (index === -1) {
-      tabs.value.push({
-        order: maxOrder.value + 1,
-        path,
-      })
-    } else if (tabs.value[index].order !== maxOrder.value) {
-      tabs.value[index].order = maxOrder.value + 1
-    }
-  } else {
-    if (index === -1) return
-    tabs.value.splice(index, 1)
-  }
-}
-
-const onTabClick = (index: number) => {
-  if (!tabs.value[index]) return
-  tabs.value[index].order = maxOrder.value + 1
-}
-
-onMounted(() => {
-  wc.on('file', onWCFileEvent)
-})
-
-onUnmounted(() => {
-  wc.off('file', onWCFileEvent)
-})
 </script>
 
 <template>
   <div class="krgz-editor-tabs">
     <ul class="krgz-editor-tabs-list">
       <li
-        v-for="(tab, index) of tabs"
+        v-for="tab of wc.tabs.value"
         :key="tab.path"
         class="krgz-editor-tabs-item"
-        :class="{ 'is-active': tab.order === maxOrder }"
-        @click="onTabClick(index)"
+        :class="{ 'is-active': tab.order === wc.latestTab.value?.order }"
+        @click="wc.fileOpen(tab.path)"
       >
         <span class="krgz-editor-tabs-item-name" :title="tab.path">{{
           tab.path.split('/').at(-1)
         }}</span>
         <span
           class="krgz-editor-tabs-item-close"
-          @click="wc.fileClose(tab.path)"
+          @click.stop="wc.fileClose(tab.path)"
           >&times;</span
         >
       </li>

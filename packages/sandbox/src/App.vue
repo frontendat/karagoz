@@ -46,7 +46,7 @@ const pkgJson = `
     "nodemon": "latest"
   },
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon --watch './' -e js,html index.js"
   }
 }`
 
@@ -92,6 +92,7 @@ const wc = useSharedWebContainer()
 wc.mount(tree.value, { shouldReinstall: true })
 
 const onClick = () => {
+  return
   tree.value = {
     ...tree.value,
     'index.js': { file: { contents: index2 } },

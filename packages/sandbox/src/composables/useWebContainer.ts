@@ -1,23 +1,14 @@
-import { createEventHook } from '@vueuse/core'
 import {
   FileSystemTree,
+  reloadPreview as wcReloadPreview,
   WebContainer,
   WebContainerProcess,
 } from '@webcontainer/api'
 import { computed, ref, toRef } from 'vue'
 
-import type {
-  UseWebContainerOptions,
-  WCErrorListenerParams,
-  WCEventListener,
-  WCEventListenerParams,
-  WCFileListenerParams,
-  WCFileTreeChangeListenerParams,
-  WCInitListenerParams,
-  WCPortListenerParams,
-  WCServerReadyListenerParams,
-} from '../types'
-import { WCEventReg } from '../types/EventReg.ts'
+import type { UseWebContainerOptions, WCFileListenerParams } from '../types'
+import { useWebContainerEvents } from './useWebContainerEvents.ts'
+import { useWebContainerTabs } from './useWebContainerTabs.ts'
 
 export function useWebContainer(options?: UseWebContainerOptions) {
   const instance = ref<WebContainer>()
@@ -29,31 +20,13 @@ export function useWebContainer(options?: UseWebContainerOptions) {
     keyof typeof processKeys,
     WebContainerProcess
   >()
+  const previewFrame = ref<HTMLIFrameElement>()
   const previewUrl = ref<string>()
-  const bus = {
-    error: createEventHook<WCErrorListenerParams>(),
-    file: createEventHook<WCFileListenerParams>(),
-    init: createEventHook<WCInitListenerParams>(),
-    fileTreeChange: createEventHook<WCFileTreeChangeListenerParams>(),
-    port: createEventHook<WCPortListenerParams>(),
-    serverReady: createEventHook<WCServerReadyListenerParams>(),
-  }
 
-  // event handling
+  const { bus, off, on, once } = useWebContainerEvents()
 
-  const on = ((event, listener: WCEventListener) =>
-    bus[event].on(listener)) as WCEventReg
-
-  const off = ((event, listener: WCEventListener) =>
-    bus[event].off(listener)) as WCEventReg
-
-  const once = ((event, listener: WCEventListener) => {
-    const onceListener = (params: WCEventListenerParams) => {
-      listener(params)
-      bus[event].off(onceListener)
-    }
-    bus[event].on(onceListener)
-  }) as WCEventReg
+  const { tabs, latestTab, handleFileEvent } = useWebContainerTabs()
+  on('file', handleFileEvent)
 
   // instance handling
 
@@ -176,6 +149,12 @@ export function useWebContainer(options?: UseWebContainerOptions) {
       )
     })
 
+  const reloadPreview = () => {
+    if (previewFrame.value) {
+      wcReloadPreview(previewFrame.value)
+    }
+  }
+
   const triggerFileOperation =
     (operation: WCFileListenerParams['operation']) => (path: string) =>
       ensureInstance().then(async (container) =>
@@ -192,11 +171,15 @@ export function useWebContainer(options?: UseWebContainerOptions) {
     fileClose: triggerFileOperation('close'),
     fileOpen: triggerFileOperation('open'),
     installDeps,
+    latestTab,
     mount,
     off,
     on,
     once,
+    previewFrame,
     previewUrl: toRef(computed(() => previewUrl.value ?? '')),
+    reloadPreview,
     startDevServer,
+    tabs,
   }
 }
