@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { KrgzSandbox, useSharedWebContainer } from '@karagoz/sandbox'
+import { KrgzSandbox, useKaragozSandbox } from '@karagoz/sandbox'
 import { computed, watch } from 'vue'
 
 import { useControlledModel } from '../composables/useControlledModel.ts'
 import { KrgzSlide, type KrgzStory, KrgzTopic } from '../models.ts'
 
-const wc = useSharedWebContainer()
+const sandbox = useKaragozSandbox()
 
 const topicModel = defineModel<number | undefined>('topic', {
   default: undefined,
@@ -46,7 +46,7 @@ watch(
   selectedSlide,
   () => {
     if (selectedSlide.value) {
-      wc.mount(selectedSlide.value.tree, { shouldReinstall: true })
+      sandbox.mount(selectedSlide.value.tree, { shouldReinstall: true })
     }
   },
   { immediate: true },

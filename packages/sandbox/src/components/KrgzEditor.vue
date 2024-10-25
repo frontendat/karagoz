@@ -1,29 +1,28 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 
-import { useSharedWebContainer } from '../composables/useSharedWebContainer.ts'
+import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
 import KrgzEditorTabs from './KrgzEditorTabs.vue'
 
-const wc = useSharedWebContainer()
+const sandbox = useKaragozSandbox()
+const container = sandbox.container()
 const contents = ref<string>('')
 
 watch(
-  () => wc.latestTab.value,
+  () => sandbox.latestTab.value,
   async (latestTab) => {
     if (!latestTab) {
       contents.value = ''
       return
     }
-    const instance = await wc.ensureInstance()
-    contents.value = await instance.fs.readFile(latestTab?.path, 'utf-8')
+    contents.value = await container.fs.readFile(latestTab?.path, 'utf-8')
   },
 )
 
-const onInput = async (event: InputEvent) => {
-  if (!wc.latestTab.value) return
-  const instance = await wc.ensureInstance()
-  instance.fs.writeFile(
-    wc.latestTab.value.path,
+const onInput = (event: Event) => {
+  if (!sandbox.latestTab.value) return
+  container.fs.writeFile(
+    sandbox.latestTab.value.path,
     (event.target as HTMLTextAreaElement).value,
     'utf-8',
   )
@@ -32,7 +31,7 @@ const onInput = async (event: InputEvent) => {
 
 <template>
   <div class="krgz-editor">
-    <template v-if="wc.latestTab.value">
+    <template v-if="sandbox.latestTab.value">
       <KrgzEditorTabs></KrgzEditorTabs>
       <textarea :value="contents" @input="onInput"></textarea>
     </template>

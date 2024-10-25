@@ -2,7 +2,7 @@
 import type { DirEnt, WebContainer } from '@webcontainer/api'
 import { onMounted, onUnmounted, ref } from 'vue'
 
-import { useSharedWebContainer } from '../composables/useSharedWebContainer.ts'
+import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
 import KrgzExplorerEntity from './KrgzExplorerEntity.vue'
 
 const props = withDefaults(
@@ -13,7 +13,7 @@ const props = withDefaults(
   { depth: 1, path: '' },
 )
 
-const wc = useSharedWebContainer()
+const sandbox = useKaragozSandbox()
 const dirEnts = ref<DirEnt<string>[]>([])
 
 const readDirEnts = async ({ container }: { container: WebContainer }) => {
@@ -30,14 +30,14 @@ const readDirEnts = async ({ container }: { container: WebContainer }) => {
 }
 
 onMounted(() => {
-  wc.on('fileTreeChange', readDirEnts)
-  wc.on('init', readDirEnts)
-  wc.ensureInstance().then((container) => readDirEnts({ container }))
+  sandbox.on('fileTreeChange', readDirEnts)
+  sandbox.on('init', readDirEnts)
+  readDirEnts({ container: sandbox.container() })
 })
 
 onUnmounted(() => {
-  wc.off('fileTreeChange', readDirEnts)
-  wc.off('init', readDirEnts)
+  sandbox.off('fileTreeChange', readDirEnts)
+  sandbox.off('init', readDirEnts)
 })
 </script>
 
@@ -49,7 +49,7 @@ onUnmounted(() => {
       :depth="depth"
       :path="path"
       :entity="entity"
-      @file-click="wc.fileOpen($event)"
+      @file-click="sandbox.fileOpen($event)"
     ></KrgzExplorerEntity>
   </ul>
 </template>

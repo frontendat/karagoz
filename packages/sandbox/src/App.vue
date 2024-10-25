@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { FileSystemTree } from '@webcontainer/api'
+import { FileSystemTree, WebContainer } from '@webcontainer/api'
 import { ref } from 'vue'
 
 import KrgzSandbox from './components/KrgzSandbox.vue'
-import { useSharedWebContainer } from './composables/useSharedWebContainer.ts'
+import { useKaragozSandbox } from './composables/useKaragozSandbox.ts'
+import {
+  injectWebContainer,
+  provideWebContainer,
+} from './utils/WebContainer.ts'
 
 const index = `
 import express from 'express';
@@ -20,22 +24,6 @@ app.listen(port, () => {
   }
 );
 `
-const index2 = `
-import express from 'express';
-const app = express();
-const port = 3111;
-
-app.get('/xxx', (req, res) => {
-     res.send('Welcome to a WebContainers app! 🥳');
-});
-app.use('/', express.static('public'));
-
-app.listen(port, () => {
-    console.log('file updated, cool!');
-    console.log('App is live at http://localhost:' + port);
-  }
-);
-`
 
 const pkgJson = `
 {
@@ -47,20 +35,6 @@ const pkgJson = `
   },
   "scripts": {
     "start": "nodemon --watch './' -e js,html index.js"
-  }
-}`
-
-const pkgJson2 = `
-{
-  "name": "example-app",
-  "type": "module",
-  "dependencies": {
-    "express": "latest",
-    "nodemon": "latest",
-    "vue": "latest"
-  },
-  "scripts": {
-    "start": "nodemon index.js"
   }
 }`
 
@@ -87,26 +61,15 @@ const tree = ref<FileSystemTree>({
   },
 })
 
-const wc = useSharedWebContainer()
+provideWebContainer(await WebContainer.boot())
+const container = injectWebContainer()
+console.log(container)
 
-wc.mount(tree.value, { shouldReinstall: true })
+const sandbox = useKaragozSandbox()
 
-const onClick = () => {
-  return
-  tree.value = {
-    ...tree.value,
-    'index.js': { file: { contents: index2 } },
-    'package.json': { file: { contents: pkgJson2 } },
-    public: {
-      directory: {
-        'index.html': { file: { contents: 'this is fucking awesome!' } },
-      },
-    },
-  }
-  wc.mount(tree.value, { shouldReinstall: true })
-}
+sandbox.mount(tree.value, { shouldReinstall: true })
 </script>
 
 <template>
-  <KrgzSandbox @click="onClick" />
+  <KrgzSandbox />
 </template>

@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { onBeforeUnmount, watch } from 'vue'
-
-import { useSharedWebContainer } from '../composables/useSharedWebContainer.ts'
+import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
 import KrgzEditor from './KrgzEditor.vue'
 import KrgzExplorer from './KrgzExplorer.vue'
 
@@ -9,10 +7,8 @@ defineProps<{
   suppressDefaultLayout?: boolean
 }>()
 
-const wc = useSharedWebContainer()
-const previewFrame = wc.previewFrame
-
-onBeforeUnmount(() => wc.ensureInstance().then((c) => c.teardown()))
+const sandbox = useKaragozSandbox()
+const previewFrame = sandbox.previewFrame
 </script>
 
 <template>
@@ -31,9 +27,9 @@ onBeforeUnmount(() => wc.ensureInstance().then((c) => c.teardown()))
 
       <div class="krgz-result">
         <iframe
-          v-if="wc.previewUrl.value"
+          v-if="sandbox.previewUrl.value"
           ref="previewFrame"
-          :src="wc.previewUrl.value"
+          :src="sandbox.previewUrl.value"
           class="krgz-result-frame"
         ></iframe>
         <div v-else>Initialising...</div>

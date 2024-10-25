@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { FileSystemTree } from '@webcontainer/api'
+import { provideWebContainer } from '@karagoz/sandbox'
+import { FileSystemTree, WebContainer } from '@webcontainer/api'
 
 import KrgzPuppeteer from './components/KrgzPuppeteer.vue'
 import { type KrgzStory } from './models.ts'
+
+provideWebContainer(await WebContainer.boot())
 
 const index = `
 import express from 'express';

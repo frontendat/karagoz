@@ -1,9 +1,12 @@
 import { computed, ref } from 'vue'
 
-import type { WCEditorTab, WCFileListenerParams } from '../types'
+import type {
+  KaragozSandboxEditorTab,
+  KaragozSandFileListenerParams,
+} from '../types'
 
-export const useWebContainerTabs = () => {
-  const tabs = ref<WCEditorTab[]>([])
+export const useKaragozSandboxTabs = () => {
+  const tabs = ref<KaragozSandboxEditorTab[]>([])
 
   const maxOrder = computed(() =>
     tabs.value.length
@@ -18,7 +21,10 @@ export const useWebContainerTabs = () => {
     tabs.value.find(({ order }) => order === maxOrder.value),
   )
 
-  const handleFileEvent = ({ operation, path }: WCFileListenerParams) => {
+  const handleFileEvent = ({
+    operation,
+    path,
+  }: KaragozSandFileListenerParams) => {
     const index = tabs.value.findIndex((f) => path === f.path)
     if (operation === 'open') {
       if (index === -1) {

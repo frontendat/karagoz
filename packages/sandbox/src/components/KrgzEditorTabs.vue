@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { useSharedWebContainer } from '../composables/useSharedWebContainer.ts'
+import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
 
-const wc = useSharedWebContainer()
+const sandbox = useKaragozSandbox()
 </script>
 
 <template>
   <div class="krgz-editor-tabs">
     <ul class="krgz-editor-tabs-list">
       <li
-        v-for="tab of wc.tabs.value"
+        v-for="tab of sandbox.tabs.value"
         :key="tab.path"
         class="krgz-editor-tabs-item"
-        :class="{ 'is-active': tab.order === wc.latestTab.value?.order }"
-        @click="wc.fileOpen(tab.path)"
+        :class="{ 'is-active': tab.order === sandbox.latestTab.value?.order }"
+        @click="sandbox.fileOpen(tab.path)"
       >
         <span class="krgz-editor-tabs-item-name" :title="tab.path">{{
           tab.path.split('/').at(-1)
         }}</span>
         <span
           class="krgz-editor-tabs-item-close"
-          @click.stop="wc.fileClose(tab.path)"
+          @click.stop="sandbox.fileClose(tab.path)"
           >&times;</span
         >
       </li>

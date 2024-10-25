@@ -1,6 +1,6 @@
 import type { WebContainer } from '@webcontainer/api'
 
-export type WCEvents =
+export type KaragozSandboxEvents =
   | 'error'
   | 'file'
   | 'fileTreeChange'
@@ -8,44 +8,46 @@ export type WCEvents =
   | 'port'
   | 'serverReady'
 
-export type WCErrorListenerParams = {
+export type KaragozSandErrorListenerParams = {
   container?: WebContainer
   error: { message: string }
 }
 
-export type WCFileListenerParams = {
+export type KaragozSandFileListenerParams = {
   container?: WebContainer
   operation: 'open' | 'close'
   path: string
 }
 
-export type WCInitListenerParams = {
+export type KaragozSandInitListenerParams = {
   container: WebContainer
 }
 
-export type WCFileTreeChangeListenerParams = {
+export type KaragozSandFileTreeChangeListenerParams = {
   container: WebContainer
 }
 
-export type WCPortListenerParams = {
+export type KaragozSandPortListenerParams = {
   container: WebContainer
   port: number
   type: 'open' | 'close'
   url: string
 }
 
-export type WCServerReadyListenerParams = {
+export type KaragozSandServerReadyListenerParams = {
   container: WebContainer
   port: number
   url: string
 }
 
-export type WCEventListenerParams =
-  | WCErrorListenerParams
-  | WCFileListenerParams
-  | WCFileTreeChangeListenerParams
-  | WCInitListenerParams
-  | WCPortListenerParams
-  | WCServerReadyListenerParams
+export type KaragozSandEventListenerParams =
+  | KaragozSandErrorListenerParams
+  | KaragozSandFileListenerParams
+  | KaragozSandFileTreeChangeListenerParams
+  | KaragozSandInitListenerParams
+  | KaragozSandPortListenerParams
+  | KaragozSandServerReadyListenerParams
 
-export type WCEventListener = (params: WCEventListenerParams) => void
+export type KaragozSandEventListener = (
+  params: KaragozSandEventListenerParams,
+) => void

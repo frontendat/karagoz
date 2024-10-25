@@ -1,4 +1,4 @@
-export type WCEditorTab = {
+export type KaragozSandboxEditorTab = {
   order: number
   path: string
 }

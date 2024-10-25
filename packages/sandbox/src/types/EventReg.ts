@@ -1,35 +1,35 @@
 import {
-  WCErrorListenerParams,
-  WCFileListenerParams,
-  WCFileTreeChangeListenerParams,
-  WCInitListenerParams,
-  WCPortListenerParams,
-  WCServerReadyListenerParams,
+  KaragozSandErrorListenerParams,
+  KaragozSandFileListenerParams,
+  KaragozSandFileTreeChangeListenerParams,
+  KaragozSandInitListenerParams,
+  KaragozSandPortListenerParams,
+  KaragozSandServerReadyListenerParams,
 } from './Events.ts'
 
 declare function eventReg(
   event: 'error',
-  listener: (params: WCErrorListenerParams) => void,
+  listener: (params: KaragozSandErrorListenerParams) => void,
 ): void
 declare function eventReg(
   event: 'file',
-  listener: (params: WCFileListenerParams) => void,
+  listener: (params: KaragozSandFileListenerParams) => void,
 ): void
 declare function eventReg(
   event: 'fileTreeChange',
-  listener: (params: WCFileTreeChangeListenerParams) => void,
+  listener: (params: KaragozSandFileTreeChangeListenerParams) => void,
 ): void
 declare function eventReg(
   event: 'init',
-  listener: (params: WCInitListenerParams) => void,
+  listener: (params: KaragozSandInitListenerParams) => void,
 ): void
 declare function eventReg(
   event: 'port',
-  listener: (params: WCPortListenerParams) => void,
+  listener: (params: KaragozSandPortListenerParams) => void,
 ): void
 declare function eventReg(
   event: 'serverReady',
-  listener: (params: WCServerReadyListenerParams) => void,
+  listener: (params: KaragozSandServerReadyListenerParams) => void,
 ): void
 
-export type WCEventReg = typeof eventReg
+export type KaragozSandEventReg = typeof eventReg
