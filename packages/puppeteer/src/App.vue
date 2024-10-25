@@ -29,7 +29,7 @@ const pkgJson = `
     "nodemon": "latest"
   },
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon --watch './' -e js,html index.js"
   }
 }`
 

@@ -12,6 +12,7 @@ import { useWebContainerTabs } from './useWebContainerTabs.ts'
 
 export function useWebContainer(options?: UseWebContainerOptions) {
   const instance = ref<WebContainer>()
+  const instancePromise = ref<Promise<WebContainer>>()
   const processKeys = {
     install: 'install',
     devServer: 'devServer',
@@ -73,17 +74,23 @@ export function useWebContainer(options?: UseWebContainerOptions) {
     })
   }
 
-  const ensureInstance = (): Promise<WebContainer> =>
-    new Promise((resolve) => {
-      if (instance.value) {
-        resolve(instance.value)
-      } else {
-        once('init', ({ container }) => resolve(container))
+  const ensureInstance = (): Promise<WebContainer> => {
+    if (instance.value) {
+      return Promise.resolve(instance.value)
+    }
+    if (!instancePromise.value) {
+      instancePromise.value = new Promise((resolve) => {
+        once('init', ({ container }) => {
+          instancePromise.value = undefined
+          resolve(container)
+        })
         if (!options?.manualBoot) {
           boot()
         }
-      }
-    })
+      })
+    }
+    return instancePromise.value
+  }
 
   const installDeps = async () => {
     const container = await ensureInstance()

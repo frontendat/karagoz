@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { KrgzSandbox } from '@karagoz/sandbox'
-import { computed } from 'vue'
+import { KrgzSandbox, useSharedWebContainer } from '@karagoz/sandbox'
+import { computed, watch } from 'vue'
 
 import { useControlledModel } from '../composables/useControlledModel.ts'
 import { KrgzSlide, type KrgzStory, KrgzTopic } from '../models.ts'
+
+const wc = useSharedWebContainer()
 
 const topicModel = defineModel<number | undefined>('topic', {
   default: undefined,
@@ -39,6 +41,16 @@ const onTopicClick = (_: KrgzTopic, index: number) => {
 const onSlideNavClick = (_: KrgzSlide, index: number) => {
   slideIndex(index)
 }
+
+watch(
+  selectedSlide,
+  () => {
+    if (selectedSlide.value) {
+      wc.mount(selectedSlide.value.tree, { shouldReinstall: true })
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -76,7 +88,7 @@ const onSlideNavClick = (_: KrgzSlide, index: number) => {
           </nav>
         </div>
         <div class="krgz-fileset">
-          <KrgzSandbox :tree="selectedSlide.tree"></KrgzSandbox>
+          <KrgzSandbox></KrgzSandbox>
         </div>
       </template>
     </div>
@@ -84,53 +96,55 @@ const onSlideNavClick = (_: KrgzSlide, index: number) => {
 </template>
 
 <style>
-:where(.krgz-puppeteer) {
-  --krgz-layout: stacked;
+@layer karagoz {
+  .krgz-puppeteer {
+    --krgz-layout: stacked;
 
-  container: puppeteer / inline-size;
-}
-
-@media screen and (min-width: 768px) {
-  :where(.krgz-puppeteer) {
-    --krgz-layout: two-cols;
-  }
-}
-
-@media screen and (min-width: 992px) {
-  :where(.krgz-puppeteer) {
-    --krgz-layout: three-cols;
-  }
-}
-
-:where(.krgz-stage) {
-  display: grid;
-}
-
-:where(.krgz-stage > *) {
-  outline: 1px solid #ccc;
-}
-
-:where(.krgz-topics) {
-  min-width: 250px;
-}
-
-@container puppeteer style(--krgz-layout: two-cols) {
-  :where(.krgz-stage) {
-    grid-template-columns: 250px 1fr;
+    container: puppeteer / inline-size;
   }
 
-  :where(.krgz-topics) {
-    grid-row: span 2;
-  }
-}
-
-@container puppeteer style(--krgz-layout: three-cols) {
-  :where(.krgz-stage) {
-    grid-template-columns: 250px repeat(2, 1fr);
+  @media screen and (min-width: 768px) {
+    .krgz-puppeteer {
+      --krgz-layout: two-cols;
+    }
   }
 
-  :where(.krgz-topics) {
-    grid-row: span 1;
+  @media screen and (min-width: 992px) {
+    .krgz-puppeteer {
+      --krgz-layout: three-cols;
+    }
+  }
+
+  .krgz-stage {
+    display: grid;
+  }
+
+  .krgz-stage > * {
+    outline: 1px solid #ccc;
+  }
+
+  .krgz-topics {
+    min-width: 250px;
+  }
+
+  @container puppeteer style(--krgz-layout: two-cols) {
+    .krgz-stage {
+      grid-template-columns: 250px 1fr;
+    }
+
+    .krgz-topics {
+      grid-row: span 2;
+    }
+  }
+
+  @container puppeteer style(--krgz-layout: three-cols) {
+    .krgz-stage {
+      grid-template-columns: 250px repeat(2, 1fr);
+    }
+
+    .krgz-topics {
+      grid-row: span 1;
+    }
   }
 }
 </style>
