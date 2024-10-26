@@ -1,3 +1,5 @@
+import './style.css'
+
 import KrgzEditor from './components/KrgzEditor.vue'
 import KrgzEditorTabs from './components/KrgzEditorTabs.vue'
 import KrgzExplorer from './components/KrgzExplorer.vue'

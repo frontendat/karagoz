@@ -1,29 +1,30 @@
 {
-  "name": "@karagoz/puppeteer",
+  "name": "@karagoz/shared",
   "private": false,
   "version": "0.0.0",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/karagoz-puppeteer.umd.cjs",
-  "module": "./dist/karagoz-puppeteer.js",
+  "main": "./dist/karagoz-shared.umd.cjs",
+  "module": "./dist/karagoz-shared.js",
   "types": "./dist/types.d.ts",
   "exports": {
     ".": {
       "import": {
-        "default": "./dist/karagoz-puppeteer.js",
+        "default": "./dist/karagoz-shared.js",
         "types": "./dist/types.d.ts"
       },
       "require": {
-        "default": "./dist/karagoz-puppeteer.umd.cjs",
+        "default": "./dist/karagoz-shared.umd.cjs",
         "types": "./dist/types.d.ts"
       }
     },
     "./dist/style.css": {
       "import": "./dist/style.css",
       "require": "./dist/style.css"
-    }
+    },
+    "./dist/config/*": "./dist/config/*"
   },
   "scripts": {
     "dev": "pnpm --parallel /^watch:/",
@@ -35,10 +36,14 @@
     "lint": "eslint \"src/**/*.{ts,vue}\""
   },
   "peerDependencies": {
-    "@webcontainer/api": "^1.4.0"
-  },
-  "dependencies": {
-    "@karagoz/sandbox": "workspace:^",
-    "@karagoz/shared": "workspace:^"
+    "autoprefixer": "^10.4.20",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lucide-vue-next": "^0.453.0",
+    "radix-vue": "^1.9.7",
+    "tailwind-merge": "^2.5.4",
+    "tailwindcss": "^3.4.14",
+    "tailwindcss-animate": "^1.0.7",
+    "vite-plugin-static-copy": "^2.0.0"
   }
 }

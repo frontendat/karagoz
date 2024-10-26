@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button } from '@karagoz/shared'
+
 import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
 
 const sandbox = useKaragozSandbox()
@@ -14,13 +16,15 @@ const sandbox = useKaragozSandbox()
         :class="{ 'is-active': tab.order === sandbox.latestTab.value?.order }"
         @click="sandbox.fileOpen(tab.path)"
       >
-        <span class="krgz-editor-tabs-item-name" :title="tab.path">{{
-          tab.path.split('/').at(-1)
-        }}</span>
-        <span
-          class="krgz-editor-tabs-item-close"
-          @click.stop="sandbox.fileClose(tab.path)"
-          >&times;</span
+        <Button>
+          <span class="krgz-editor-tabs-item-name" :title="tab.path">{{
+            tab.path.split('/').at(-1)
+          }}</span>
+          <span
+            class="krgz-editor-tabs-item-close"
+            @click.stop="sandbox.fileClose(tab.path)"
+            >&times;</span
+          ></Button
         >
       </li>
     </ul>

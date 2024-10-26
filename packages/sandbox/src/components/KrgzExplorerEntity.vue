@@ -53,9 +53,11 @@ const onClick = () => {
     <a class="krgz-explorer-entity-header" @click="onClick">
       <span class="krgz-explorer-entity-toggle" :class="toggleClass"></span>
       <span class="krgz-explorer-entity-icon" :class="iconClass"></span>
-      <span class="krgz-explorer-entity-name" :title="entity.name">{{
-        entity.name
-      }}</span>
+      <span
+        class="krgz-explorer-entity-name text-destructive"
+        :title="entity.name"
+        >{{ entity.name }}</span
+      >
     </a>
     <KrgzExplorer
       v-if="isRendered && entity.isDirectory()"

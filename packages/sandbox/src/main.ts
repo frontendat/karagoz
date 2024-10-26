@@ -1,3 +1,4 @@
+import '@karagoz/shared/dist/style.css'
 import './style.css'
 
 import { createApp, h, Suspense } from 'vue'
