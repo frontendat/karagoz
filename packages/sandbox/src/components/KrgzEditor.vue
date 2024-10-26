@@ -30,10 +30,14 @@ const onInput = (event: Event) => {
 </script>
 
 <template>
-  <div class="krgz-editor">
+  <div class="flex flex-col h-full">
     <template v-if="sandbox.latestTab.value">
       <KrgzEditorTabs></KrgzEditorTabs>
-      <textarea :value="contents" @input="onInput"></textarea>
+      <textarea
+        class="flex-grow w-full"
+        :value="contents"
+        @input="onInput"
+      ></textarea>
     </template>
     <div v-else>Please select a file</div>
   </div>
