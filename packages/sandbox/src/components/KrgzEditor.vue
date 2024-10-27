@@ -26,7 +26,7 @@ const onInput = useDebounceFn((event: Event) => {
     (event.target as HTMLTextAreaElement).value,
     'utf-8',
   )
-}, 1000)
+}, 300)
 </script>
 
 <template>
