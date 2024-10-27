@@ -6,12 +6,9 @@ import {
   ScrollArea,
 } from '@karagoz/shared'
 
-import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
-import KrgzEditor from './KrgzEditor.vue'
+import KrgzEditorTabs from './KrgzEditorTabs.vue'
 import KrgzExplorer from './KrgzExplorer.vue'
-
-const sandbox = useKaragozSandbox()
-const previewFrame = sandbox.previewFrame
+import KrgzPreview from './KrgzPreview.vue'
 </script>
 
 <template>
@@ -35,22 +32,16 @@ const previewFrame = sandbox.previewFrame
         <ResizableHandle with-handle />
         <ResizablePanel :default-size="75">
           <slot name="editor">
-            <KrgzEditor></KrgzEditor>
+            <KrgzEditorTabs />
           </slot>
         </ResizablePanel>
       </ResizablePanelGroup>
     </ResizablePanel>
     <ResizableHandle with-handle />
     <ResizablePanel :default-size="50">
-      <div class="krgz-result">
-        <iframe
-          v-if="sandbox.previewUrl.value"
-          ref="previewFrame"
-          :src="sandbox.previewUrl.value"
-          class="krgz-result-frame"
-        ></iframe>
-        <div v-else>Initialising...</div>
-      </div>
+      <slot name="preview">
+        <KrgzPreview />
+      </slot>
     </ResizablePanel>
   </ResizablePanelGroup>
 </template>

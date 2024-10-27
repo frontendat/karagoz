@@ -1,44 +1,38 @@
 <script setup lang="ts">
+import { useDebounceFn } from '@vueuse/core'
 import { ref, watch } from 'vue'
 
 import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
-import KrgzEditorTabs from './KrgzEditorTabs.vue'
+
+const props = defineProps<{
+  path?: string
+}>()
 
 const sandbox = useKaragozSandbox()
 const container = sandbox.container()
 const contents = ref<string>('')
 
 watch(
-  () => sandbox.latestTab.value,
-  async (latestTab) => {
-    if (!latestTab) {
-      contents.value = ''
-      return
-    }
-    contents.value = await container.fs.readFile(latestTab?.path, 'utf-8')
-  },
+  () => props.path,
+  async (path) =>
+    (contents.value = path ? await container.fs.readFile(path, 'utf-8') : ''),
+  { immediate: true },
 )
 
-const onInput = (event: Event) => {
-  if (!sandbox.latestTab.value) return
+const onInput = useDebounceFn((event: Event) => {
+  if (!props.path) return
   container.fs.writeFile(
-    sandbox.latestTab.value.path,
+    props.path,
     (event.target as HTMLTextAreaElement).value,
     'utf-8',
   )
-}
+}, 1000)
 </script>
 
 <template>
-  <div class="flex flex-col h-full">
-    <template v-if="sandbox.latestTab.value">
-      <KrgzEditorTabs></KrgzEditorTabs>
-      <textarea
-        class="flex-grow w-full"
-        :value="contents"
-        @input="onInput"
-      ></textarea>
-    </template>
-    <div v-else>Please select a file</div>
-  </div>
+  <textarea
+    class="flex-grow h-full w-full"
+    :value="contents"
+    @input="onInput"
+  ></textarea>
 </template>

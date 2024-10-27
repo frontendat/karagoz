@@ -27,7 +27,7 @@
     "./dist/config/*": "./dist/config/*"
   },
   "scripts": {
-    "dev": "pnpm --parallel /^watch:/",
+    "dev": "pnpm --filter @karagoz/shared --parallel /^watch:/",
     "dev-hmr": "vite",
     "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
     "preview": "vite preview",

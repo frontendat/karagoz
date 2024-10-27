@@ -4,6 +4,7 @@ import KrgzEditor from './components/KrgzEditor.vue'
 import KrgzEditorTabs from './components/KrgzEditorTabs.vue'
 import KrgzExplorer from './components/KrgzExplorer.vue'
 import KrgzExplorerEntity from './components/KrgzExplorerEntity.vue'
+import KrgzPreview from './components/KrgzPreview.vue'
 import KrgzSandbox from './components/KrgzSandbox.vue'
 import { useKaragozSandbox } from './composables/useKaragozSandbox.ts'
 import {
@@ -19,6 +20,7 @@ export {
   KrgzEditorTabs,
   KrgzExplorer,
   KrgzExplorerEntity,
+  KrgzPreview,
   KrgzSandbox,
   provideWebContainer,
   useKaragozSandbox,

@@ -1,99 +1,62 @@
 <script setup lang="ts">
-import { Button } from '@karagoz/shared'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@karagoz/shared'
+import { useDebounceFn } from '@vueuse/core'
+import { X } from 'lucide-vue-next'
+import { ref, watch } from 'vue'
 
 import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
+import KrgzEditor from './KrgzEditor.vue'
 
 const sandbox = useKaragozSandbox()
+const container = sandbox.container()
+const contents = ref<string>('')
+
+watch(
+  () => sandbox.latestTab.value,
+  async (latestTab) => {
+    if (!latestTab) {
+      contents.value = ''
+      return
+    }
+    contents.value = await container.fs.readFile(latestTab?.path, 'utf-8')
+  },
+)
+
+const onInput = useDebounceFn((event: Event) => {
+  if (!sandbox.latestTab.value) return
+  container.fs.writeFile(
+    sandbox.latestTab.value.path,
+    (event.target as HTMLTextAreaElement).value,
+    'utf-8',
+  )
+}, 1000)
 </script>
 
 <template>
-  <div class="krgz-editor-tabs">
-    <ul class="krgz-editor-tabs-list">
-      <li
-        v-for="tab of sandbox.tabs.value"
+  <Tabs
+    v-if="sandbox.tabs.value.length"
+    class="h-full"
+    :model-value="sandbox.latestTab.value?.path"
+    @update:model-value="sandbox.fileOpen($event)"
+  >
+    <TabsList class="max-w-full overflow-x-auto">
+      <TabsTrigger
+        v-for="tab in sandbox.tabs.value"
         :key="tab.path"
-        class="krgz-editor-tabs-item"
-        :class="{ 'is-active': tab.order === sandbox.latestTab.value?.order }"
-        @click="sandbox.fileOpen(tab.path)"
+        class="text-xs"
+        :value="tab.path"
       >
-        <span class="krgz-editor-tabs-item-name" :title="tab.path">{{
-          tab.path.split('/').at(-1)
-        }}</span>
-        <span
-          class="krgz-editor-tabs-item-close"
-          @click.stop="sandbox.fileClose(tab.path)"
-          >&times;</span
-        >
-      </li>
-    </ul>
-  </div>
+        <div class="flex gap-2 items-center">
+          <span :title="tab.path">
+            {{ tab.path.split('/').at(-1) }}
+          </span>
+          <X class="h-4 w-4" @click.stop="sandbox.fileClose(tab.path)"></X>
+        </div>
+      </TabsTrigger>
+    </TabsList>
+    <TabsContent class="h-full" :value="sandbox.latestTab.value?.path">
+      <KrgzEditor class="h-full w-full" :path="sandbox.latestTab.value?.path" />
+    </TabsContent>
+  </Tabs>
+  <div v-else>Please select a file</div>
 </template>
-
-<style>
-@layer krgz {
-  .krgz-editor-tabs-list {
-    display: flex;
-    gap: 0.25rem;
-    margin: 0;
-    overflow: auto;
-    padding: 0;
-    user-select: none;
-  }
-
-  /* For modern browsers */
-  .krgz-editor-tabs-list::-webkit-scrollbar {
-    width: 0px;
-    height: 0px;
-  }
-
-  .krgz-editor-tabs-list::-webkit-scrollbar-thumb {
-    background-color: currentColor;
-  }
-
-  .krgz-editor-tabs-list::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  /* For Firefox */
-  .krgz-editor-tabs-list* {
-    scrollbar-width: thin;
-    scrollbar-color: currentColor transparent;
-  }
-
-  .krgz-editor-tabs-item {
-    border-bottom: 2px solid #ccc;
-    box-sizing: border-box;
-    background: #eee;
-    color: #999;
-    cursor: pointer;
-    display: flex;
-    gap: 0.5rem;
-    padding: 0.25rem;
-    padding-inline-start: 0.5rem;
-    justify-content: center;
-    width: 124px;
-  }
-  .krgz-editor-tabs-item:where(.is-active) {
-    background: none;
-    border-bottom-color: #999;
-    color: currentColor;
-  }
-  .krgz-editor-tabs-item-name {
-    flex-grow: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .krgz-editor-tabs-item-close {
-    --size: 12px;
-
-    background: #ccc;
-    border-radius: calc(var(--size) / 2);
-    cursor: pointer;
-    height: var(--size);
-    line-height: var(--size);
-    text-align: center;
-    min-width: var(--size);
-  }
-}
-</style>

@@ -42,7 +42,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <ul v-if="dirEnts" class="krgz-explorer">
+  <ul v-if="dirEnts" class="text-xs">
     <KrgzExplorerEntity
       v-for="entity in dirEnts"
       :key="entity.name"
@@ -53,13 +53,3 @@ onUnmounted(() => {
     ></KrgzExplorerEntity>
   </ul>
 </template>
-
-<style>
-@layer karagoz {
-  .krgz-explorer {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-  }
-}
-</style>

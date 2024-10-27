@@ -62,8 +62,6 @@ const tree = ref<FileSystemTree>({
 })
 
 provideWebContainer(await WebContainer.boot())
-const container = injectWebContainer()
-console.log(container)
 
 const sandbox = useKaragozSandbox()
 
