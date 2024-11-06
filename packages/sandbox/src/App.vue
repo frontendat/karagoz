@@ -4,10 +4,7 @@ import { ref } from 'vue'
 
 import KrgzSandbox from './components/KrgzSandbox.vue'
 import { useKaragozSandbox } from './composables/useKaragozSandbox.ts'
-import {
-  injectWebContainer,
-  provideWebContainer,
-} from './utils/WebContainer.ts'
+import { provideWebContainer } from './utils/WebContainer.ts'
 
 const index = `
 import express from 'express';
@@ -34,19 +31,36 @@ const pkgJson = `
     "nodemon": "latest"
   },
   "scripts": {
-    "start": "nodemon --watch './' -e js,html index.js"
+    "start": "nodemon --watch './' -e js,html,css index.js"
   }
 }`
 
 const html = `
+<html>
+<head>
+<link rel="stylesheet" href="./style.css" />
+</head>
+<body>
 <h1>Slide 1 Headline</h1>
 <${'script'} src="./script.js"><${'/script'}>
 <${'script'}>doSomething()<${'/script'}>
+</body>
+</html>
 `
 
 const script = `
 function doSomething() {
   console.log(document.querySelector('h1').innerText)
+}
+`
+
+const style = `
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+  color: #99cc33;
 }
 `
 
@@ -57,6 +71,7 @@ const tree = ref<FileSystemTree>({
     directory: {
       'index.html': { file: { contents: html } },
       'script.js': { file: { contents: script } },
+      'style.css': { file: { contents: style } },
     },
   },
 })

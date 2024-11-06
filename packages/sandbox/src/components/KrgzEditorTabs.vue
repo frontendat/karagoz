@@ -22,11 +22,11 @@ watch(
 <template>
   <Tabs
     v-if="sandbox.tabs.value.length"
-    class="h-full"
+    class="h-full flex flex-col"
     :model-value="sandbox.latestTab.value?.path"
     @update:model-value="sandbox.fileOpen($event)"
   >
-    <div class="max-w-full overflow-x-auto tabs">
+    <div class="max-w-full min-h-min overflow-x-auto tabs">
       <TabsList ref="tabList">
         <TabsTrigger
           v-for="tab in sandbox.tabs.value"
@@ -43,8 +43,16 @@ watch(
         </TabsTrigger>
       </TabsList>
     </div>
-    <TabsContent class="h-full" :value="sandbox.latestTab.value?.path">
-      <KrgzEditor class="h-full w-full" :path="sandbox.latestTab.value?.path" />
+    <TabsContent
+      class="flex-grow max-h-full mt-0"
+      :value="sandbox.latestTab.value?.path ?? ''"
+    >
+      <KeepAlive>
+        <KrgzEditor
+          :key="sandbox.latestTab.value?.path"
+          :path="sandbox.latestTab.value?.path"
+        />
+      </KeepAlive>
     </TabsContent>
   </Tabs>
   <div v-else>Please select a file</div>

@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { useDebounceFn } from '@vueuse/core'
-import { ref, watch } from 'vue'
+import { LanguageDescription } from '@codemirror/language'
+import { languages } from '@codemirror/language-data'
+import { EditorState, Extension } from '@codemirror/state'
+import { oneDark } from '@codemirror/theme-one-dark'
+import { computedAsync, useDebounceFn } from '@vueuse/core'
+import { EditorView } from 'codemirror'
+import { computed, ref, shallowRef, watch } from 'vue'
+import { Codemirror } from 'vue-codemirror'
 
 import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
 
@@ -10,7 +16,7 @@ const props = defineProps<{
 
 const sandbox = useKaragozSandbox()
 const container = sandbox.container()
-const contents = ref<string>('')
+const contents = ref<string | null>(null)
 
 watch(
   () => props.path,
@@ -19,20 +25,65 @@ watch(
   { immediate: true },
 )
 
-const onInput = useDebounceFn((event: Event) => {
+const onInput = useDebounceFn((value: string) => {
   if (!props.path) return
-  container.fs.writeFile(
-    props.path,
-    (event.target as HTMLTextAreaElement).value,
-    'utf-8',
-  )
+  container.fs.writeFile(props.path, value, 'utf-8')
 }, 300)
+
+const langPack = computedAsync(() =>
+  props.path
+    ? LanguageDescription.matchFilename(languages, props.path)?.load()
+    : undefined,
+)
+
+const theme = computed(() =>
+  document.documentElement.classList.contains('dark') ? oneDark : undefined,
+)
+
+const extensions = computed(() =>
+  [langPack.value, theme.value].filter((ext): ext is Extension => !!ext),
+)
+
+// Codemirror EditorView instance ref
+const view = shallowRef<EditorView>()
+const handleReady = (payload: {
+  view: EditorView
+  state: EditorState
+  container: HTMLDivElement
+}) => {
+  view.value = payload.view
+}
+
+// Status is available at all times via Codemirror EditorView
+// const getCodemirrorStates = () => {
+//   const state = view.value.state
+//   const ranges = state.selection.ranges
+//   const selected = ranges.reduce((r, range) => r + range.to - range.from, 0)
+//   const cursor = ranges[0].anchor
+//   const length = state.doc.length
+//   const lines = state.doc.lines
+//   // more state info ...
+//   // return ...
+// }
+
+const log = console.log.bind(console)
 </script>
 
 <template>
-  <textarea
-    class="flex-grow h-full w-full"
-    :value="contents"
-    @input="onInput"
-  ></textarea>
+  <div class="h-full overflow-auto w-full">
+    <Codemirror
+      v-if="contents !== null"
+      :model-value="contents"
+      placeholder="Code goes here..."
+      :style="{ height: '100%' }"
+      :autofocus="true"
+      :indent-with-tab="true"
+      :tab-size="2"
+      :extensions="extensions"
+      @ready="handleReady"
+      @change="onInput"
+      @focus="log('focus', $event)"
+      @blur="log('blur', $event)"
+    />
+  </div>
 </template>

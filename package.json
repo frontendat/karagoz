@@ -10,15 +10,21 @@
     "dev": "pnpm --recursive --parallel --stream run dev"
   },
   "dependencies": {
+    "@codemirror/language": "^6.10.3",
+    "@codemirror/language-data": "^6.5.1",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
     "@vueuse/core": "^10.9.0",
     "@webcontainer/api": "^1.4.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "codemirror": "^6.0.1",
     "lucide-vue-next": "^0.453.0",
     "radix-vue": "^1.9.7",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "vue": "^3.4.21",
+    "vue-codemirror": "^6.1.1",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
