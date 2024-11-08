@@ -10,6 +10,7 @@ import { computed, watch } from 'vue'
 
 import { useControlledModel } from '../composables/useControlledModel.ts'
 import { KrgzSlide, type KrgzStory, KrgzTopic } from '../models.ts'
+import KrgzExplanation from './KrgzExplanation.vue'
 
 const sandbox = useKaragozSandbox()
 
@@ -85,7 +86,7 @@ watch(
         <template v-if="selectedSlide">
           <div class="krgz-explanation">
             <h1 v-if="selectedTopic?.subject">{{ selectedTopic.subject }}</h1>
-            {{ selectedSlide.explanation }}
+            <KrgzExplanation :explanation="selectedSlide.explanation" />
             <nav v-if="selectedTopic">
               <a
                 v-if="0 < slideCtrl"
