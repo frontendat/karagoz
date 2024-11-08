@@ -30,7 +30,16 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['@webcontainer/api', 'vue'],
+      external: [
+        '@codemirror/language',
+        '@codemirror/language-data',
+        '@codemirror/state',
+        '@codemirror/theme-one-dark',
+        '@webcontainer/api',
+        'codemirror',
+        'vue',
+        'vue-codemirror',
+      ],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps

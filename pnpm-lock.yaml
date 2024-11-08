@@ -117,15 +117,12 @@ importers:
 
   packages/puppeteer:
     dependencies:
-      '@codemirror/lang-html':
-        specifier: ^6.4.9
-        version: 6.4.9
-      '@codemirror/lang-javascript':
-        specifier: ^6.2.2
-        version: 6.2.2
-      '@codemirror/lang-json':
-        specifier: ^6.0.1
-        version: 6.0.1
+      '@codemirror/language':
+        specifier: ^6.10.3
+        version: 6.10.3
+      '@codemirror/language-data':
+        specifier: ^6.5.1
+        version: 6.5.1(@codemirror/view@6.34.1)
       '@codemirror/state':
         specifier: ^6.4.1
         version: 6.4.1

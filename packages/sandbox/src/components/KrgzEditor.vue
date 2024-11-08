@@ -20,8 +20,18 @@ const contents = ref<string | null>(null)
 
 watch(
   () => props.path,
-  async (path) =>
-    (contents.value = path ? await container.fs.readFile(path, 'utf-8') : ''),
+  async (path) => {
+    contents.value = path ? await container.fs.readFile(path, 'utf-8') : ''
+    if (path) {
+      container.fs.watch(path, async (event) => {
+        if (event !== 'change') return
+        const newContents = await container.fs.readFile(path, 'utf-8')
+        if (newContents !== contents.value) {
+          contents.value = newContents
+        }
+      })
+    }
+  },
   { immediate: true },
 )
 

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { provideWebContainer } from '@karagoz/sandbox'
+import { provideWebContainer, useKaragozSandbox } from '@karagoz/sandbox'
 import { FileSystemTree, WebContainer } from '@webcontainer/api'
 
 import KrgzPuppeteer from './components/KrgzPuppeteer.vue'
 import { type KrgzStory } from './models.ts'
 
 provideWebContainer(await WebContainer.boot())
+const sandbox = useKaragozSandbox()
 
 const index = `
 import express from 'express';
@@ -83,6 +84,8 @@ const setupFiles: FileSystemTree = {
   'index.js': { file: { contents: index } },
 }
 
+sandbox.mount(setupFiles, { shouldReinstall: true, shouldRestart: true })
+
 const story: KrgzStory = {
   subject: 'Demo Story',
   topics: [
@@ -91,7 +94,7 @@ const story: KrgzStory = {
         {
           explanation: explanation1,
           tree: {
-            ...setupFiles,
+            //...setupFiles,
             'index.html': { file: { contents: html1 } },
             'script.js': { file: { contents: script1 } },
           },
@@ -99,7 +102,7 @@ const story: KrgzStory = {
         {
           explanation: explanation2,
           tree: {
-            ...setupFiles,
+            //...setupFiles,
             'index.html': { file: { contents: html2 } },
             'script.js': { file: { contents: script2 } },
           },
@@ -113,7 +116,7 @@ const story: KrgzStory = {
         {
           explanation: explanation1,
           tree: {
-            ...setupFiles,
+            //...setupFiles,
             'index.html': { file: { contents: html1 } },
             'script.js': { file: { contents: script1 } },
           },
@@ -121,7 +124,7 @@ const story: KrgzStory = {
         {
           explanation: explanation2,
           tree: {
-            ...setupFiles,
+            //...setupFiles,
             'index.html': { file: { contents: html2 } },
             'script.js': { file: { contents: script2 } },
           },
@@ -135,7 +138,16 @@ const story: KrgzStory = {
 </script>
 
 <template>
-  <div>
-    <KrgzPuppeteer :story="story" />
-  </div>
+  <KrgzPuppeteer :story="story" />
 </template>
+
+<style>
+body {
+  height: 100dvh;
+  margin: 0;
+}
+
+#app {
+  height: 100%;
+}
+</style>
