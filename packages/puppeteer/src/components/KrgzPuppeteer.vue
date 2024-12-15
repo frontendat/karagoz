@@ -5,30 +5,20 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
   ScrollArea,
+  useControlledModel,
 } from '@karagoz/shared'
 import { computed, watch } from 'vue'
 
-import { useControlledModel } from '../composables/useControlledModel.ts'
 import { KrgzSlide, type KrgzStory, KrgzTopic } from '../models.ts'
 import KrgzExplanation from './KrgzExplanation.vue'
 
 const sandbox = useKaragozSandbox()
 
-const topicModel = defineModel<number | undefined>('topic', {
-  default: undefined,
-})
-const slideModel = defineModel<number | undefined>('slide', {
-  default: undefined,
-})
+const topicModel = defineModel<number | undefined>('topic')
+const slideModel = defineModel<number | undefined>('slide')
 
-const { value: topicCtrl, update: topicIndex } = useControlledModel(
-  topicModel,
-  0,
-)
-const { value: slideCtrl, update: slideIndex } = useControlledModel(
-  slideModel,
-  0,
-)
+const [topicCtrl, topicIndex] = useControlledModel(topicModel, 0)
+const [slideCtrl, slideIndex] = useControlledModel(slideModel, 0)
 
 const props = defineProps<{
   story: KrgzStory
