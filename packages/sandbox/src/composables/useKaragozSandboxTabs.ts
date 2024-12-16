@@ -18,14 +18,20 @@ export const useKaragozSandboxTabs = <T = undefined>() => {
     tabs.value.find(({ order }) => order === maxOrder.value),
   )
 
+  const findTabIndex = (id: string) => tabs.value.findIndex((f) => id === f.id)
+  const findTab = (id: string) => {
+    const index = findTabIndex(id)
+    return index === -1 ? undefined : tabs.value.at(index)
+  }
+
   const close = (id: string) => {
-    const index = tabs.value.findIndex((f) => id === f.id)
+    const index = findTabIndex(id)
     if (index === -1) return
     tabs.value.splice(index, 1)
   }
 
   const open = (id: string, label?: string, context?: Tab<T>['context']) => {
-    const index = tabs.value.findIndex((f) => id === f.id)
+    const index = findTabIndex(id)
     if (index === -1) {
       const newTab: Tab<T> = {
         id,
@@ -39,10 +45,21 @@ export const useKaragozSandboxTabs = <T = undefined>() => {
     }
   }
 
+  const updateContext = (
+    id: string,
+    setter: (ctx: Tab<T>['context']) => Tab<T>['context'],
+  ) => {
+    const index = findTabIndex(id)
+    tabs.value[index].context = setter(tabs.value[index].context)
+  }
+
   return {
     close,
     current,
+    findTab,
+    findTabIndex,
     open,
     tabs: computed(() => tabs.value),
+    updateContext,
   }
 }

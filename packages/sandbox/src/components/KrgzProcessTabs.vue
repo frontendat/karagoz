@@ -1,16 +1,23 @@
 <script setup lang="ts">
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@karagoz/shared'
 import { X } from 'lucide-vue-next'
-import { type ComponentPublicInstance, nextTick, ref, watch } from 'vue'
+import {
+  type ComponentPublicInstance,
+  computed,
+  nextTick,
+  ref,
+  watch,
+} from 'vue'
 
 import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
-import KrgzEditor from './KrgzEditor.vue'
+import KrgzProcess from './KrgzProcess.vue'
 
-const { editorTabs } = useKaragozSandbox()
+const { processTabs } = useKaragozSandbox()
+const tabs = computed(() => processTabs.tabs.value)
 const tabList = ref<ComponentPublicInstance<InstanceType<typeof TabsList>>>()
 
 watch(
-  () => editorTabs.current.value,
+  () => processTabs.current.value,
   async () => {
     await nextTick()
     // bring active tab trigger into view
@@ -21,36 +28,36 @@ watch(
 
 <template>
   <Tabs
-    v-if="editorTabs.tabs.value.length"
+    v-if="processTabs.tabs.value.length"
     class="h-full flex flex-col"
-    :model-value="editorTabs.current.value?.id"
-    @update:model-value="editorTabs.open($event)"
+    :model-value="processTabs.current.value?.id"
+    @update:model-value="processTabs.open($event)"
   >
     <div class="max-w-full min-h-min overflow-x-auto tabs">
       <TabsList ref="tabList">
         <TabsTrigger
-          v-for="tab in editorTabs.tabs.value"
+          v-for="tab in processTabs.tabs.value"
           :key="tab.id"
           class="text-xs"
           :value="tab.id"
         >
           <div class="flex gap-2 items-center">
             <span :title="tab.label">
-              {{ tab.label.split('/').at(-1) }}
+              {{ tab.label }}
             </span>
-            <X class="h-4 w-4" @click.stop="editorTabs.close(tab.id)"></X>
+            <X class="h-4 w-4" @click.stop="processTabs.close(tab.id)"></X>
           </div>
         </TabsTrigger>
       </TabsList>
     </div>
     <TabsContent
       class="flex-grow max-h-full mt-0 overflow-hidden"
-      :value="editorTabs.current.value?.id ?? ''"
+      :value="processTabs.current.value?.id ?? ''"
     >
-      <KeepAlive>
-        <KrgzEditor
-          :key="editorTabs.current.value?.id"
-          :path="editorTabs.current.value?.id"
+      <KeepAlive v-for="tab in tabs" :key="tab.id">
+        <KrgzProcess
+          v-if="tab.id === processTabs.current.value?.id"
+          :tab="tab"
         />
       </KeepAlive>
     </TabsContent>

@@ -9,7 +9,7 @@ export type EventType =
 
 export type ErrorListenerParams = {
   container?: WebContainer
-  error: { message: string }
+  error: { message: string; context?: unknown }
 }
 
 export type InitListenerParams = {

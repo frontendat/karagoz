@@ -8,6 +8,7 @@ import { computed, ref, toRef } from 'vue'
 
 import { injectWebContainer } from '../utils/WebContainer.ts'
 import { useKaragozSandboxEvents } from './useKaragozSandboxEvents.ts'
+import { useKaragozSandboxProcessTabs } from './useKaragozSandboxProcessTabs.ts'
 import { useKaragozSandboxTabs } from './useKaragozSandboxTabs.ts'
 
 function useKaragozSandboxInternal() {
@@ -25,6 +26,7 @@ function useKaragozSandboxInternal() {
 
   const { bootstrap, bus, off, on, once } = useKaragozSandboxEvents()
   const editorTabs = useKaragozSandboxTabs()
+  const processTabs = useKaragozSandboxProcessTabs(container)
 
   // instance handling
 
@@ -32,25 +34,17 @@ function useKaragozSandboxInternal() {
 
   on('serverReady', ({ url }) => (previewUrl.value = url))
 
-  const installDeps = async () => {
-    const installProcess = await container.spawn('npm', ['install'])
-    if (!installProcess) {
-      bus.error.trigger({
-        container,
-        error: { message: 'Install process did not start.' },
-      })
-      return -1
-    }
-    runningProcesses.set(processKeys.install, installProcess)
-    installProcess.output.pipeTo(
-      new WritableStream({
-        write(data) {
-          console.log(data)
-        },
-      }),
-    )
-    return installProcess.exit
-  }
+  const installDeps = () =>
+    processTabs.open('npm install', 'Install', {
+      command: 'npm',
+      args: ['install'],
+    })
+
+  const startDevServer = async () =>
+    processTabs.open('npm run start', 'Dev Server', {
+      command: 'npm',
+      args: ['start'],
+    })
 
   const mount = async (
     snapshotOrTree: FileSystemTree | Uint8Array | ArrayBuffer,
@@ -78,21 +72,6 @@ function useKaragozSandboxInternal() {
     }
   }
 
-  const startDevServer = async () => {
-    const devServerProcess = await container.spawn('npm', ['run', 'start'])
-    if (!devServerProcess) {
-      return
-    }
-    runningProcesses.set(processKeys.devServer, devServerProcess)
-    devServerProcess.output.pipeTo(
-      new WritableStream({
-        write(data) {
-          console.log(data)
-        },
-      }),
-    )
-  }
-
   const reloadPreview = () => {
     if (previewFrame.value) {
       wcReloadPreview(previewFrame.value)
@@ -109,6 +88,7 @@ function useKaragozSandboxInternal() {
     once,
     previewFrame,
     previewUrl: toRef(computed(() => previewUrl.value ?? '')),
+    processTabs,
     reloadPreview,
     startDevServer,
   }

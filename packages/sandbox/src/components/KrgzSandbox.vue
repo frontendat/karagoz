@@ -13,6 +13,7 @@ import KrgzEditorTabs from './KrgzEditorTabs.vue'
 import KrgzExplorer from './KrgzExplorer.vue'
 import KrgzPanelToggle from './KrgzPanelToggle.vue'
 import KrgzPreview from './KrgzPreview.vue'
+import KrgzProcessTabs from './KrgzProcessTabs.vue'
 
 const panels = ['code', 'processes', 'result', 'terminal'] as const
 
@@ -25,7 +26,7 @@ const shownPanelsModel = defineModel<Panel[] | undefined>('shownPanels')
 
 const [shownPanels, setShownPanels] = useControlledModel<Panel[]>(
   shownPanelsModel,
-  ['code', 'result'],
+  ['code', 'processes', 'result'],
 )
 
 const togglePanel = (panel: Panel) => {
@@ -140,7 +141,9 @@ const isRowDividerShown = computed(() => {
               with-handle
             />
             <ResizablePanel v-if="isShown.processes" :default-size="50">
-              <slot name="processes"> processes will be shown here </slot>
+              <slot name="processes">
+                <KrgzProcessTabs />
+              </slot>
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>

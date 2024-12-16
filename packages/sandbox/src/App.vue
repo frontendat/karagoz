@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FileSystemTree, WebContainer } from '@webcontainer/api'
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 
 import KrgzSandbox from './components/KrgzSandbox.vue'
 import { useKaragozSandbox } from './composables/useKaragozSandbox.ts'
@@ -80,7 +80,13 @@ provideWebContainer(await WebContainer.boot())
 
 const sandbox = useKaragozSandbox()
 
-sandbox.mount(tree.value, { shouldReinstall: true })
+sandbox.mount(tree.value, { shouldReinstall: false })
+
+onMounted(async () => {
+  await sandbox.installDeps()
+  await sandbox.processTabs.findTab('npm install')?.context?.process?.exit
+  await sandbox.startDevServer()
+})
 </script>
 
 <template>
