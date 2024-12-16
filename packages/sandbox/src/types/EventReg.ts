@@ -1,31 +1,26 @@
 import {
-  KaragozSandErrorListenerParams,
-  KaragozSandFileListenerParams,
-  KaragozSandFileTreeChangeListenerParams,
-  KaragozSandInitListenerParams,
-  KaragozSandPortListenerParams,
+  KaragozSandboxErrorListenerParams,
+  KaragozSandboxFileTreeChangeListenerParams,
+  KaragozSandboxInitListenerParams,
+  KaragozSandboxPortListenerParams,
   KaragozSandServerReadyListenerParams,
 } from './Events.ts'
 
 declare function eventReg(
   event: 'error',
-  listener: (params: KaragozSandErrorListenerParams) => void,
-): void
-declare function eventReg(
-  event: 'file',
-  listener: (params: KaragozSandFileListenerParams) => void,
+  listener: (params: KaragozSandboxErrorListenerParams) => void,
 ): void
 declare function eventReg(
   event: 'fileTreeChange',
-  listener: (params: KaragozSandFileTreeChangeListenerParams) => void,
+  listener: (params: KaragozSandboxFileTreeChangeListenerParams) => void,
 ): void
 declare function eventReg(
   event: 'init',
-  listener: (params: KaragozSandInitListenerParams) => void,
+  listener: (params: KaragozSandboxInitListenerParams) => void,
 ): void
 declare function eventReg(
   event: 'port',
-  listener: (params: KaragozSandPortListenerParams) => void,
+  listener: (params: KaragozSandboxPortListenerParams) => void,
 ): void
 declare function eventReg(
   event: 'serverReady',

@@ -49,7 +49,7 @@ onUnmounted(() => {
       :depth="depth"
       :path="path"
       :entity="entity"
-      @file-click="sandbox.fileOpen($event)"
+      @file-click="sandbox.editorTabs.open($event)"
     ></KrgzExplorerEntity>
   </ul>
 </template>

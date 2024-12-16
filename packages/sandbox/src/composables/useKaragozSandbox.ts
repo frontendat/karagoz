@@ -6,7 +6,6 @@ import {
 } from '@webcontainer/api'
 import { computed, ref, toRef } from 'vue'
 
-import type { KaragozSandFileListenerParams } from '../types'
 import { injectWebContainer } from '../utils/WebContainer.ts'
 import { useKaragozSandboxEvents } from './useKaragozSandboxEvents.ts'
 import { useKaragozSandboxTabs } from './useKaragozSandboxTabs.ts'
@@ -24,44 +23,14 @@ function useKaragozSandboxInternal() {
   const previewFrame = ref<HTMLIFrameElement>()
   const previewUrl = ref<string>()
 
-  const { bus, off, on, once } = useKaragozSandboxEvents()
-
-  const { tabs, latestTab, handleFileEvent } = useKaragozSandboxTabs()
-  on('file', handleFileEvent)
+  const { bootstrap, bus, off, on, once } = useKaragozSandboxEvents()
+  const editorTabs = useKaragozSandboxTabs()
 
   // instance handling
 
-  const bindDefaultEvents = () => {
-    // bind event handlers
-    container.on('error', (error) =>
-      bus.error.trigger({
-        container,
-        error,
-      }),
-    )
-    container.on('port', (port, type, url) =>
-      bus.port.trigger({
-        container,
-        port,
-        type,
-        url,
-      }),
-    )
-    container.on('server-ready', (port, url) => {
-      console.log(url)
-      previewUrl.value = url
-      bus.serverReady.trigger({
-        container,
-        url,
-        port,
-      })
-    })
-    // trigger init event
-    bus.init.trigger({
-      container,
-    })
-  }
-  bindDefaultEvents()
+  bootstrap(container)
+
+  on('serverReady', ({ url }) => (previewUrl.value = url))
 
   const installDeps = async () => {
     const installProcess = await container.spawn('npm', ['install'])
@@ -130,20 +99,10 @@ function useKaragozSandboxInternal() {
     }
   }
 
-  const triggerFileOperation =
-    (operation: KaragozSandFileListenerParams['operation']) => (path: string) =>
-      bus.file.trigger({
-        container,
-        operation,
-        path,
-      })
-
   return {
     container: () => container,
-    fileClose: triggerFileOperation('close'),
-    fileOpen: triggerFileOperation('open'),
+    editorTabs,
     installDeps,
-    latestTab,
     mount,
     off,
     on,
@@ -152,7 +111,6 @@ function useKaragozSandboxInternal() {
     previewUrl: toRef(computed(() => previewUrl.value ?? '')),
     reloadPreview,
     startDevServer,
-    tabs,
   }
 }
 

@@ -6,11 +6,11 @@ import { type ComponentPublicInstance, nextTick, ref, watch } from 'vue'
 import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
 import KrgzEditor from './KrgzEditor.vue'
 
-const sandbox = useKaragozSandbox()
+const { editorTabs } = useKaragozSandbox()
 const tabList = ref<ComponentPublicInstance<InstanceType<typeof TabsList>>>()
 
 watch(
-  () => sandbox.latestTab.value,
+  () => editorTabs.current.value,
   async () => {
     await nextTick()
     // bring active tab trigger into view
@@ -21,36 +21,36 @@ watch(
 
 <template>
   <Tabs
-    v-if="sandbox.tabs.value.length"
+    v-if="editorTabs.tabs.value.length"
     class="h-full flex flex-col"
-    :model-value="sandbox.latestTab.value?.path"
-    @update:model-value="sandbox.fileOpen($event)"
+    :model-value="editorTabs.current.value?.id"
+    @update:model-value="editorTabs.open($event)"
   >
     <div class="max-w-full min-h-min overflow-x-auto tabs">
       <TabsList ref="tabList">
         <TabsTrigger
-          v-for="tab in sandbox.tabs.value"
-          :key="tab.path"
+          v-for="tab in editorTabs.tabs.value"
+          :key="tab.id"
           class="text-xs"
-          :value="tab.path"
+          :value="tab.id"
         >
           <div class="flex gap-2 items-center">
-            <span :title="tab.path">
-              {{ tab.path.split('/').at(-1) }}
+            <span :title="tab.id">
+              {{ tab.id.split('/').at(-1) }}
             </span>
-            <X class="h-4 w-4" @click.stop="sandbox.fileClose(tab.path)"></X>
+            <X class="h-4 w-4" @click.stop="editorTabs.close(tab.id)"></X>
           </div>
         </TabsTrigger>
       </TabsList>
     </div>
     <TabsContent
-      class="flex-grow max-h-full mt-0"
-      :value="sandbox.latestTab.value?.path ?? ''"
+      class="flex-grow max-h-full mt-0 overflow-hidden"
+      :value="editorTabs.current.value?.id ?? ''"
     >
       <KeepAlive>
         <KrgzEditor
-          :key="sandbox.latestTab.value?.path"
-          :path="sandbox.latestTab.value?.path"
+          :key="editorTabs.current.value?.id"
+          :path="editorTabs.current.value?.id"
         />
       </KeepAlive>
     </TabsContent>

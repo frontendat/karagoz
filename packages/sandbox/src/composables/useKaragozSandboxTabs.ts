@@ -1,12 +1,9 @@
-import { computed, ref } from 'vue'
+import { computed, Ref, ref } from 'vue'
 
-import type {
-  KaragozSandboxEditorTab,
-  KaragozSandFileListenerParams,
-} from '../types'
+import type { KaragozSandboxTab } from '../types'
 
-export const useKaragozSandboxTabs = () => {
-  const tabs = ref<KaragozSandboxEditorTab[]>([])
+export const useKaragozSandboxTabs = <T = undefined>() => {
+  const tabs: Ref<KaragozSandboxTab<T>[]> = ref([])
 
   const maxOrder = computed(() =>
     tabs.value.length
@@ -17,33 +14,39 @@ export const useKaragozSandboxTabs = () => {
       : 0,
   )
 
-  const latestTab = computed(() =>
+  const current = computed(() =>
     tabs.value.find(({ order }) => order === maxOrder.value),
   )
 
-  const handleFileEvent = ({
-    operation,
-    path,
-  }: KaragozSandFileListenerParams) => {
-    const index = tabs.value.findIndex((f) => path === f.path)
-    if (operation === 'open') {
-      if (index === -1) {
-        tabs.value.push({
-          order: maxOrder.value + 1,
-          path,
-        })
-      } else if (tabs.value[index].order !== maxOrder.value) {
-        tabs.value[index].order = maxOrder.value + 1
+  const close = (id: string) => {
+    const index = tabs.value.findIndex((f) => id === f.id)
+    if (index === -1) return
+    tabs.value.splice(index, 1)
+  }
+
+  const open = (
+    id: string,
+    label?: string,
+    context?: KaragozSandboxTab<T>['context'],
+  ) => {
+    const index = tabs.value.findIndex((f) => id === f.id)
+    if (index === -1) {
+      const newTab: KaragozSandboxTab<T> = {
+        id,
+        label: label ?? id,
+        order: maxOrder.value + 1,
+        context,
       }
-    } else {
-      if (index === -1) return
-      tabs.value.splice(index, 1)
+      tabs.value.push(newTab)
+    } else if (tabs.value[index].order !== maxOrder.value) {
+      tabs.value[index].order = maxOrder.value + 1
     }
   }
 
   return {
-    handleFileEvent,
-    latestTab,
+    close,
+    current,
+    open,
     tabs: computed(() => tabs.value),
   }
 }

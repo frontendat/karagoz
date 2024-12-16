@@ -2,32 +2,25 @@ import type { WebContainer } from '@webcontainer/api'
 
 export type KaragozSandboxEvents =
   | 'error'
-  | 'file'
   | 'fileTreeChange'
   | 'init'
   | 'port'
   | 'serverReady'
 
-export type KaragozSandErrorListenerParams = {
+export type KaragozSandboxErrorListenerParams = {
   container?: WebContainer
   error: { message: string }
 }
 
-export type KaragozSandFileListenerParams = {
-  container?: WebContainer
-  operation: 'open' | 'close'
-  path: string
-}
-
-export type KaragozSandInitListenerParams = {
+export type KaragozSandboxInitListenerParams = {
   container: WebContainer
 }
 
-export type KaragozSandFileTreeChangeListenerParams = {
+export type KaragozSandboxFileTreeChangeListenerParams = {
   container: WebContainer
 }
 
-export type KaragozSandPortListenerParams = {
+export type KaragozSandboxPortListenerParams = {
   container: WebContainer
   port: number
   type: 'open' | 'close'
@@ -41,11 +34,10 @@ export type KaragozSandServerReadyListenerParams = {
 }
 
 export type KaragozSandEventListenerParams =
-  | KaragozSandErrorListenerParams
-  | KaragozSandFileListenerParams
-  | KaragozSandFileTreeChangeListenerParams
-  | KaragozSandInitListenerParams
-  | KaragozSandPortListenerParams
+  | KaragozSandboxErrorListenerParams
+  | KaragozSandboxFileTreeChangeListenerParams
+  | KaragozSandboxInitListenerParams
+  | KaragozSandboxPortListenerParams
   | KaragozSandServerReadyListenerParams
 
 export type KaragozSandEventListener = (

@@ -1,31 +1,30 @@
 import { createEventHook, type EventHook } from '@vueuse/core'
+import { WebContainer } from '@webcontainer/api'
 
 import type {
-  KaragozSandErrorListenerParams,
+  KaragozSandboxErrorListenerParams,
+  KaragozSandboxFileTreeChangeListenerParams,
+  KaragozSandboxInitListenerParams,
+  KaragozSandboxPortListenerParams,
   KaragozSandEventListener,
   KaragozSandEventListenerParams,
   KaragozSandEventReg,
-  KaragozSandFileListenerParams,
-  KaragozSandFileTreeChangeListenerParams,
-  KaragozSandInitListenerParams,
-  KaragozSandPortListenerParams,
   KaragozSandServerReadyListenerParams,
 } from '../types'
 
 export const useKaragozSandboxEvents = () => {
   const bus: {
-    init: EventHook<KaragozSandInitListenerParams>
-    file: EventHook<KaragozSandFileListenerParams>
-    port: EventHook<KaragozSandPortListenerParams>
-    fileTreeChange: EventHook<KaragozSandFileTreeChangeListenerParams>
+    init: EventHook<KaragozSandboxInitListenerParams>
+    port: EventHook<KaragozSandboxPortListenerParams>
+    fileTreeChange: EventHook<KaragozSandboxFileTreeChangeListenerParams>
     serverReady: EventHook<KaragozSandServerReadyListenerParams>
-    error: EventHook<KaragozSandErrorListenerParams>
+    error: EventHook<KaragozSandboxErrorListenerParams>
   } = {
-    error: createEventHook<KaragozSandErrorListenerParams>(),
-    file: createEventHook<KaragozSandFileListenerParams>(),
-    init: createEventHook<KaragozSandInitListenerParams>(),
-    fileTreeChange: createEventHook<KaragozSandFileTreeChangeListenerParams>(),
-    port: createEventHook<KaragozSandPortListenerParams>(),
+    error: createEventHook<KaragozSandboxErrorListenerParams>(),
+    init: createEventHook<KaragozSandboxInitListenerParams>(),
+    fileTreeChange:
+      createEventHook<KaragozSandboxFileTreeChangeListenerParams>(),
+    port: createEventHook<KaragozSandboxPortListenerParams>(),
     serverReady: createEventHook<KaragozSandServerReadyListenerParams>(),
   }
 
@@ -43,7 +42,37 @@ export const useKaragozSandboxEvents = () => {
     bus[event].on(onceListener)
   }) as KaragozSandEventReg
 
+  const bootstrap = (container: WebContainer) => {
+    // bind event handlers
+    container.on('error', (error) =>
+      bus.error.trigger({
+        container,
+        error,
+      }),
+    )
+    container.on('port', (port, type, url) =>
+      bus.port.trigger({
+        container,
+        port,
+        type,
+        url,
+      }),
+    )
+    container.on('server-ready', (port, url) => {
+      bus.serverReady.trigger({
+        container,
+        url,
+        port,
+      })
+    })
+    // trigger init event
+    bus.init.trigger({
+      container,
+    })
+  }
+
   return {
+    bootstrap,
     bus,
     off,
     on,
