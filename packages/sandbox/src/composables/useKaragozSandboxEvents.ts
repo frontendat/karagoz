@@ -1,31 +1,40 @@
 import { createEventHook, type EventHook } from '@vueuse/core'
 import { WebContainer } from '@webcontainer/api'
 
-import type { EventReg, Events } from '../types'
+import type {
+  ErrorListenerParams,
+  EventListener,
+  EventListenerParams,
+  EventReg,
+  FileTreeChangeListenerParams,
+  InitListenerParams,
+  PortListenerParams,
+  ServerReadyListenerParams,
+} from '../types'
 
 export const useKaragozSandboxEvents = () => {
   const bus: {
-    init: EventHook<Events.InitListenerParams>
-    port: EventHook<Events.PortListenerParams>
-    fileTreeChange: EventHook<Events.FileTreeChangeListenerParams>
-    serverReady: EventHook<Events.ServerReadyListenerParams>
-    error: EventHook<Events.ErrorListenerParams>
+    init: EventHook<InitListenerParams>
+    port: EventHook<PortListenerParams>
+    fileTreeChange: EventHook<FileTreeChangeListenerParams>
+    serverReady: EventHook<ServerReadyListenerParams>
+    error: EventHook<ErrorListenerParams>
   } = {
-    error: createEventHook<Events.ErrorListenerParams>(),
-    init: createEventHook<Events.InitListenerParams>(),
-    fileTreeChange: createEventHook<Events.FileTreeChangeListenerParams>(),
-    port: createEventHook<Events.PortListenerParams>(),
-    serverReady: createEventHook<Events.ServerReadyListenerParams>(),
+    error: createEventHook<ErrorListenerParams>(),
+    init: createEventHook<InitListenerParams>(),
+    fileTreeChange: createEventHook<FileTreeChangeListenerParams>(),
+    port: createEventHook<PortListenerParams>(),
+    serverReady: createEventHook<ServerReadyListenerParams>(),
   }
 
-  const off = ((event, listener: Events.EventListener) =>
+  const off = ((event, listener: EventListener) =>
     bus[event].off(listener)) as EventReg
 
-  const on = ((event, listener: Events.EventListener) =>
+  const on = ((event, listener: EventListener) =>
     bus[event].on(listener)) as EventReg
 
-  const once = ((event, listener: Events.EventListener) => {
-    const onceListener = (params: Events.EventListenerParams) => {
+  const once = ((event, listener: EventListener) => {
+    const onceListener = (params: EventListenerParams) => {
       listener(params)
       bus[event].off(onceListener)
     }
