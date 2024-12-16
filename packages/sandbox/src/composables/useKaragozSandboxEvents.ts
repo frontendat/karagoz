@@ -1,46 +1,36 @@
 import { createEventHook, type EventHook } from '@vueuse/core'
 import { WebContainer } from '@webcontainer/api'
 
-import type {
-  KaragozSandboxErrorListenerParams,
-  KaragozSandboxFileTreeChangeListenerParams,
-  KaragozSandboxInitListenerParams,
-  KaragozSandboxPortListenerParams,
-  KaragozSandEventListener,
-  KaragozSandEventListenerParams,
-  KaragozSandEventReg,
-  KaragozSandServerReadyListenerParams,
-} from '../types'
+import type { EventReg, Events } from '../types'
 
 export const useKaragozSandboxEvents = () => {
   const bus: {
-    init: EventHook<KaragozSandboxInitListenerParams>
-    port: EventHook<KaragozSandboxPortListenerParams>
-    fileTreeChange: EventHook<KaragozSandboxFileTreeChangeListenerParams>
-    serverReady: EventHook<KaragozSandServerReadyListenerParams>
-    error: EventHook<KaragozSandboxErrorListenerParams>
+    init: EventHook<Events.InitListenerParams>
+    port: EventHook<Events.PortListenerParams>
+    fileTreeChange: EventHook<Events.FileTreeChangeListenerParams>
+    serverReady: EventHook<Events.ServerReadyListenerParams>
+    error: EventHook<Events.ErrorListenerParams>
   } = {
-    error: createEventHook<KaragozSandboxErrorListenerParams>(),
-    init: createEventHook<KaragozSandboxInitListenerParams>(),
-    fileTreeChange:
-      createEventHook<KaragozSandboxFileTreeChangeListenerParams>(),
-    port: createEventHook<KaragozSandboxPortListenerParams>(),
-    serverReady: createEventHook<KaragozSandServerReadyListenerParams>(),
+    error: createEventHook<Events.ErrorListenerParams>(),
+    init: createEventHook<Events.InitListenerParams>(),
+    fileTreeChange: createEventHook<Events.FileTreeChangeListenerParams>(),
+    port: createEventHook<Events.PortListenerParams>(),
+    serverReady: createEventHook<Events.ServerReadyListenerParams>(),
   }
 
-  const off = ((event, listener: KaragozSandEventListener) =>
-    bus[event].off(listener)) as KaragozSandEventReg
+  const off = ((event, listener: Events.EventListener) =>
+    bus[event].off(listener)) as EventReg
 
-  const on = ((event, listener: KaragozSandEventListener) =>
-    bus[event].on(listener)) as KaragozSandEventReg
+  const on = ((event, listener: Events.EventListener) =>
+    bus[event].on(listener)) as EventReg
 
-  const once = ((event, listener: KaragozSandEventListener) => {
-    const onceListener = (params: KaragozSandEventListenerParams) => {
+  const once = ((event, listener: Events.EventListener) => {
+    const onceListener = (params: Events.EventListenerParams) => {
       listener(params)
       bus[event].off(onceListener)
     }
     bus[event].on(onceListener)
-  }) as KaragozSandEventReg
+  }) as EventReg
 
   const bootstrap = (container: WebContainer) => {
     // bind event handlers

@@ -1,9 +1,9 @@
 import { computed, Ref, ref } from 'vue'
 
-import type { KaragozSandboxTab } from '../types'
+import type { Tabs } from '../types'
 
 export const useKaragozSandboxTabs = <T = undefined>() => {
-  const tabs: Ref<KaragozSandboxTab<T>[]> = ref([])
+  const tabs: Ref<Tabs.Tab<T>[]> = ref([])
 
   const maxOrder = computed(() =>
     tabs.value.length
@@ -27,11 +27,11 @@ export const useKaragozSandboxTabs = <T = undefined>() => {
   const open = (
     id: string,
     label?: string,
-    context?: KaragozSandboxTab<T>['context'],
+    context?: Tabs.Tab<T>['context'],
   ) => {
     const index = tabs.value.findIndex((f) => id === f.id)
     if (index === -1) {
-      const newTab: KaragozSandboxTab<T> = {
+      const newTab: Tabs.Tab<T> = {
         id,
         label: label ?? id,
         order: maxOrder.value + 1,
