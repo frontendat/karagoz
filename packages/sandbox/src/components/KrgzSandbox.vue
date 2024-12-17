@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import {
+  LoadingIndicator,
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
   ScrollArea,
   useControlledModel,
 } from '@karagoz/shared'
-import { Code, Eye, Play, TerminalSquare } from 'lucide-vue-next'
+import { Eye, FileCode, Play, TerminalSquare } from 'lucide-vue-next'
 import { computed } from 'vue'
 
 import KrgzEditorTabs from './KrgzEditorTabs.vue'
@@ -18,6 +19,10 @@ import KrgzProcessTabs from './KrgzProcessTabs.vue'
 const panels = ['code', 'processes', 'result', 'terminal'] as const
 
 type Panel = (typeof panels)[number]
+
+defineProps<{
+  loading?: boolean
+}>()
 
 const availablePanels = defineModel<Panel[]>('availablePanels', {
   default: ['code', 'processes', 'result', 'terminal'],
@@ -70,7 +75,7 @@ const isRowDividerShown = computed(() => {
           :pressed="shownPanels.includes('code')"
           @press="togglePanel('code')"
         >
-          <Code class="size-5" />
+          <FileCode class="size-5" />
         </KrgzPanelToggle>
       </nav>
       <nav v-if="isAvailable.result" class="mt-auto grid gap-1 p-2">
@@ -99,26 +104,35 @@ const isRowDividerShown = computed(() => {
             direction="horizontal"
           >
             <template v-if="isShown.code">
-              <ResizablePanel :default-size="20">
-                <slot name="explorer">
-                  <ScrollArea class="h-full overflow-auto">
-                    <KrgzExplorer />
-                  </ScrollArea>
-                </slot>
-              </ResizablePanel>
-              <ResizableHandle with-handle />
-              <ResizablePanel :default-size="40">
-                <slot name="editor">
-                  <KrgzEditorTabs />
-                </slot>
+              <ResizablePanel :default-size="50">
+                <ResizablePanelGroup
+                  auto-save-id="krgz-sandbox-editor"
+                  direction="horizontal"
+                >
+                  <ResizablePanel :default-size="30">
+                    <slot name="explorer">
+                      <ScrollArea class="h-full overflow-auto">
+                        <KrgzExplorer />
+                      </ScrollArea>
+                    </slot>
+                  </ResizablePanel>
+                  <ResizableHandle with-handle />
+                  <ResizablePanel :default-size="70">
+                    <slot name="editor">
+                      <KrgzEditorTabs />
+                    </slot>
+                  </ResizablePanel>
+                </ResizablePanelGroup>
               </ResizablePanel>
             </template>
             <ResizableHandle
               v-if="isShown.code && isShown.terminal"
               with-handle
             />
-            <ResizablePanel v-if="isShown.terminal" :default-size="40">
-              <slot name="terminal"> terminal will be shown here </slot>
+            <ResizablePanel v-if="isShown.terminal" :default-size="50">
+              <slot name="terminal">
+                <KrgzProcessTabs mode="terminal" />
+              </slot>
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>
@@ -142,7 +156,7 @@ const isRowDividerShown = computed(() => {
             />
             <ResizablePanel v-if="isShown.processes" :default-size="50">
               <slot name="processes">
-                <KrgzProcessTabs />
+                <KrgzProcessTabs mode="process" />
               </slot>
             </ResizablePanel>
           </ResizablePanelGroup>

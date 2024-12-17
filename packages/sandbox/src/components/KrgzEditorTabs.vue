@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@karagoz/shared'
-import { X } from 'lucide-vue-next'
+import {
+  LoadingIndicator,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@karagoz/shared'
+import { FileCode, X } from 'lucide-vue-next'
 import { type ComponentPublicInstance, nextTick, ref, watch } from 'vue'
 
 import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
@@ -55,7 +61,14 @@ watch(
       </KeepAlive>
     </TabsContent>
   </Tabs>
-  <div v-else>Please select a file</div>
+  <LoadingIndicator
+    v-else
+    label="Open a file to start editing"
+    suppress-spinner
+    variant="secondary"
+  >
+    <FileCode class="size-12" />
+  </LoadingIndicator>
 </template>
 
 <style scoped>

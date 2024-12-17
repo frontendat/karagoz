@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { LoadingIndicator } from '@karagoz/shared'
 import type { DirEnt, WebContainer } from '@webcontainer/api'
+import { FileCode } from 'lucide-vue-next'
 import { onMounted, onUnmounted, ref } from 'vue'
 
 import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
@@ -42,7 +44,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <ul v-if="dirEnts" class="text-xs">
+  <ul v-if="dirEnts.length" class="text-xs">
     <KrgzExplorerEntity
       v-for="entity in dirEnts"
       :key="entity.name"
@@ -52,4 +54,8 @@ onUnmounted(() => {
       @file-click="sandbox.editorTabs.open($event)"
     ></KrgzExplorerEntity>
   </ul>
+  <LoadingIndicator
+    v-if="depth === 1 && !dirEnts.length"
+    label="Files loading..."
+  />
 </template>

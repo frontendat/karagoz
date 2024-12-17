@@ -51,7 +51,6 @@ const onClick = () => {
 <template>
   <li class="krgz-explorer-entity" :style="{ '--krgz-depth': depth }">
     <a class="krgz-explorer-entity-header" @click="onClick">
-      <span class="krgz-explorer-entity-toggle" :class="toggleClass"></span>
       <span class="krgz-explorer-entity-icon" :class="iconClass"></span>
       <span class="krgz-explorer-entity-name" :title="entity.name">{{
         entity.name
@@ -78,23 +77,6 @@ const onClick = () => {
   .krgz-explorer-entity-header:focus,
   .krgz-explorer-entity-header:hover {
     background: #eee;
-  }
-
-  .krgz-explorer-entity-toggle {
-    box-sizing: border-box;
-    height: 5px;
-    width: 5px;
-  }
-  .krgz-explorer-entity-toggle:where(:not(.as-file)) {
-    border: solid #000;
-    border-width: 1px 1px 0 0;
-    transform-origin: center center;
-  }
-  .krgz-explorer-entity-toggle:where(.as-collapsed) {
-    transform: rotateZ(45deg);
-  }
-  .krgz-explorer-entity-toggle:where(.as-expanded) {
-    transform: rotateZ(135deg);
   }
 
   .krgz-explorer-entity-icon:where(.as-file)::before {

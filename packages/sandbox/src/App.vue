@@ -86,6 +86,10 @@ onMounted(async () => {
   await sandbox.installDeps()
   await sandbox.processTabs.findTab('npm install')?.context?.process?.exit
   await sandbox.startDevServer()
+  await sandbox.processTabs.open('jsh', 'Terminal', {
+    command: 'jsh',
+    isTerminal: true,
+  })
 })
 </script>
 

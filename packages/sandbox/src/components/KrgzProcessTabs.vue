@@ -1,6 +1,12 @@
 <script setup lang="ts">
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@karagoz/shared'
-import { X } from 'lucide-vue-next'
+import {
+  LoadingIndicator,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from '@karagoz/shared'
+import { Play, TerminalSquare, X } from 'lucide-vue-next'
 import {
   type ComponentPublicInstance,
   computed,
@@ -12,9 +18,30 @@ import {
 import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
 import KrgzProcess from './KrgzProcess.vue'
 
+const props = defineProps<{
+  mode: 'process' | 'terminal'
+}>()
+
 const { processTabs } = useKaragozSandbox()
 const tabs = computed(() => processTabs.tabs.value)
 const tabList = ref<ComponentPublicInstance<InstanceType<typeof TabsList>>>()
+
+const tabsToRender = computed(() =>
+  tabs.value.filter(
+    ({ context }) =>
+      (props.mode === 'process' && !context?.isTerminal) ||
+      (props.mode === 'terminal' && context?.isTerminal),
+  ),
+)
+
+const currentId = computed(() =>
+  tabsToRender.value.length
+    ? Math.max.apply(
+        undefined,
+        tabsToRender.value.map(({ order }) => order),
+      )
+    : -1,
+)
 
 watch(
   () => processTabs.current.value,
@@ -28,7 +55,7 @@ watch(
 
 <template>
   <Tabs
-    v-if="processTabs.tabs.value.length"
+    v-if="tabsToRender.length"
     class="h-full flex flex-col"
     :model-value="processTabs.current.value?.id"
     @update:model-value="processTabs.open($event)"
@@ -36,7 +63,7 @@ watch(
     <div class="max-w-full min-h-min overflow-x-auto tabs">
       <TabsList ref="tabList">
         <TabsTrigger
-          v-for="tab in processTabs.tabs.value"
+          v-for="tab in tabsToRender"
           :key="tab.id"
           class="text-xs"
           :value="tab.id"
@@ -54,15 +81,24 @@ watch(
       class="flex-grow max-h-full mt-0 overflow-hidden"
       :value="processTabs.current.value?.id ?? ''"
     >
-      <template v-for="tab in tabs" :key="tab.id">
-        <KrgzProcess
-          v-if="tab.id === processTabs.current.value?.id"
-          :tab="tab"
-        />
+      <template v-for="tab in tabsToRender" :key="tab.id">
+        <KrgzProcess v-if="tab.order === currentId" :tab="tab" />
       </template>
     </TabsContent>
   </Tabs>
-  <div v-else>Please select a file</div>
+  <LoadingIndicator
+    v-else
+    :label="
+      mode === 'process'
+        ? 'There are no running processes'
+        : 'There are no available terminals'
+    "
+    suppress-spinner
+    variant="secondary"
+  >
+    <Play v-if="mode === 'process'" class="size-12" />
+    <TerminalSquare v-if="mode === 'terminal'" class="size-12" />
+  </LoadingIndicator>
 </template>
 
 <style scoped>
