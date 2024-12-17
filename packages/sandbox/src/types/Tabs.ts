@@ -10,11 +10,15 @@ export type Tab<T = undefined> = {
 export type ProcessTabContext = {
   args?: string[]
   canClose?: boolean
+  canInput?: boolean
   canRestart?: boolean
   canStop?: boolean
   command: string
+  exitCode?: number
   isHidden?: boolean
-  isFinished?: boolean
   isTerminal?: boolean
+  logs?: string[]
   process?: WebContainerProcess
+  processInputHandler?: (chunk?: string | undefined) => Promise<void>
+  processOutputHandler?: (data: string) => void
 }

@@ -45,12 +45,12 @@ export const useKaragozSandboxTabs = <T = undefined>() => {
     }
   }
 
-  const updateContext = (
-    id: string,
-    setter: (ctx: Tab<T>['context']) => Tab<T>['context'],
-  ) => {
+  const updateContext = (id: string, setter: (ctx: T) => T) => {
     const index = findTabIndex(id)
-    tabs.value[index].context = setter(tabs.value[index].context)
+    const context = tabs.value[index]?.context
+    if (context !== undefined) {
+      tabs.value[index].context = setter(context)
+    }
   }
 
   return {

@@ -54,12 +54,12 @@ watch(
       class="flex-grow max-h-full mt-0 overflow-hidden"
       :value="processTabs.current.value?.id ?? ''"
     >
-      <KeepAlive v-for="tab in tabs" :key="tab.id">
+      <template v-for="tab in tabs" :key="tab.id">
         <KrgzProcess
           v-if="tab.id === processTabs.current.value?.id"
           :tab="tab"
         />
-      </KeepAlive>
+      </template>
     </TabsContent>
   </Tabs>
   <div v-else>Please select a file</div>
