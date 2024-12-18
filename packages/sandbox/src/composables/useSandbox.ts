@@ -1,22 +1,24 @@
-import { createSharedComposable } from '@vueuse/core'
+import { asyncComputed, createSharedComposable } from '@vueuse/core'
 import { reloadPreview as wcReloadPreview } from '@webcontainer/api'
 import { computed, ref, toRef } from 'vue'
 
 import { injectWebContainer } from '../utils/WebContainer.ts'
-import { useKaragozSandboxProcessTabs } from './useKaragozSandboxProcessTabs.ts'
-import { useKaragozSandboxTabs } from './useKaragozSandboxTabs.ts'
+import { useSandboxProcessTabs } from './useSandboxProcessTabs.ts'
+import { useSandboxTabs } from './useSandboxTabs.ts'
 
-function useKaragozSandboxInternal() {
-  const container = injectWebContainer()
+function useSandboxInternal() {
+  const container = asyncComputed(async () => {
+    const c = await injectWebContainer()
+    c.on('server-ready', (_, url) => (previewUrl.value = url))
+    return c
+  }, null)
   const previewFrame = ref<HTMLIFrameElement>()
   const previewUrl = ref<string>()
 
-  const editorTabs = useKaragozSandboxTabs()
-  const processTabs = useKaragozSandboxProcessTabs(container)
+  const editorTabs = useSandboxTabs()
+  const processTabs = useSandboxProcessTabs()
 
   // instance handling
-
-  container.on('server-ready', (_, url) => (previewUrl.value = url))
 
   const installDeps = () =>
     processTabs.open('npm install', 'Install', {
@@ -37,7 +39,7 @@ function useKaragozSandboxInternal() {
   }
 
   return {
-    container: () => container,
+    container: computed(() => container.value),
     editorTabs,
     installDeps,
     previewFrame,
@@ -48,6 +50,4 @@ function useKaragozSandboxInternal() {
   }
 }
 
-export const useKaragozSandbox = createSharedComposable(
-  useKaragozSandboxInternal,
-)
+export const useSandbox = createSharedComposable(useSandboxInternal)

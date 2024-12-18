@@ -6,7 +6,7 @@ import { FitAddon } from '@xterm/addon-fit'
 import { Terminal } from '@xterm/xterm'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
+import { useSandbox } from '../composables/useSandbox.ts'
 import { ProcessTabContext, Tab } from '../types'
 import { xtermDarkTheme, xtermLightTheme } from '../utils/xterm.ts'
 
@@ -14,7 +14,7 @@ const props = defineProps<{
   tab: Tab<ProcessTabContext>
 }>()
 
-const { processTabs } = useKaragozSandbox()
+const { processTabs } = useSandbox()
 const process = computed(() => props.tab.context?.process)
 const fitAddon = ref<FitAddon>()
 const terminal = ref<Terminal>()

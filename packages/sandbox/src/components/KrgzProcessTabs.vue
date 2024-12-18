@@ -15,14 +15,14 @@ import {
   watch,
 } from 'vue'
 
-import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
+import { useSandbox } from '../composables/useSandbox.ts'
 import KrgzProcess from './KrgzProcess.vue'
 
 const props = defineProps<{
   mode: 'process' | 'terminal'
 }>()
 
-const { processTabs } = useKaragozSandbox()
+const { processTabs } = useSandbox()
 const tabs = computed(() => processTabs.tabs.value)
 const tabList = ref<ComponentPublicInstance<InstanceType<typeof TabsList>>>()
 

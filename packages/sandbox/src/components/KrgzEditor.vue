@@ -3,25 +3,26 @@ import { LanguageDescription } from '@codemirror/language'
 import { languages } from '@codemirror/language-data'
 import { EditorState, Extension } from '@codemirror/state'
 import { oneDark } from '@codemirror/theme-one-dark'
-import { computedAsync, useDark, useDebounceFn, useToggle } from '@vueuse/core'
+import { computedAsync, useDark, useDebounceFn } from '@vueuse/core'
 import { EditorView } from 'codemirror'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { Codemirror } from 'vue-codemirror'
 
-import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
+import { useSandbox } from '../composables/useSandbox.ts'
 
 const props = defineProps<{
   path?: string
 }>()
 
-const sandbox = useKaragozSandbox()
-const container = sandbox.container()
+const sandbox = useSandbox()
 const contents = ref<string | null>(null)
 const isDark = useDark()
 
 watch(
-  () => props.path,
+  () => (sandbox.container.value ? props.path : undefined),
   async (path) => {
+    if (path === undefined) return // Also ensures that container instance exists.
+    const container = sandbox.container.value!
     contents.value = path ? await container.fs.readFile(path, 'utf-8') : ''
     if (path) {
       container.fs.watch(path, async (event) => {
@@ -38,7 +39,7 @@ watch(
 
 const onInput = useDebounceFn((value: string) => {
   if (!props.path) return
-  container.fs.writeFile(props.path, value, 'utf-8')
+  sandbox.container.value?.fs.writeFile(props.path, value, 'utf-8')
 }, 300)
 
 const langPack = computedAsync(() =>

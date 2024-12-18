@@ -7,7 +7,7 @@ import {
   ScrollArea,
   useControlledModel,
 } from '@karagoz/shared'
-import { Eye, FileCode, Play, TerminalSquare } from 'lucide-vue-next'
+import { Binary, Eye, FileCode, Play, TerminalSquare } from 'lucide-vue-next'
 import { computed } from 'vue'
 
 import KrgzEditorTabs from './KrgzEditorTabs.vue'
@@ -21,7 +21,7 @@ const panels = ['code', 'processes', 'result', 'terminal'] as const
 type Panel = (typeof panels)[number]
 
 defineProps<{
-  loading?: boolean
+  booting?: boolean
 }>()
 
 const availablePanels = defineModel<Panel[]>('availablePanels', {
@@ -63,7 +63,14 @@ const isRowDividerShown = computed(() => {
 </script>
 
 <template>
-  <section class="grid h-screen w-full sandbox-grid">
+  <LoadingIndicator
+    v-if="booting"
+    label="Booting Web Container..."
+    variant="secondary"
+  >
+    <Binary class="size-12" />
+  </LoadingIndicator>
+  <section v-else class="grid h-screen w-full sandbox-grid">
     <aside
       v-if="isAvailable.code || isAvailable.result"
       class="flex h-full flex-col border-r"

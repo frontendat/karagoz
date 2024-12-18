@@ -2,7 +2,7 @@ import { computed, Ref, ref } from 'vue'
 
 import type { Tab } from '../types'
 
-export const useKaragozSandboxTabs = <T = undefined>() => {
+export const useSandboxTabs = <T = undefined>() => {
   const tabs: Ref<Tab<T>[]> = ref([])
 
   const maxOrder = computed(() =>

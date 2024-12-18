@@ -1,14 +1,19 @@
-import { WebContainer } from '@webcontainer/api'
+import { asyncComputed } from '@vueuse/core'
 
 import { ProcessTabContext } from '../types'
-import { useKaragozSandboxTabs } from './useKaragozSandboxTabs.ts'
+import { injectWebContainer } from '../utils/WebContainer.ts'
+import { useSandboxTabs } from './useSandboxTabs.ts'
 
-export const useKaragozSandboxProcessTabs = (container: WebContainer) => {
-  const processTabs = useKaragozSandboxTabs<ProcessTabContext>()
+export const useSandboxProcessTabs = () => {
+  const container = asyncComputed(injectWebContainer, undefined)
+  const processTabs = useSandboxTabs<ProcessTabContext>()
 
   const startProcess = async (id: string, context: ProcessTabContext) => {
     // Create process
-    const process = await container.spawn(context.command, context.args ?? [])
+    const process = await container.value.spawn(
+      context.command,
+      context.args ?? [],
+    )
 
     // Do not await `exit`, otherwise this function won't resolve until the process finishes.
     process.exit.then((exitCode) => {

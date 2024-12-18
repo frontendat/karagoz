@@ -3,9 +3,9 @@ import { LoadingIndicator } from '@karagoz/shared'
 import { Eye } from 'lucide-vue-next'
 import { nextTick, onMounted, ref } from 'vue'
 
-import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
+import { useSandbox } from '../composables/useSandbox.ts'
 
-const sandbox = useKaragozSandbox()
+const sandbox = useSandbox()
 const previewFrame = sandbox.previewFrame
 const previewReady = ref(false)
 

@@ -4,7 +4,8 @@ import { FileSystemTree, WebContainer } from '@webcontainer/api'
 import { onMounted, ref } from 'vue'
 
 import KrgzSandbox from './components/KrgzSandbox.vue'
-import { useKaragozSandbox } from './composables/useKaragozSandbox.ts'
+import { useBoot } from './composables/useBoot.ts'
+import { useSandbox } from './composables/useSandbox.ts'
 import { provideWebContainer } from './utils/WebContainer.ts'
 
 const index = `
@@ -81,12 +82,16 @@ const isDark = useDark()
 const toggleDark = useToggle(isDark)
 toggleDark()
 
-provideWebContainer(await WebContainer.boot())
+const { boot, isBooting } = useBoot()
+provideWebContainer(boot)
 
-const sandbox = useKaragozSandbox()
+const sandbox = useSandbox()
 
 onMounted(async () => {
-  await sandbox.container().mount(tree.value)
+  // Ensure injected promise has been resolved in composables
+  const container = await boot
+  // Continue initialisation
+  await container.mount(tree.value)
   await sandbox.installDeps()
   await sandbox.processTabs.findTab('npm install')?.context?.process?.exit
   await sandbox.startDevServer()
@@ -98,7 +103,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <KrgzSandbox />
+  <KrgzSandbox :booting="isBooting" />
 </template>
 
 <style>

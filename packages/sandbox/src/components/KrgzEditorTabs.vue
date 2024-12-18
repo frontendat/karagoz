@@ -9,10 +9,10 @@ import {
 import { FileCode, X } from 'lucide-vue-next'
 import { type ComponentPublicInstance, nextTick, ref, watch } from 'vue'
 
-import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
+import { useSandbox } from '../composables/useSandbox.ts'
 import KrgzEditor from './KrgzEditor.vue'
 
-const { editorTabs } = useKaragozSandbox()
+const { editorTabs } = useSandbox()
 const tabList = ref<ComponentPublicInstance<InstanceType<typeof TabsList>>>()
 
 watch(
