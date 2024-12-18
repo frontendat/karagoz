@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { LoadingIndicator } from '@karagoz/shared'
-import type { DirEnt, WebContainer } from '@webcontainer/api'
-import { FileCode } from 'lucide-vue-next'
-import { onMounted, onUnmounted, ref } from 'vue'
+import { DirEnt, type IFSWatcher } from '@webcontainer/api'
+import { ref, watch } from 'vue'
 
 import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
+import { readDirEnts } from '../utils/readDirEnts.ts'
 import KrgzExplorerEntity from './KrgzExplorerEntity.vue'
 
 const props = withDefaults(
@@ -12,35 +12,32 @@ const props = withDefaults(
     depth?: number
     path?: string
   }>(),
-  { depth: 1, path: '' },
+  { depth: 1, path: '.' },
 )
 
 const sandbox = useKaragozSandbox()
+const container = sandbox.container()
 const dirEnts = ref<DirEnt<string>[]>([])
+const watcher = ref<IFSWatcher>()
 
-const readDirEnts = async ({ container }: { container: WebContainer }) => {
-  dirEnts.value = (
-    await container.fs.readdir(props.path, {
-      withFileTypes: true,
-    })
-  ).sort((a, b) => {
-    if (a.isDirectory() && b.isFile()) {
-      return -1
-    }
-    return 0
-  })
-}
+watch(
+  () => props.path,
+  async (value) => {
+    // Close old watcher if one exists
+    watcher.value?.close()
+    // Start watching current path to read directory entities whenever a change occurs
+    watcher.value = container.fs.watch(
+      props.path,
+      async () => (dirEnts.value = await readDirEnts(container, value)),
+    )
+    // Read directory entities right away to create initial list
+    dirEnts.value = await readDirEnts(container, value)
 
-onMounted(() => {
-  sandbox.on('fileTreeChange', readDirEnts)
-  sandbox.on('init', readDirEnts)
-  readDirEnts({ container: sandbox.container() })
-})
-
-onUnmounted(() => {
-  sandbox.off('fileTreeChange', readDirEnts)
-  sandbox.off('init', readDirEnts)
-})
+    // Cleanup
+    return () => watcher.value?.close()
+  },
+  { immediate: true },
+)
 </script>
 
 <template>

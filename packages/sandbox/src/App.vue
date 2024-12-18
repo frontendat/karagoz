@@ -85,9 +85,8 @@ provideWebContainer(await WebContainer.boot())
 
 const sandbox = useKaragozSandbox()
 
-sandbox.mount(tree.value, { shouldReinstall: false })
-
 onMounted(async () => {
+  await sandbox.container().mount(tree.value)
   await sandbox.installDeps()
   await sandbox.processTabs.findTab('npm install')?.context?.process?.exit
   await sandbox.startDevServer()

@@ -1,11 +1,6 @@
 import type { WebContainer } from '@webcontainer/api'
 
-export type EventType =
-  | 'error'
-  | 'fileTreeChange'
-  | 'init'
-  | 'port'
-  | 'serverReady'
+export type EventType = 'error' | 'init' | 'port' | 'serverReady'
 
 export type ErrorListenerParams = {
   container?: WebContainer
@@ -13,10 +8,6 @@ export type ErrorListenerParams = {
 }
 
 export type InitListenerParams = {
-  container: WebContainer
-}
-
-export type FileTreeChangeListenerParams = {
   container: WebContainer
 }
 
@@ -35,7 +26,6 @@ export type ServerReadyListenerParams = {
 
 export type EventListenerParams =
   | ErrorListenerParams
-  | FileTreeChangeListenerParams
   | InitListenerParams
   | PortListenerParams
   | ServerReadyListenerParams

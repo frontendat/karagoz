@@ -1,23 +1,14 @@
 import { WebContainer } from '@webcontainer/api'
 
 import { ProcessTabContext } from '../types'
-import { useKaragozSandboxEvents } from './useKaragozSandboxEvents.ts'
 import { useKaragozSandboxTabs } from './useKaragozSandboxTabs.ts'
 
 export const useKaragozSandboxProcessTabs = (container: WebContainer) => {
-  const { bus } = useKaragozSandboxEvents()
   const processTabs = useKaragozSandboxTabs<ProcessTabContext>()
 
   const startProcess = async (id: string, context: ProcessTabContext) => {
     // Create process
     const process = await container.spawn(context.command, context.args ?? [])
-    // Assert process creation
-    if (!process) {
-      await bus.error.trigger({
-        container,
-        error: { message: 'Process did not start.', context },
-      })
-    }
 
     // Do not await `exit`, otherwise this function won't resolve until the process finishes.
     process.exit.then((exitCode) => {

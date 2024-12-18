@@ -1,6 +1,5 @@
 import type {
   ErrorListenerParams,
-  FileTreeChangeListenerParams,
   InitListenerParams,
   PortListenerParams,
   ServerReadyListenerParams,
@@ -9,10 +8,6 @@ import type {
 declare function eventReg(
   event: 'error',
   listener: (params: ErrorListenerParams) => void,
-): void
-declare function eventReg(
-  event: 'fileTreeChange',
-  listener: (params: FileTreeChangeListenerParams) => void,
 ): void
 declare function eventReg(
   event: 'init',
