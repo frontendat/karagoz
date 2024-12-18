@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useDark, useToggle } from '@vueuse/core'
 import { FileSystemTree, WebContainer } from '@webcontainer/api'
 import { onMounted, ref } from 'vue'
 
@@ -75,6 +76,10 @@ const tree = ref<FileSystemTree>({
     },
   },
 })
+
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
+toggleDark()
 
 provideWebContainer(await WebContainer.boot())
 

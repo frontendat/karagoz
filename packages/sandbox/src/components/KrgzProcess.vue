@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import '@xterm/xterm/css/xterm.css'
 
+import { useDark } from '@vueuse/core'
 import { FitAddon } from '@xterm/addon-fit'
 import { Terminal } from '@xterm/xterm'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import { useKaragozSandbox } from '../composables/useKaragozSandbox.ts'
 import { ProcessTabContext, Tab } from '../types'
+import { xtermDarkTheme, xtermLightTheme } from '../utils/xterm.ts'
 
 const props = defineProps<{
   tab: Tab<ProcessTabContext>
@@ -17,6 +19,13 @@ const process = computed(() => props.tab.context?.process)
 const fitAddon = ref<FitAddon>()
 const terminal = ref<Terminal>()
 const terminalEl = ref()
+const isDark = useDark()
+
+watch(isDark, (value) => {
+  if (terminal.value?.options) {
+    terminal.value.options.theme = value ? xtermDarkTheme : xtermLightTheme
+  }
+})
 
 onMounted(async () => {
   await nextTick()
@@ -25,6 +34,7 @@ onMounted(async () => {
   fitAddon.value = new FitAddon()
   terminal.value = new Terminal({
     convertEol: true,
+    theme: isDark.value ? xtermDarkTheme : xtermLightTheme,
   })
 
   // Bind add-on and open terminal.

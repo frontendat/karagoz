@@ -3,7 +3,7 @@ import { LanguageDescription } from '@codemirror/language'
 import { languages } from '@codemirror/language-data'
 import { EditorState, Extension } from '@codemirror/state'
 import { oneDark } from '@codemirror/theme-one-dark'
-import { computedAsync, useDebounceFn } from '@vueuse/core'
+import { computedAsync, useDark, useDebounceFn, useToggle } from '@vueuse/core'
 import { EditorView } from 'codemirror'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { Codemirror } from 'vue-codemirror'
@@ -17,6 +17,7 @@ const props = defineProps<{
 const sandbox = useKaragozSandbox()
 const container = sandbox.container()
 const contents = ref<string | null>(null)
+const isDark = useDark()
 
 watch(
   () => props.path,
@@ -46,9 +47,7 @@ const langPack = computedAsync(() =>
     : undefined,
 )
 
-const theme = computed(() =>
-  document.documentElement.classList.contains('dark') ? oneDark : undefined,
-)
+const theme = computed(() => (isDark.value ? oneDark : undefined))
 
 const extensions = computed(() =>
   [langPack.value, theme.value].filter((ext): ext is Extension => !!ext),

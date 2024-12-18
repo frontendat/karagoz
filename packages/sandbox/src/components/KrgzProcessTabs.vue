@@ -34,13 +34,17 @@ const tabsToRender = computed(() =>
   ),
 )
 
-const currentId = computed(() =>
+const currentOrder = computed(() =>
   tabsToRender.value.length
     ? Math.max.apply(
         undefined,
         tabsToRender.value.map(({ order }) => order),
       )
     : -1,
+)
+
+const current = computed(() =>
+  tabsToRender.value.find(({ order }) => order === currentOrder.value),
 )
 
 watch(
@@ -57,7 +61,7 @@ watch(
   <Tabs
     v-if="tabsToRender.length"
     class="h-full flex flex-col"
-    :model-value="processTabs.current.value?.id"
+    :model-value="current?.id"
     @update:model-value="processTabs.open($event)"
   >
     <div class="max-w-full min-h-min overflow-x-auto tabs">
@@ -79,10 +83,10 @@ watch(
     </div>
     <TabsContent
       class="flex-grow max-h-full mt-0 overflow-hidden"
-      :value="processTabs.current.value?.id ?? ''"
+      :value="current?.id ?? ''"
     >
       <template v-for="tab in tabsToRender" :key="tab.id">
-        <KrgzProcess v-if="tab.order === currentId" :tab="tab" />
+        <KrgzProcess v-if="tab.id === current?.id" :tab="tab" />
       </template>
     </TabsContent>
   </Tabs>

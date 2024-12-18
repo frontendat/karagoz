@@ -44,18 +44,20 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <ul v-if="dirEnts.length" class="text-xs">
-    <KrgzExplorerEntity
-      v-for="entity in dirEnts"
-      :key="entity.name"
-      :depth="depth"
-      :path="path"
-      :entity="entity"
-      @file-click="sandbox.editorTabs.open($event)"
-    ></KrgzExplorerEntity>
-  </ul>
-  <LoadingIndicator
-    v-if="depth === 1 && !dirEnts.length"
-    label="Files loading..."
-  />
+  <div>
+    <ul v-if="dirEnts.length" class="text-xs">
+      <KrgzExplorerEntity
+        v-for="entity in dirEnts"
+        :key="entity.name"
+        :depth="depth"
+        :path="path"
+        :entity="entity"
+        @file-click="sandbox.editorTabs.open($event)"
+      ></KrgzExplorerEntity>
+    </ul>
+    <LoadingIndicator
+      v-if="depth === 1 && !dirEnts.length"
+      label="Files loading..."
+    />
+  </div>
 </template>
