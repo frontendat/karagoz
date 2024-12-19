@@ -7,14 +7,8 @@ export type Tab<T = undefined> = {
   order: number
 }
 
-export type EditorTabContext = {
-  suppressClose?: boolean
-}
-
 export type ProcessTabContext = {
   args?: string[]
-  canClose?: boolean
-  canInput?: boolean
   canRestart?: boolean
   canStop?: boolean
   command: string
@@ -25,4 +19,6 @@ export type ProcessTabContext = {
   process?: WebContainerProcess
   processInputHandler?: (chunk?: string | undefined) => Promise<void>
   processOutputHandler?: (data: string) => void
+  suppressClose?: boolean
+  suppressInput?: boolean
 }

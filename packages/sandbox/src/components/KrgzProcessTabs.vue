@@ -29,8 +29,9 @@ const tabList = ref<ComponentPublicInstance<InstanceType<typeof TabsList>>>()
 const tabsToRender = computed(() =>
   tabs.value.filter(
     ({ context }) =>
-      (props.mode === 'process' && !context?.isTerminal) ||
-      (props.mode === 'terminal' && context?.isTerminal),
+      !context?.isHidden &&
+      ((props.mode === 'process' && !context?.isTerminal) ||
+        (props.mode === 'terminal' && context?.isTerminal)),
   ),
 )
 
@@ -109,8 +110,8 @@ watch(
 @layer krgz {
   /* For modern browsers */
   .tabs::-webkit-scrollbar {
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
   }
 
   .tabs::-webkit-scrollbar-thumb {

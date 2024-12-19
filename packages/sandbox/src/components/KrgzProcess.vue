@@ -15,7 +15,8 @@ const props = defineProps<{
 }>()
 
 const { processTabs } = useSandbox()
-const process = computed(() => props.tab.context?.process)
+const context = computed(() => props.tab.context)
+const process = computed(() => context.value?.process)
 const fitAddon = ref<FitAddon>()
 const terminal = ref<Terminal>()
 const terminalEl = ref()
@@ -43,7 +44,7 @@ onMounted(async () => {
   fitAddon.value.fit()
 
   // Render old logs if they exist.
-  props.tab.context?.logs?.map((data) => terminal.value?.write(data))
+  context.value?.logs?.map((data) => terminal.value?.write(data))
 
   // Set `processOutputHandler` to access new logs and pass them to terminal.
   processTabs.updateContext(props.tab.id, (ctx) => ({
@@ -53,7 +54,8 @@ onMounted(async () => {
 
   // Handle user input.
   terminal.value.onData((data) => {
-    props.tab?.context?.processInputHandler?.(data)
+    if (context.value?.suppressInput) return
+    context.value?.processInputHandler?.(data)
   })
 
   window.addEventListener('resize', onWindowResize)
