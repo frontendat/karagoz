@@ -41,7 +41,7 @@ watch(
           :value="tab.id"
         >
           <div class="flex gap-2 items-center">
-            <span :title="tab.label">
+            <span :title="tab.label.substring(1)">
               {{ tab.label.split('/').at(-1) }}
             </span>
             <X class="h-4 w-4" @click.stop="editorTabs.close(tab.id)"></X>
@@ -57,6 +57,7 @@ watch(
         <KrgzEditor
           :key="editorTabs.current.value?.id"
           :path="editorTabs.current.value?.id"
+          @close="editorTabs.close($event)"
         />
       </KeepAlive>
     </TabsContent>

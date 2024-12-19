@@ -14,6 +14,10 @@ const props = defineProps<{
   path?: string
 }>()
 
+const emit = defineEmits<{
+  (e: 'close', path: string): void
+}>()
+
 const sandbox = useSandbox()
 const contents = ref<string | null>(null)
 const isDark = useDark()
@@ -23,16 +27,21 @@ watch(
   async (path) => {
     if (path === undefined) return // Also ensures that container instance exists.
     const container = sandbox.container.value!
-    contents.value = path ? await container.fs.readFile(path, 'utf-8') : ''
-    if (path) {
-      container.fs.watch(path, async (event) => {
-        if (event !== 'change') return
-        const newContents = await container.fs.readFile(path, 'utf-8')
-        if (newContents !== contents.value) {
-          contents.value = newContents
-        }
-      })
-    }
+    contents.value = path
+      ? await container.fs.readFile(path, 'utf-8').catch(() => {
+          emit('close', path)
+          return ''
+        })
+      : ''
+    const watcher = container.fs.watch(path, async (event) => {
+      if (event !== 'change') return
+      const newContents = await container.fs.readFile(path, 'utf-8')
+      if (newContents !== contents.value) {
+        contents.value = newContents
+      }
+    })
+
+    return () => watcher.close()
   },
   { immediate: true },
 )

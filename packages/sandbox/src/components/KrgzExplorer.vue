@@ -12,7 +12,7 @@ const props = withDefaults(
     depth?: number
     path?: string
   }>(),
-  { depth: 1, path: '.' },
+  { depth: 1, path: '' },
 )
 
 const sandbox = useSandbox()
