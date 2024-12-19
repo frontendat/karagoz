@@ -92,13 +92,7 @@ onMounted(async () => {
   const container = await boot
   // Continue initialisation
   await container.mount(tree.value)
-  await sandbox.installDeps()
-  await sandbox.processTabs.findTab('npm install')?.context?.process?.exit
-  await sandbox.startDevServer()
-  await sandbox.processTabs.open('jsh', 'Terminal', {
-    command: 'jsh',
-    isTerminal: true,
-  })
+  await sandbox.bootstrap()
 })
 </script>
 
