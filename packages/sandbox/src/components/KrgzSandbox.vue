@@ -22,6 +22,7 @@ type Panel = (typeof panels)[number]
 
 defineProps<{
   booting?: boolean
+  hideExplorer?: boolean
 }>()
 
 const availablePanels = defineModel<Panel[]>('availablePanels', {
@@ -31,7 +32,7 @@ const shownPanelsModel = defineModel<Panel[] | undefined>('shownPanels')
 
 const [shownPanels, setShownPanels] = useControlledModel<Panel[]>(
   shownPanelsModel,
-  ['code', 'processes', 'result'],
+  ['code', 'processes', 'result', 'terminal'],
 )
 
 const togglePanel = (panel: Panel) => {
@@ -116,14 +117,16 @@ const isRowDividerShown = computed(() => {
                   auto-save-id="krgz-sandbox-editor"
                   direction="horizontal"
                 >
-                  <ResizablePanel :default-size="30">
-                    <slot name="explorer">
-                      <ScrollArea class="h-full overflow-auto">
-                        <KrgzExplorer />
-                      </ScrollArea>
-                    </slot>
-                  </ResizablePanel>
-                  <ResizableHandle with-handle />
+                  <template v-if="!hideExplorer">
+                    <ResizablePanel :default-size="30">
+                      <slot name="explorer">
+                        <ScrollArea class="h-full overflow-auto">
+                          <KrgzExplorer />
+                        </ScrollArea>
+                      </slot>
+                    </ResizablePanel>
+                    <ResizableHandle with-handle />
+                  </template>
                   <ResizablePanel :default-size="70">
                     <slot name="editor">
                       <KrgzEditorTabs />

@@ -44,7 +44,11 @@ watch(
             <span :title="tab.label.substring(1)">
               {{ tab.label.split('/').at(-1) }}
             </span>
-            <X class="h-4 w-4" @click.stop="editorTabs.close(tab.id)"></X>
+            <X
+              v-if="!tab.context?.suppressClose"
+              class="h-4 w-4"
+              @click.stop="editorTabs.close(tab.id)"
+            ></X>
           </div>
         </TabsTrigger>
       </TabsList>
