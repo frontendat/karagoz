@@ -107,4 +107,8 @@ body {
   height: 100dvh;
   margin: 0;
 }
+
+#app {
+  height: 100%;
+}
 </style>
