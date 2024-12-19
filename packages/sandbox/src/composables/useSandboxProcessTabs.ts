@@ -1,11 +1,12 @@
 import { asyncComputed } from '@vueuse/core'
-import { nextTick, toRaw } from 'vue'
+import { computed, nextTick, toRaw } from 'vue'
 
 import { ProcessTabContext } from '../types'
+import { SandboxOptions } from '../types/Sandbox.ts'
 import { injectWebContainer } from '../utils/WebContainer.ts'
 import { useSandboxTabs } from './useSandboxTabs.ts'
 
-export const useSandboxProcessTabs = () => {
+export const useSandboxProcessTabs = (options: SandboxOptions) => {
   const container = asyncComputed(injectWebContainer, undefined)
   const processTabs = useSandboxTabs<ProcessTabContext>()
 
@@ -103,8 +104,17 @@ export const useSandboxProcessTabs = () => {
     processTabs.close(id)
   }
 
+  const availableTerminals = computed(
+    () =>
+      (options.terminal.maxCount ?? 0) -
+      processTabs.tabs.value.filter(
+        ({ context }) => !context?.isHidden && context?.isTerminal,
+      ).length,
+  )
+
   return {
     ...processTabs,
+    availableTerminals,
     close,
     kill,
     open,

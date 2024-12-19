@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import {
+  Button,
   LoadingIndicator,
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from '@karagoz/shared'
-import { Play, RotateCw, SquareX, TerminalSquare, X } from 'lucide-vue-next'
+import {
+  Play,
+  Plus,
+  RotateCw,
+  SquareX,
+  TerminalSquare,
+  X,
+} from 'lucide-vue-next'
 import {
   type ComponentPublicInstance,
   computed,
@@ -22,7 +30,7 @@ const props = defineProps<{
   mode: 'process' | 'terminal'
 }>()
 
-const { processTabs } = useSandbox()
+const { options, processTabs } = useSandbox()
 const tabs = computed(() => processTabs.tabs.value)
 const tabList = ref<ComponentPublicInstance<InstanceType<typeof TabsList>>>()
 
@@ -56,6 +64,14 @@ watch(
     tabList.value?.$el?.querySelector('[data-active="true"]')?.scrollIntoView()
   },
 )
+
+const onTabChange = (value: string) => {
+  if (value === 'CREATE_NEW_PROCESS') {
+    options.processStarters.value.terminal?.()
+  } else {
+    processTabs.open(value)
+  }
+}
 </script>
 
 <template>
@@ -63,7 +79,7 @@ watch(
     v-if="tabsToRender.length"
     class="h-full flex flex-col"
     :model-value="current?.id"
-    @update:model-value="processTabs.open($event)"
+    @update:model-value="onTabChange"
   >
     <div class="max-w-full min-h-min overflow-x-auto tabs">
       <TabsList ref="tabList">
@@ -98,6 +114,16 @@ watch(
             ></X>
           </div>
         </TabsTrigger>
+        <TabsTrigger
+          v-if="
+            props.mode === 'terminal' &&
+            0 < processTabs.availableTerminals.value
+          "
+          class="text-xs"
+          value="CREATE_NEW_PROCESS"
+        >
+          <Plus class="h-4 w-4"></Plus>
+        </TabsTrigger>
       </TabsList>
     </div>
     <TabsContent
@@ -114,13 +140,24 @@ watch(
     :label="
       mode === 'process'
         ? 'There are no running processes'
-        : 'There are no available terminals'
+        : processTabs.availableTerminals.value
+          ? undefined
+          : 'There are no available terminals'
     "
     suppress-spinner
     variant="secondary"
   >
     <Play v-if="mode === 'process'" class="size-12" />
-    <TerminalSquare v-if="mode === 'terminal'" class="size-12" />
+    <template v-if="mode === 'terminal'">
+      <TerminalSquare class="size-12" />
+      <Button
+        v-if="processTabs.availableTerminals.value"
+        size="xs"
+        variant="link"
+        @click="options.processStarters.value.terminal?.()"
+        >Open a terminal</Button
+      >
+    </template>
   </LoadingIndicator>
 </template>
 

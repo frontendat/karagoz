@@ -17,4 +17,7 @@ export type SandboxOptions = {
     devServer?: () => Promise<void>
     terminal?: () => Promise<void>
   }
+  terminal: {
+    maxCount?: number
+  }
 }

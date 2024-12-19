@@ -1,6 +1,6 @@
 import { asyncComputed, createSharedComposable } from '@vueuse/core'
 import { reloadPreview as wcReloadPreview } from '@webcontainer/api'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, toRefs } from 'vue'
 
 import { sandboxKnownProcesses, SandboxOptions } from '../types/Sandbox.ts'
 import { strToCmd } from '../utils/strToCmd.ts'
@@ -23,11 +23,12 @@ function useSandboxInternal() {
     editorTabs: {},
     explorer: {},
     processStarters: {},
+    terminal: {},
   })
 
   const explorer = useSandboxExplorer(options)
   const editorTabs = useSandboxEditorTabs(options)
-  const processTabs = useSandboxProcessTabs()
+  const processTabs = useSandboxProcessTabs(options)
 
   const setOption = <
     K extends keyof SandboxOptions,
@@ -44,11 +45,11 @@ function useSandboxInternal() {
   }
 
   const bootstrap = async () => {
+    await options.processStarters.terminal?.()
     await options.processStarters.install?.()
     await processTabs.findTab(sandboxKnownProcesses.install)?.context?.process
       ?.exit
     await options.processStarters.devServer?.()
-    await options.processStarters.terminal?.()
   }
 
   const reloadPreview = () => {
@@ -85,13 +86,22 @@ function useSandboxInternal() {
         suppressClose: true,
       }),
     terminal: () => {
+      const terminals = processTabs.tabs.value.filter(
+        ({ context }) => !context?.isHidden && context?.isTerminal,
+      )
+      if ((options.terminal.maxCount ?? 0) <= terminals.length)
+        return Promise.resolve()
       const terminalNr =
-        processTabs.tabs.value.filter(
-          ({ context }) => !context?.isHidden && context?.isTerminal,
-        ).length + 1
+        Math.max(
+          0,
+          Math.max.apply(
+            undefined,
+            terminals.map(({ order }) => order),
+          ),
+        ) + 1
       return processTabs.open(
         `${sandboxKnownProcesses.terminal}-${terminalNr}`,
-        `Terminal (${terminalNr})`,
+        'Terminal',
         {
           ...strToCmd(sandboxKnownProcesses.terminal),
           isTerminal: true,
@@ -100,11 +110,16 @@ function useSandboxInternal() {
     },
   })
 
+  setOption('terminal', {
+    maxCount: 3,
+  })
+
   return {
     bootstrap,
     container: computed(() => container.value),
     editorTabs,
     explorer,
+    options: toRefs(options),
     previewFrame,
     previewUrl: computed(() => previewUrl.value ?? ''),
     processTabs,
