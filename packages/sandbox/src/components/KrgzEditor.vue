@@ -11,6 +11,7 @@ import { Codemirror } from 'vue-codemirror'
 import { useSandbox } from '../composables/useSandbox.ts'
 
 const props = defineProps<{
+  disabled?: boolean
   path?: string
 }>()
 
@@ -93,6 +94,7 @@ const log = console.log.bind(console)
     <Codemirror
       v-if="contents !== null"
       :model-value="contents"
+      :disabled="disabled"
       placeholder="Code goes here..."
       :style="{ height: '100%' }"
       :autofocus="true"

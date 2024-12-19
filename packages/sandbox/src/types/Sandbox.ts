@@ -8,6 +8,10 @@ export type SandboxOptions = {
   editorTabs: {
     suppressClose?: boolean
   }
+  explorer: {
+    hidden?: string[]
+    readonly?: string[]
+  }
   processStarters: {
     install?: () => Promise<void>
     devServer?: () => Promise<void>

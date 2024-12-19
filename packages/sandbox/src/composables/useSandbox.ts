@@ -6,6 +6,7 @@ import { sandboxKnownProcesses, SandboxOptions } from '../types/Sandbox.ts'
 import { strToCmd } from '../utils/strToCmd.ts'
 import { injectWebContainer } from '../utils/WebContainer.ts'
 import { useSandboxEditorTabs } from './useSandboxEditorTabs.ts'
+import { useSandboxExplorer } from './useSandboxExplorer.ts'
 import { useSandboxProcessTabs } from './useSandboxProcessTabs.ts'
 
 function useSandboxInternal() {
@@ -20,9 +21,11 @@ function useSandboxInternal() {
 
   const options = reactive<SandboxOptions>({
     editorTabs: {},
+    explorer: {},
     processStarters: {},
   })
 
+  const explorer = useSandboxExplorer(options)
   const editorTabs = useSandboxEditorTabs(options)
   const processTabs = useSandboxProcessTabs()
 
@@ -60,6 +63,16 @@ function useSandboxInternal() {
     suppressClose: false,
   })
 
+  setOption('explorer', {
+    hidden: ['./node_modules/*'],
+    readonly: [
+      '*/node_modules',
+      '*/package-lock.json',
+      '*/pnpm-lock.yaml',
+      '*/yarn.lock',
+    ],
+  })
+
   setOption('processStarters', {
     install: () =>
       processTabs.open(sandboxKnownProcesses.install, 'Install', {
@@ -91,6 +104,7 @@ function useSandboxInternal() {
     bootstrap,
     container: computed(() => container.value),
     editorTabs,
+    explorer,
     previewFrame,
     previewUrl: computed(() => previewUrl.value ?? ''),
     processTabs,

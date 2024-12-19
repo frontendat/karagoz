@@ -6,14 +6,23 @@ import {
   TabsList,
   TabsTrigger,
 } from '@karagoz/shared'
-import { FileCode, X } from 'lucide-vue-next'
-import { type ComponentPublicInstance, nextTick, ref, watch } from 'vue'
+import { FileCode, Lock, X } from 'lucide-vue-next'
+import {
+  type ComponentPublicInstance,
+  computed,
+  nextTick,
+  ref,
+  watch,
+} from 'vue'
 
 import { useSandbox } from '../composables/useSandbox.ts'
 import KrgzEditor from './KrgzEditor.vue'
 
-const { editorTabs } = useSandbox()
+const { editorTabs, explorer } = useSandbox()
 const tabList = ref<ComponentPublicInstance<InstanceType<typeof TabsList>>>()
+
+const readonly = computed(() => explorer.readonly.value)
+console.log(readonly.value)
 
 watch(
   () => editorTabs.current.value,
@@ -41,9 +50,13 @@ watch(
           :value="tab.id"
         >
           <div class="flex gap-2 items-center">
-            <span :title="tab.label.substring(1)">
+            <span
+              :class="{ italic: readonly.ignores(tab.label) }"
+              :title="tab.label.substring(1)"
+            >
               {{ tab.label.split('/').at(-1) }}
             </span>
+            <Lock v-if="readonly.ignores(tab.label)" class="h-4 w-4"></Lock>
             <X
               v-if="!tab.context?.suppressClose"
               class="h-4 w-4"
@@ -57,13 +70,14 @@ watch(
       class="flex-grow max-h-full mt-0 overflow-hidden"
       :value="editorTabs.current.value?.id ?? ''"
     >
-      <KeepAlive>
+      <template v-for="tab in editorTabs.tabs.value" :key="tab.id">
         <KrgzEditor
-          :key="editorTabs.current.value?.id"
-          :path="editorTabs.current.value?.id"
+          v-show="tab.id === editorTabs.current.value?.id"
+          :disabled="readonly.ignores(tab.id)"
+          :path="tab.id"
           @close="editorTabs.close($event)"
         />
-      </KeepAlive>
+      </template>
     </TabsContent>
   </Tabs>
   <LoadingIndicator

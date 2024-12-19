@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { DirEnt } from '@webcontainer/api'
 import { File, Folder, FolderOpen } from 'lucide-vue-next'
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
+import { useSandbox } from '../composables/useSandbox.ts'
 import KrgzExplorer from './KrgzExplorer.vue'
 
 const props = defineProps<{
@@ -15,8 +16,16 @@ const emit = defineEmits<{
   (e: 'fileClick', path: string): void
 }>()
 
+const { explorer } = useSandbox()
+const entityPath = computed(() => `${props.path || '.'}/${props.entity.name}`)
 const isRendered = ref(false)
 const isExpanded = ref(false)
+
+const isHidden = computed(() => explorer.hidden.value.ignores(entityPath.value))
+
+const isReadonly = computed(() =>
+  explorer.readonly.value.ignores(entityPath.value),
+)
 
 const isExpandedWatcher = watch(
   isExpanded,
@@ -39,21 +48,30 @@ const onClick = () => {
 </script>
 
 <template>
-  <li class="krgz-explorer-entity" :style="{ '--krgz-depth': depth }">
+  <li
+    v-if="!isHidden"
+    class="krgz-explorer-entity"
+    :style="{ '--krgz-depth': depth }"
+  >
     <a class="krgz-explorer-entity-header hover:bg-secondary" @click="onClick">
       <component
         :is="entity.isFile() ? File : isExpanded ? FolderOpen : Folder"
-        class="size-3.5"
+        class="krgz-explorer-entity-icon size-3.5"
+        :class="{ 'opacity-50': isReadonly }"
       />
-      <span class="krgz-explorer-entity-name" :title="entity.name">{{
-        entity.name
-      }}</span>
+      <span
+        class="krgz-explorer-entity-name"
+        :class="{ 'italic opacity-50': isReadonly }"
+        :title="entity.name"
+      >
+        {{ entity.name }}
+      </span>
     </a>
     <KrgzExplorer
       v-if="isRendered && entity.isDirectory()"
       v-show="isExpanded"
       :depth="depth + 1"
-      :path="`${path}/${entity.name}`"
+      :path="entityPath"
     ></KrgzExplorer>
   </li>
 </template>

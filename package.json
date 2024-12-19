@@ -21,6 +21,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "codemirror": "^6.0.1",
+    "ignore": "^6.0.2",
     "lucide-vue-next": "^0.453.0",
     "radix-vue": "^1.9.7",
     "tailwind-merge": "^2.5.4",

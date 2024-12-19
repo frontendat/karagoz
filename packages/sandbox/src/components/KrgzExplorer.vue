@@ -43,7 +43,7 @@ watch(
 
 <template>
   <div>
-    <ul v-if="dirEnts.length" class="text-xs">
+    <ul v-if="dirEnts.length" class="text-xs select-none">
       <KrgzExplorerEntity
         v-for="entity in dirEnts"
         :key="entity.name"
