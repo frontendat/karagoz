@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useDark, useToggle } from '@vueuse/core'
-import { FileSystemTree, WebContainer } from '@webcontainer/api'
+import { FileSystemTree } from '@webcontainer/api'
 import { onMounted, ref } from 'vue'
 
 import KrgzSandbox from './components/KrgzSandbox.vue'
@@ -106,9 +106,5 @@ onMounted(async () => {
 body {
   height: 100dvh;
   margin: 0;
-}
-
-#app {
-  height: 100%;
 }
 </style>

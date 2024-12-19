@@ -1,4 +1,5 @@
 import { asyncComputed } from '@vueuse/core'
+import { nextTick, toRaw } from 'vue'
 
 import { ProcessTabContext } from '../types'
 import { injectWebContainer } from '../utils/WebContainer.ts'
@@ -57,6 +58,13 @@ export const useSandboxProcessTabs = () => {
     }
   }
 
+  const kill = (id: string) => {
+    const tab = processTabs.findTab(id)
+    if (tab?.context?.exitCode === undefined) {
+      processTabs.findTab(id)?.context?.process?.kill()
+    }
+  }
+
   const open = async (
     id: string,
     label?: string,
@@ -70,17 +78,38 @@ export const useSandboxProcessTabs = () => {
     }
   }
 
-  const close = (id: string) => {
+  const restart = async (id: string) => {
     const tab = processTabs.findTab(id)
-    if (tab !== null) {
-      tab?.context?.process?.kill()
+    const context = tab?.context
+    if (context) {
+      kill(id)
+      await nextTick()
+      close(id)
+      await nextTick()
+      await context.process?.exit
+      open(
+        id,
+        tab?.label,
+        await startProcess(id, {
+          ...toRaw(context),
+          args: toRaw(context.args),
+          exitCode: undefined,
+          logs: [],
+        }),
+      )
     }
+  }
+
+  const close = (id: string) => {
+    kill(id)
     processTabs.close(id)
   }
 
   return {
     ...processTabs,
     close,
+    kill,
     open,
+    restart,
   }
 }

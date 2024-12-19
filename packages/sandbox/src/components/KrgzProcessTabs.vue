@@ -6,7 +6,7 @@ import {
   TabsList,
   TabsTrigger,
 } from '@karagoz/shared'
-import { Play, TerminalSquare, X } from 'lucide-vue-next'
+import { Play, RotateCw, SquareX, TerminalSquare, X } from 'lucide-vue-next'
 import {
   type ComponentPublicInstance,
   computed,
@@ -77,6 +77,20 @@ watch(
             <span :title="tab.label">
               {{ tab.label }}
             </span>
+            <RotateCw
+              v-if="!tab.context?.isTerminal && tab.context?.canRestart"
+              class="h-4 w-4"
+              @click.stop="processTabs.restart(tab.id)"
+            ></RotateCw>
+            <SquareX
+              v-if="
+                !tab.context?.isTerminal &&
+                tab.context?.canStop &&
+                tab.context?.exitCode === undefined
+              "
+              class="h-4 w-4"
+              @click.stop="processTabs.kill(tab.id)"
+            ></SquareX>
             <X
               v-if="!tab.context?.suppressClose"
               class="h-4 w-4"

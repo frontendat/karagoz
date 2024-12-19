@@ -28,6 +28,15 @@ watch(isDark, (value) => {
   }
 })
 
+watch(
+  () => props.tab?.context?.exitCode,
+  (code) => {
+    if (code !== undefined) {
+      terminal.value?.write(`\n\nExit code: ${code}`)
+    }
+  },
+)
+
 onMounted(async () => {
   await nextTick()
 
