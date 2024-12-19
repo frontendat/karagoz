@@ -77,7 +77,11 @@ watch(
             <span :title="tab.label">
               {{ tab.label }}
             </span>
-            <X class="h-4 w-4" @click.stop="processTabs.close(tab.id)"></X>
+            <X
+              v-if="!tab.context?.suppressClose"
+              class="h-4 w-4"
+              @click.stop="processTabs.close(tab.id)"
+            ></X>
           </div>
         </TabsTrigger>
       </TabsList>

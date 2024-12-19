@@ -24,17 +24,15 @@ function useSandboxInternal() {
   const options = reactive<SandboxOptions>({
     processStarters: {
       install: () =>
-        processTabs.open(
-          sandboxKnownProcesses.install,
-          'Install',
-          strToCmd(sandboxKnownProcesses.install),
-        ),
+        processTabs.open(sandboxKnownProcesses.install, 'Install', {
+          ...strToCmd(sandboxKnownProcesses.install),
+          suppressClose: true,
+        }),
       devServer: () =>
-        processTabs.open(
-          sandboxKnownProcesses.devServer,
-          'Dev Server',
-          strToCmd(sandboxKnownProcesses.devServer),
-        ),
+        processTabs.open(sandboxKnownProcesses.devServer, 'Dev Server', {
+          ...strToCmd(sandboxKnownProcesses.devServer),
+          suppressClose: true,
+        }),
       terminal: () => {
         const terminalNr =
           processTabs.tabs.value.filter(
