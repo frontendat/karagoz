@@ -82,12 +82,10 @@ export const useSandboxProcessTabs = () => {
     const tab = processTabs.findTab(id)
     const context = tab?.context
     if (context) {
-      kill(id)
-      await nextTick()
       close(id)
-      await nextTick()
       await context.process?.exit
-      open(
+      await nextTick()
+      processTabs.open(
         id,
         tab?.label,
         await startProcess(id, {

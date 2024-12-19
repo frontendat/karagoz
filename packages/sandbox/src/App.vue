@@ -33,7 +33,7 @@ const pkgJson = `
     "nodemon": "latest"
   },
   "scripts": {
-    "start": "nodemon --watch './' -e js,html,css index.js"
+    "start": "nodemon --exitcrash --watch './' -e js,html,css index.js"
   }
 }`
 
