@@ -7,7 +7,17 @@ import {
   ScrollArea,
   useControlledModel,
 } from '@karagoz/shared'
-import { Binary, Eye, FileCode, Play, TerminalSquare } from 'lucide-vue-next'
+import { useDark, useToggle } from '@vueuse/core'
+import {
+  Binary,
+  Eye,
+  FileCode,
+  Lightbulb,
+  MoonStar,
+  Play,
+  Sun,
+  TerminalSquare,
+} from 'lucide-vue-next'
 import { computed } from 'vue'
 
 import KrgzEditorTabs from './KrgzEditorTabs.vue'
@@ -23,6 +33,12 @@ type Panel = (typeof panels)[number]
 defineProps<{
   booting?: boolean
   hideExplorer?: boolean
+  hideSolveButton?: boolean
+  hideThemeToggle?: boolean
+}>()
+
+defineEmits<{
+  (e: 'solve'): void
 }>()
 
 const availablePanels = defineModel<Panel[]>('availablePanels', {
@@ -34,6 +50,9 @@ const [shownPanels, setShownPanels] = useControlledModel<Panel[]>(
   shownPanelsModel,
   ['code', 'processes', 'result', 'terminal'],
 )
+
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
 
 const togglePanel = (panel: Panel) => {
   setShownPanels(
@@ -74,9 +93,9 @@ const isRowDividerShown = computed(() => {
   <section v-else class="grid h-screen w-full sandbox-grid">
     <aside
       v-if="isAvailable.code || isAvailable.result"
-      class="flex h-full flex-col border-r"
+      class="flex h-full flex-col border-r border-r-border"
     >
-      <nav v-if="isAvailable.code" class="grid gap-1 p-2">
+      <nav v-if="isAvailable.code" class="grid gap-2 p-2">
         <KrgzPanelToggle
           v-if="availablePanels.includes('code')"
           label="Code"
@@ -85,8 +104,31 @@ const isRowDividerShown = computed(() => {
         >
           <FileCode class="size-5" />
         </KrgzPanelToggle>
+
+        <div class="border-t border-t-border"></div>
+
+        <KrgzPanelToggle
+          v-if="!hideSolveButton"
+          as-button
+          label="Solve"
+          :pressed="undefined"
+          @press="$emit('solve')"
+        >
+          <Lightbulb class="size-5" />
+        </KrgzPanelToggle>
+
+        <KrgzPanelToggle
+          v-if="!hideThemeToggle"
+          as-button
+          label="Toggle theme"
+          :pressed="undefined"
+          @press="toggleDark()"
+        >
+          <Sun v-if="isDark" class="size-5" />
+          <MoonStar v-else class="size-5" />
+        </KrgzPanelToggle>
       </nav>
-      <nav v-if="isAvailable.result" class="mt-auto grid gap-1 p-2">
+      <nav v-if="isAvailable.result" class="mt-auto grid gap-2 p-2">
         <KrgzPanelToggle
           v-if="availablePanels.includes('result')"
           label="Preview"
@@ -175,9 +217,9 @@ const isRowDividerShown = computed(() => {
     </div>
     <aside
       v-if="isAvailable.processes || isAvailable.terminal"
-      class="flex h-full flex-col border-l"
+      class="flex h-full flex-col border-l border-l-border"
     >
-      <nav v-if="isAvailable.terminal" class="grid gap-1 p-2">
+      <nav v-if="isAvailable.terminal" class="grid gap-2 p-2">
         <KrgzPanelToggle
           v-if="availablePanels.includes('terminal')"
           label="Terminal"
@@ -187,7 +229,7 @@ const isRowDividerShown = computed(() => {
           <TerminalSquare class="size-5" />
         </KrgzPanelToggle>
       </nav>
-      <nav v-if="isAvailable.processes" class="mt-auto grid gap-1 p-2">
+      <nav v-if="isAvailable.processes" class="mt-auto grid gap-2 p-2">
         <KrgzPanelToggle
           v-if="availablePanels.includes('processes')"
           label="Processes"

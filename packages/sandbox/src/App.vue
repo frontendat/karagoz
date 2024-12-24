@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useDark, useToggle } from '@vueuse/core'
 import { FileSystemTree } from '@webcontainer/api'
 import { onMounted, ref } from 'vue'
 
@@ -78,10 +77,6 @@ const tree = ref<FileSystemTree>({
   },
 })
 
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
-toggleDark()
-
 const { boot, isBooting } = useBoot()
 provideWebContainer(boot)
 
@@ -96,10 +91,27 @@ onMounted(async () => {
   sandbox.editorTabs.open('public/script.js')
   sandbox.editorTabs.open('public/index.html')
 })
+
+const onSolveClick = async () => {
+  sandbox.container.value?.mount({
+    public: {
+      directory: {
+        'index.html': {
+          file: {
+            contents: html.replace(
+              'Slide 1 Headline',
+              'Slide 1 Headline SOLVED',
+            ),
+          },
+        },
+      },
+    },
+  })
+}
 </script>
 
 <template>
-  <KrgzSandbox :booting="isBooting" />
+  <KrgzSandbox :booting="isBooting" @solve="onSolveClick()" />
 </template>
 
 <style>
