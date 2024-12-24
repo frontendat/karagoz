@@ -22,7 +22,6 @@ const { editorTabs, explorer } = useSandbox()
 const tabList = ref<ComponentPublicInstance<InstanceType<typeof TabsList>>>()
 
 const readonly = computed(() => explorer.readonly.value)
-console.log(readonly.value)
 
 watch(
   () => editorTabs.current.value,

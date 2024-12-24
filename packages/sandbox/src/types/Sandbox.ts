@@ -11,6 +11,7 @@ export type SandboxOptions = {
   explorer: {
     hidden?: string[]
     readonly?: string[]
+    reinstall?: string[]
   }
   processStarters: {
     install?: () => Promise<void>

@@ -10,9 +10,13 @@ export const useSandboxExplorer = (options: SandboxOptions) => {
   const readonly = computed(() =>
     ignore({ allowRelativePaths: true }).add(options.explorer.readonly ?? []),
   )
+  const reinstall = computed(() =>
+    ignore({ allowRelativePaths: true }).add(options.explorer.reinstall ?? []),
+  )
 
   return {
     hidden,
     readonly,
+    reinstall,
   }
 }

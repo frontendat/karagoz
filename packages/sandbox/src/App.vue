@@ -3,8 +3,8 @@ import { FileSystemTree } from '@webcontainer/api'
 import { onMounted, ref } from 'vue'
 
 import KrgzSandbox from './components/KrgzSandbox.vue'
-import { useBoot } from './composables/useBoot.ts'
 import { useSandbox } from './composables/useSandbox.ts'
+import { useSandboxBoot } from './composables/useSandboxBoot.ts'
 import { provideWebContainer } from './utils/WebContainer.ts'
 
 const index = `
@@ -32,7 +32,7 @@ const pkgJson = `
     "nodemon": "latest"
   },
   "scripts": {
-    "start": "nodemon --exitcrash --watch './' -e js,html,css index.js"
+    "start": "nodemon --watch './' -e js,html,css index.js"
   }
 }`
 
@@ -77,7 +77,7 @@ const tree = ref<FileSystemTree>({
   },
 })
 
-const { boot, isBooting } = useBoot()
+const { boot, isBooting } = useSandboxBoot()
 provideWebContainer(boot)
 
 const sandbox = useSandbox()

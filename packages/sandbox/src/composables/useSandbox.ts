@@ -1,5 +1,5 @@
 import { asyncComputed, createSharedComposable } from '@vueuse/core'
-import { reloadPreview as wcReloadPreview } from '@webcontainer/api'
+import { IFSWatcher, reloadPreview as wcReloadPreview } from '@webcontainer/api'
 import { computed, reactive, ref, toRefs } from 'vue'
 
 import { sandboxKnownProcesses, SandboxOptions } from '../types/Sandbox.ts'
@@ -18,6 +18,9 @@ function useSandboxInternal() {
   }, null)
   const previewFrame = ref<HTMLIFrameElement>()
   const previewUrl = ref<string>()
+  const watchers = ref<{
+    reinstall?: IFSWatcher
+  }>({})
 
   const options = reactive<SandboxOptions>({
     editorTabs: {},
@@ -45,11 +48,34 @@ function useSandboxInternal() {
   }
 
   const bootstrap = async () => {
-    await options.processStarters.terminal?.()
+    // Kill already running processes (need for reinstall).
+    processTabs.close(sandboxKnownProcesses.devServer)
+    processTabs.close(sandboxKnownProcesses.install)
+    // Open terminal first to avoid waiting for other processes.
+    if (!watchers.value.reinstall) {
+      await options.processStarters.terminal?.()
+    }
+    // Install dependencies.
     await options.processStarters.install?.()
+    // Wait for installation to finish.
     await processTabs.findTab(sandboxKnownProcesses.install)?.context?.process
       ?.exit
+    // Run dev-server.
     await options.processStarters.devServer?.()
+    // Setup reinstall watcher.
+    if (!watchers.value.reinstall) {
+      watchers.value.reinstall = container.value?.fs.watch(
+        '.',
+        { recursive: true },
+        async (event, filename) => {
+          if (event === 'change' && typeof filename === 'string') {
+            if (explorer.reinstall.value.ignores(`./${filename}`)) {
+              await bootstrap()
+            }
+          }
+        },
+      )
+    }
   }
 
   const reloadPreview = () => {
@@ -72,6 +98,7 @@ function useSandboxInternal() {
       '*/pnpm-lock.yaml',
       '*/yarn.lock',
     ],
+    reinstall: ['./package.json'],
   })
 
   setOption('processStarters', {
