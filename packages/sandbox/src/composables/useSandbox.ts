@@ -1,8 +1,11 @@
 import { asyncComputed, createSharedComposable } from '@vueuse/core'
-import { IFSWatcher, reloadPreview as wcReloadPreview } from '@webcontainer/api'
+import {
+  type IFSWatcher,
+  reloadPreview as wcReloadPreview,
+} from '@webcontainer/api'
 import { computed, reactive, readonly, ref } from 'vue'
 
-import { sandboxKnownProcesses, SandboxOptions } from '../types/Sandbox.ts'
+import type { SandboxOptions } from '../types/Sandbox.ts'
 import { strToCmd } from '../utils/strToCmd.ts'
 import { injectWebContainer } from '../utils/WebContainer.ts'
 import { useSandboxEditorTabs } from './useSandboxEditorTabs.ts'
@@ -23,7 +26,7 @@ function useSandboxInternal() {
   }>({})
 
   // Default options
-  const options = reactive<SandboxOptions>({
+  const options: SandboxOptions = reactive({
     editor: {
       suppressClose: false,
     },
@@ -38,15 +41,21 @@ function useSandboxInternal() {
       reinstall: ['./package.json'],
     },
     process: {
+      commands: {
+        install: 'npm install',
+        devServer: 'npm start',
+        terminal: 'jsh',
+      },
+      packageManager: 'npm',
       starters: {
         install: () =>
-          processTabs.open(sandboxKnownProcesses.install, 'Install', {
-            ...strToCmd(sandboxKnownProcesses.install),
+          processTabs.open(options.process.commands.install, 'Install', {
+            ...strToCmd(options.process.commands.install),
             suppressClose: true,
           }),
         devServer: () =>
-          processTabs.open(sandboxKnownProcesses.devServer, 'Dev Server', {
-            ...strToCmd(sandboxKnownProcesses.devServer),
+          processTabs.open(options.process.commands.devServer, 'Dev Server', {
+            ...strToCmd(options.process.commands.devServer),
             suppressClose: true,
           }),
         terminal: () => {
@@ -64,10 +73,10 @@ function useSandboxInternal() {
               ),
             ) + 1
           return processTabs.open(
-            `${sandboxKnownProcesses.terminal}-${terminalNr}`,
+            `${options.process.commands.terminal}-${terminalNr}`,
             'Terminal',
             {
-              ...strToCmd(sandboxKnownProcesses.terminal),
+              ...strToCmd(options.process.commands.terminal),
               isTerminal: true,
             },
           )
@@ -97,10 +106,31 @@ function useSandboxInternal() {
     }
   }
 
+  const setPackageManager = (
+    pm: SandboxOptions['process']['packageManager'],
+  ) => {
+    if (pm === options.process.packageManager) return
+    options.process.packageManager = pm
+    switch (pm) {
+      case 'npm':
+        options.process.commands.install = 'npm install'
+        options.process.commands.devServer = 'npm start'
+        break
+      case 'pnpm':
+        options.process.commands.install = 'pnpm install'
+        options.process.commands.devServer = 'pnpm start'
+        break
+      case 'yarn':
+        options.process.commands.install = 'yarn'
+        options.process.commands.devServer = 'yarn start'
+        break
+    }
+  }
+
   const bootstrap = async () => {
     // Kill already running processes (need for reinstall).
-    processTabs.close(sandboxKnownProcesses.devServer)
-    processTabs.close(sandboxKnownProcesses.install)
+    processTabs.close(options.process.commands.devServer)
+    processTabs.close(options.process.commands.install)
     // Open terminal first to avoid waiting for other processes.
     if (!watchers.value.reinstall) {
       await options.process.starters?.terminal?.()
@@ -108,8 +138,8 @@ function useSandboxInternal() {
     // Install dependencies.
     await options.process.starters?.install?.()
     // Wait for installation to finish.
-    await processTabs.findTab(sandboxKnownProcesses.install)?.context?.process
-      ?.exit
+    await processTabs.findTab(options.process.commands.install)?.context
+      ?.process?.exit
     // Run dev-server.
     await options.process.starters?.devServer?.()
     // Setup reinstall watcher.
@@ -145,6 +175,7 @@ function useSandboxInternal() {
     processTabs,
     reloadPreview,
     setOption,
+    setPackageManager,
   }
 }
 
