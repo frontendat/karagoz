@@ -167,7 +167,7 @@ const isRowDividerShown = computed(() => {
                         </ScrollArea>
                       </slot>
                     </ResizablePanel>
-                    <ResizableHandle with-handle />
+                    <ResizableHandle />
                   </template>
                   <ResizablePanel :default-size="70">
                     <slot name="editor">
@@ -177,10 +177,7 @@ const isRowDividerShown = computed(() => {
                 </ResizablePanelGroup>
               </ResizablePanel>
             </template>
-            <ResizableHandle
-              v-if="isShown.code && isShown.terminal"
-              with-handle
-            />
+            <ResizableHandle v-if="isShown.code && isShown.terminal" />
             <ResizablePanel v-if="isShown.terminal" :default-size="50">
               <slot name="terminal">
                 <KrgzProcessTabs mode="terminal" />
@@ -188,7 +185,7 @@ const isRowDividerShown = computed(() => {
             </ResizablePanel>
           </ResizablePanelGroup>
         </ResizablePanel>
-        <ResizableHandle v-if="isRowDividerShown" with-handle />
+        <ResizableHandle v-if="isRowDividerShown" />
         <ResizablePanel
           v-if="isShown.processes || isShown.result"
           :default-size="50"
@@ -202,10 +199,7 @@ const isRowDividerShown = computed(() => {
                 <KrgzPreview />
               </slot>
             </ResizablePanel>
-            <ResizableHandle
-              v-if="isShown.processes && isShown.result"
-              with-handle
-            />
+            <ResizableHandle v-if="isShown.processes && isShown.result" />
             <ResizablePanel v-if="isShown.processes" :default-size="50">
               <slot name="processes">
                 <KrgzProcessTabs mode="process" />

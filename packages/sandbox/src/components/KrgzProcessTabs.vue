@@ -23,7 +23,7 @@ import {
   watch,
 } from 'vue'
 
-import { useSandbox } from '../composables/useSandbox.ts'
+import { useSandbox } from '../composables'
 import KrgzProcess from './KrgzProcess.vue'
 
 const props = defineProps<{

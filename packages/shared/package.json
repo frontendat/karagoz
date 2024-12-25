@@ -12,12 +12,12 @@
   "exports": {
     ".": {
       "import": {
-        "default": "./dist/karagoz-shared.js",
-        "types": "./dist/types.d.ts"
+        "types": "./dist/types.d.ts",
+        "default": "./dist/karagoz-shared.js"
       },
       "require": {
-        "default": "./dist/karagoz-shared.umd.cjs",
-        "types": "./dist/types.d.ts"
+        "types": "./dist/types.d.ts",
+        "default": "./dist/karagoz-shared.umd.cjs"
       }
     },
     "./dist/style.css": {

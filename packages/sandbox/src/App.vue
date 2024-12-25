@@ -88,8 +88,8 @@ onMounted(async () => {
   // Continue initialisation
   await container.mount(tree.value)
   await sandbox.bootstrap()
-  sandbox.editorTabs.open('public/script.js')
-  sandbox.editorTabs.open('public/index.html')
+  sandbox.editorTabs.open('./public/script.js')
+  sandbox.editorTabs.open('./public/index.html')
 })
 
 const onSolveClick = async () => {

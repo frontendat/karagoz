@@ -15,7 +15,7 @@ import {
   watch,
 } from 'vue'
 
-import { useSandbox } from '../composables/useSandbox.ts'
+import { useSandbox } from '../composables'
 import KrgzEditor from './KrgzEditor.vue'
 
 const { editorTabs, explorer } = useSandbox()

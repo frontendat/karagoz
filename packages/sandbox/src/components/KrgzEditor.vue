@@ -8,7 +8,7 @@ import { EditorView } from 'codemirror'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { Codemirror } from 'vue-codemirror'
 
-import { useSandbox } from '../composables/useSandbox.ts'
+import { useSandbox } from '../composables'
 
 const props = defineProps<{
   disabled?: boolean

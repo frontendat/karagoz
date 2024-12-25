@@ -12,12 +12,12 @@
   "exports": {
     ".": {
       "import": {
-        "default": "./dist/karagoz-puppeteer.js",
-        "types": "./dist/types.d.ts"
+        "types": "./dist/types.d.ts",
+        "default": "./dist/karagoz-puppeteer.js"
       },
       "require": {
-        "default": "./dist/karagoz-puppeteer.umd.cjs",
-        "types": "./dist/types.d.ts"
+        "types": "./dist/types.d.ts",
+        "default": "./dist/karagoz-puppeteer.umd.cjs"
       }
     },
     "./dist/style.css": {

@@ -6,7 +6,7 @@ import { FitAddon } from '@xterm/addon-fit'
 import { Terminal } from '@xterm/xterm'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-import { useSandbox } from '../composables/useSandbox.ts'
+import { useSandbox } from '../composables'
 import { ProcessTabContext, Tab } from '../types'
 import { xtermDarkTheme, xtermLightTheme } from '../utils/xterm.ts'
 

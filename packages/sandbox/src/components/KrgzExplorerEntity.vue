@@ -3,7 +3,7 @@ import type { DirEnt } from '@webcontainer/api'
 import { File, Folder, FolderOpen } from 'lucide-vue-next'
 import { computed, ref, watch } from 'vue'
 
-import { useSandbox } from '../composables/useSandbox.ts'
+import { useSandbox } from '../composables'
 import KrgzExplorer from './KrgzExplorer.vue'
 
 const props = defineProps<{

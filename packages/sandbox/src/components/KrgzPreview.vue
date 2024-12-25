@@ -3,7 +3,7 @@ import { LoadingIndicator } from '@karagoz/shared'
 import { Eye } from 'lucide-vue-next'
 import { nextTick, onMounted, ref } from 'vue'
 
-import { useSandbox } from '../composables/useSandbox.ts'
+import { useSandbox } from '../composables'
 
 const sandbox = useSandbox()
 const previewFrame = sandbox.previewFrame

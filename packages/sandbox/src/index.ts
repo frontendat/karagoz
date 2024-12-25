@@ -8,8 +8,7 @@ import KrgzPreview from './components/KrgzPreview.vue'
 import KrgzProcess from './components/KrgzProcess.vue'
 import KrgzProcessTabs from './components/KrgzProcessTabs.vue'
 import KrgzSandbox from './components/KrgzSandbox.vue'
-import { useSandbox } from './composables/useSandbox.ts'
-import { useSandboxBoot } from './composables/useSandboxBoot.ts'
+import { useSandbox, useSandboxBoot } from './composables'
 import {
   injectWebContainer,
   provideWebContainer,

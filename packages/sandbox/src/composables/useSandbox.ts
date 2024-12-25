@@ -22,11 +22,59 @@ function useSandboxInternal() {
     reinstall?: IFSWatcher
   }>({})
 
+  // Default options
   const options = reactive<SandboxOptions>({
-    editorTabs: {},
-    explorer: {},
-    processStarters: {},
-    terminal: {},
+    editorTabs: {
+      suppressClose: false,
+    },
+    explorer: {
+      hidden: ['./node_modules/*'],
+      readonly: [
+        '*/node_modules',
+        '*/package-lock.json',
+        '*/pnpm-lock.yaml',
+        '*/yarn.lock',
+      ],
+      reinstall: ['./package.json'],
+    },
+    processStarters: {
+      install: () =>
+        processTabs.open(sandboxKnownProcesses.install, 'Install', {
+          ...strToCmd(sandboxKnownProcesses.install),
+          suppressClose: true,
+        }),
+      devServer: () =>
+        processTabs.open(sandboxKnownProcesses.devServer, 'Dev Server', {
+          ...strToCmd(sandboxKnownProcesses.devServer),
+          suppressClose: true,
+        }),
+      terminal: () => {
+        const terminals = processTabs.tabs.value.filter(
+          ({ context }) => !context?.isHidden && context?.isTerminal,
+        )
+        if ((options.terminal.maxCount ?? 0) <= terminals.length)
+          return Promise.resolve()
+        const terminalNr =
+          Math.max(
+            0,
+            Math.max.apply(
+              undefined,
+              terminals.map(({ order }) => order),
+            ),
+          ) + 1
+        return processTabs.open(
+          `${sandboxKnownProcesses.terminal}-${terminalNr}`,
+          'Terminal',
+          {
+            ...strToCmd(sandboxKnownProcesses.terminal),
+            isTerminal: true,
+          },
+        )
+      },
+    },
+    terminal: {
+      maxCount: 3,
+    },
   })
 
   const explorer = useSandboxExplorer(options)
@@ -83,63 +131,6 @@ function useSandboxInternal() {
       wcReloadPreview(previewFrame.value)
     }
   }
-
-  // Initialise default options
-
-  setOption('editorTabs', {
-    suppressClose: false,
-  })
-
-  setOption('explorer', {
-    hidden: ['./node_modules/*'],
-    readonly: [
-      '*/node_modules',
-      '*/package-lock.json',
-      '*/pnpm-lock.yaml',
-      '*/yarn.lock',
-    ],
-    reinstall: ['./package.json'],
-  })
-
-  setOption('processStarters', {
-    install: () =>
-      processTabs.open(sandboxKnownProcesses.install, 'Install', {
-        ...strToCmd(sandboxKnownProcesses.install),
-        suppressClose: true,
-      }),
-    devServer: () =>
-      processTabs.open(sandboxKnownProcesses.devServer, 'Dev Server', {
-        ...strToCmd(sandboxKnownProcesses.devServer),
-        suppressClose: true,
-      }),
-    terminal: () => {
-      const terminals = processTabs.tabs.value.filter(
-        ({ context }) => !context?.isHidden && context?.isTerminal,
-      )
-      if ((options.terminal.maxCount ?? 0) <= terminals.length)
-        return Promise.resolve()
-      const terminalNr =
-        Math.max(
-          0,
-          Math.max.apply(
-            undefined,
-            terminals.map(({ order }) => order),
-          ),
-        ) + 1
-      return processTabs.open(
-        `${sandboxKnownProcesses.terminal}-${terminalNr}`,
-        'Terminal',
-        {
-          ...strToCmd(sandboxKnownProcesses.terminal),
-          isTerminal: true,
-        },
-      )
-    },
-  })
-
-  setOption('terminal', {
-    maxCount: 3,
-  })
 
   return {
     bootstrap,

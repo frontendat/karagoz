@@ -3,7 +3,7 @@ import { LoadingIndicator } from '@karagoz/shared'
 import { DirEnt, type IFSWatcher } from '@webcontainer/api'
 import { ref, watch } from 'vue'
 
-import { useSandbox } from '../composables/useSandbox.ts'
+import { useSandbox } from '../composables'
 import { readDirEnts } from '../utils/readDirEnts.ts'
 import KrgzExplorerEntity from './KrgzExplorerEntity.vue'
 
