@@ -16,15 +16,18 @@ const emit = defineEmits<{
   (e: 'fileClick', path: string): void
 }>()
 
-const { explorer } = useSandbox()
-const entityPath = computed(() => `${props.path || '.'}/${props.entity.name}`)
+const { explorer, editorTabs } = useSandbox()
 const isRendered = ref(false)
 const isExpanded = ref(false)
 
+const entityPath = computed(() => `${props.path || '.'}/${props.entity.name}`)
 const isHidden = computed(() => explorer.hidden.value.ignores(entityPath.value))
-
 const isReadonly = computed(() =>
   explorer.readonly.value.ignores(entityPath.value),
+)
+const isCurrentEditorTab = computed(
+  () =>
+    props.entity.isFile() && editorTabs.current.value?.id === entityPath.value,
 )
 
 const isExpandedWatcher = watch(
@@ -38,9 +41,22 @@ const isExpandedWatcher = watch(
   { immediate: true },
 )
 
+watch(
+  () => [editorTabs.current.value?.id ?? '', entityPath.value],
+  ([editorPath, entityPath]) => {
+    if (
+      editorPath.startsWith(entityPath) &&
+      !isExpanded.value &&
+      props.entity.isDirectory()
+    ) {
+      onClick()
+    }
+  },
+)
+
 const onClick = () => {
   if (props.entity.isFile()) {
-    emit('fileClick', `${props.path}/${props.entity.name}`)
+    emit('fileClick', `${entityPath.value}`)
   } else {
     isExpanded.value = !isExpanded.value
   }
@@ -53,7 +69,11 @@ const onClick = () => {
     class="krgz-explorer-entity"
     :style="{ '--krgz-depth': depth }"
   >
-    <a class="krgz-explorer-entity-header hover:bg-secondary" @click="onClick">
+    <a
+      class="krgz-explorer-entity-header hover:bg-secondary"
+      :class="{ 'font-bold': isCurrentEditorTab }"
+      @click="onClick"
+    >
       <component
         :is="entity.isFile() ? File : isExpanded ? FolderOpen : Folder"
         class="krgz-explorer-entity-icon size-3.5"
