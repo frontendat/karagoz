@@ -3,8 +3,7 @@ import { FileSystemTree } from '@webcontainer/api'
 import { onMounted, ref } from 'vue'
 
 import KrgzSandbox from './components/KrgzSandbox.vue'
-import { useSandbox } from './composables/useSandbox.ts'
-import { useSandboxBoot } from './composables/useSandboxBoot.ts'
+import { useSandbox, useSandboxBoot } from './composables'
 import { provideWebContainer } from './utils/WebContainer.ts'
 
 const index = `
