@@ -1,5 +1,5 @@
-export const xtermDarkTheme = {
-  background: '#282C34', // Dark background
+const xtermDarkTheme = {
+  background: '#0a0a0a', // Dark background
   foreground: '#cdd6f4', // Light gray text
   cursor: '#f5e0dc', // Cursor color
   selection: '#585b70', // Selection background
@@ -21,7 +21,7 @@ export const xtermDarkTheme = {
   brightWhite: '#a6adc8',
 }
 
-export const xtermLightTheme = {
+const xtermLightTheme = {
   background: '#ffffff', // White background
   foreground: '#24292e', // Dark gray text
   cursor: '#6a737d', // Cursor color
@@ -42,4 +42,9 @@ export const xtermLightTheme = {
   brightMagenta: '#6f42c1',
   brightCyan: '#1b7c83',
   brightWhite: '#fafbfc',
+}
+
+export const xtermDefaultTheme = {
+  dark: xtermDarkTheme,
+  light: xtermLightTheme,
 }

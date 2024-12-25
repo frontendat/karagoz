@@ -40,7 +40,7 @@ watch(
     :model-value="editorTabs.current.value?.id"
     @update:model-value="editorTabs.open($event)"
   >
-    <div class="max-w-full min-h-min overflow-x-auto tabs">
+    <div class="bg-muted max-w-full min-h-min overflow-x-auto krgz-tabs">
       <TabsList ref="tabList">
         <TabsTrigger
           v-for="tab in editorTabs.tabs.value"
@@ -88,27 +88,3 @@ watch(
     <FileCode class="size-12" />
   </LoadingIndicator>
 </template>
-
-<style scoped>
-@layer krgz {
-  /* For modern browsers */
-  .tabs::-webkit-scrollbar {
-    width: 0px;
-    height: 0px;
-  }
-
-  .tabs::-webkit-scrollbar-thumb {
-    background-color: currentColor;
-  }
-
-  .tabs::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  /* For Firefox */
-  .tabs* {
-    scrollbar-width: thin;
-    scrollbar-color: currentColor transparent;
-  }
-}
-</style>

@@ -81,7 +81,7 @@ const onTabChange = (value: string) => {
     :model-value="current?.id"
     @update:model-value="onTabChange"
   >
-    <div class="max-w-full min-h-min overflow-x-auto tabs">
+    <div class="bg-muted max-w-full min-h-min overflow-x-auto krgz-tabs">
       <TabsList ref="tabList">
         <TabsTrigger
           v-for="tab in tabsToRender"
@@ -160,27 +160,3 @@ const onTabChange = (value: string) => {
     </template>
   </LoadingIndicator>
 </template>
-
-<style scoped>
-@layer krgz {
-  /* For modern browsers */
-  .tabs::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
-
-  .tabs::-webkit-scrollbar-thumb {
-    background-color: currentColor;
-  }
-
-  .tabs::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  /* For Firefox */
-  .tabs* {
-    scrollbar-width: thin;
-    scrollbar-color: currentColor transparent;
-  }
-}
-</style>

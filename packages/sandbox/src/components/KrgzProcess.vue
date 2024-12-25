@@ -8,7 +8,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import { useSandbox } from '../composables'
 import { ProcessTabContext, Tab } from '../types'
-import { xtermDarkTheme, xtermLightTheme } from '../utils/xterm.ts'
+import { xtermDefaultTheme } from '../utils/xterm.ts'
 
 const props = defineProps<{
   tab: Tab<ProcessTabContext>
@@ -21,10 +21,13 @@ const fitAddon = ref<FitAddon>()
 const terminal = ref<Terminal>()
 const terminalEl = ref()
 const isDark = useDark()
+const theme = computed(() =>
+  isDark.value ? xtermDefaultTheme.dark : xtermDefaultTheme.light,
+)
 
-watch(isDark, (value) => {
+watch(theme, () => {
   if (terminal.value?.options) {
-    terminal.value.options.theme = value ? xtermDarkTheme : xtermLightTheme
+    terminal.value.options.theme = theme.value
   }
 })
 
@@ -44,7 +47,7 @@ onMounted(async () => {
   fitAddon.value = new FitAddon()
   terminal.value = new Terminal({
     convertEol: true,
-    theme: isDark.value ? xtermDarkTheme : xtermLightTheme,
+    theme: theme.value,
   })
 
   // Bind add-on and open terminal.
@@ -84,5 +87,5 @@ const onWindowResize = (): void => {
 </script>
 
 <template>
-  <div ref="terminalEl" class="h-full"></div>
+  <div ref="terminalEl" class="h-full ps-2"></div>
 </template>

@@ -2,13 +2,13 @@
 import { LanguageDescription } from '@codemirror/language'
 import { languages } from '@codemirror/language-data'
 import { EditorState, Extension } from '@codemirror/state'
-import { oneDark } from '@codemirror/theme-one-dark'
 import { computedAsync, useDark, useDebounceFn } from '@vueuse/core'
 import { EditorView } from 'codemirror'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { Codemirror } from 'vue-codemirror'
 
 import { useSandbox } from '../composables'
+import { codemirrorDefaultTheme } from '../utils/codemirror.ts'
 
 const props = defineProps<{
   disabled?: boolean
@@ -58,10 +58,12 @@ const langPack = computedAsync(() =>
     : undefined,
 )
 
-const theme = computed(() => (isDark.value ? oneDark : undefined))
+const theme = computed(() =>
+  isDark.value ? codemirrorDefaultTheme.dark : codemirrorDefaultTheme.light,
+)
 
 const extensions = computed(() =>
-  [langPack.value, theme.value].filter((ext): ext is Extension => !!ext),
+  [langPack.value, ...theme.value].filter((ext): ext is Extension => !!ext),
 )
 
 // Codemirror EditorView instance ref
