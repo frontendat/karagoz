@@ -58,8 +58,12 @@ const langPack = computedAsync(() =>
     : undefined,
 )
 
-const theme = computed(() =>
-  isDark.value ? codemirrorDefaultTheme.dark : codemirrorDefaultTheme.light,
+const themeKey = computed(() => (isDark.value ? 'dark' : 'light'))
+
+const theme = computed(
+  () =>
+    sandbox.options.editor.theme?.[themeKey.value]?.() ??
+    codemirrorDefaultTheme[themeKey.value],
 )
 
 const extensions = computed(() =>

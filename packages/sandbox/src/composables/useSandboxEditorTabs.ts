@@ -9,7 +9,7 @@ export const useSandboxEditorTabs = (options: SandboxOptions) => {
     const index = editorTabs.findTabIndex(id)
     if (index === -1) {
       editorTabs.open(id, label, {
-        suppressClose: options.editorTabs.suppressClose,
+        suppressClose: options.editor.suppressClose,
         ...context,
       })
     } else {

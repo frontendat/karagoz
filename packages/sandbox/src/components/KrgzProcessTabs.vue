@@ -67,7 +67,7 @@ watch(
 
 const onTabChange = (value: string) => {
   if (value === 'CREATE_NEW_PROCESS') {
-    options.processStarters.value.terminal?.()
+    options.process.starters?.terminal?.()
   } else {
     processTabs.open(value)
   }
@@ -154,7 +154,7 @@ const onTabChange = (value: string) => {
         v-if="processTabs.availableTerminals.value"
         size="xs"
         variant="link"
-        @click="options.processStarters.value.terminal?.()"
+        @click="options.process.starters?.terminal?.()"
         >Open a terminal</Button
       >
     </template>

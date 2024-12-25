@@ -14,15 +14,18 @@ const props = defineProps<{
   tab: Tab<ProcessTabContext>
 }>()
 
-const { processTabs } = useSandbox()
+const { options, processTabs } = useSandbox()
 const context = computed(() => props.tab.context)
 const process = computed(() => context.value?.process)
 const fitAddon = ref<FitAddon>()
 const terminal = ref<Terminal>()
 const terminalEl = ref()
 const isDark = useDark()
-const theme = computed(() =>
-  isDark.value ? xtermDefaultTheme.dark : xtermDefaultTheme.light,
+const themeKey = computed(() => (isDark.value ? 'dark' : 'light'))
+const theme = computed(
+  () =>
+    options.terminal.theme?.[themeKey.value]?.() ??
+    xtermDefaultTheme[themeKey.value],
 )
 
 watch(theme, () => {
@@ -87,5 +90,5 @@ const onWindowResize = (): void => {
 </script>
 
 <template>
-  <div ref="terminalEl" class="h-full ps-2"></div>
+  <div ref="terminalEl" class="h-full"></div>
 </template>

@@ -1,6 +1,6 @@
 import { asyncComputed, createSharedComposable } from '@vueuse/core'
 import { IFSWatcher, reloadPreview as wcReloadPreview } from '@webcontainer/api'
-import { computed, reactive, ref, toRefs } from 'vue'
+import { computed, reactive, readonly, ref } from 'vue'
 
 import { sandboxKnownProcesses, SandboxOptions } from '../types/Sandbox.ts'
 import { strToCmd } from '../utils/strToCmd.ts'
@@ -24,7 +24,7 @@ function useSandboxInternal() {
 
   // Default options
   const options = reactive<SandboxOptions>({
-    editorTabs: {
+    editor: {
       suppressClose: false,
     },
     explorer: {
@@ -37,39 +37,41 @@ function useSandboxInternal() {
       ],
       reinstall: ['./package.json'],
     },
-    processStarters: {
-      install: () =>
-        processTabs.open(sandboxKnownProcesses.install, 'Install', {
-          ...strToCmd(sandboxKnownProcesses.install),
-          suppressClose: true,
-        }),
-      devServer: () =>
-        processTabs.open(sandboxKnownProcesses.devServer, 'Dev Server', {
-          ...strToCmd(sandboxKnownProcesses.devServer),
-          suppressClose: true,
-        }),
-      terminal: () => {
-        const terminals = processTabs.tabs.value.filter(
-          ({ context }) => !context?.isHidden && context?.isTerminal,
-        )
-        if ((options.terminal.maxCount ?? 0) <= terminals.length)
-          return Promise.resolve()
-        const terminalNr =
-          Math.max(
-            0,
-            Math.max.apply(
-              undefined,
-              terminals.map(({ order }) => order),
-            ),
-          ) + 1
-        return processTabs.open(
-          `${sandboxKnownProcesses.terminal}-${terminalNr}`,
-          'Terminal',
-          {
-            ...strToCmd(sandboxKnownProcesses.terminal),
-            isTerminal: true,
-          },
-        )
+    process: {
+      starters: {
+        install: () =>
+          processTabs.open(sandboxKnownProcesses.install, 'Install', {
+            ...strToCmd(sandboxKnownProcesses.install),
+            suppressClose: true,
+          }),
+        devServer: () =>
+          processTabs.open(sandboxKnownProcesses.devServer, 'Dev Server', {
+            ...strToCmd(sandboxKnownProcesses.devServer),
+            suppressClose: true,
+          }),
+        terminal: () => {
+          const terminals = processTabs.tabs.value.filter(
+            ({ context }) => !context?.isHidden && context?.isTerminal,
+          )
+          if ((options.terminal.maxCount ?? 0) <= terminals.length)
+            return Promise.resolve()
+          const terminalNr =
+            Math.max(
+              0,
+              Math.max.apply(
+                undefined,
+                terminals.map(({ order }) => order),
+              ),
+            ) + 1
+          return processTabs.open(
+            `${sandboxKnownProcesses.terminal}-${terminalNr}`,
+            'Terminal',
+            {
+              ...strToCmd(sandboxKnownProcesses.terminal),
+              isTerminal: true,
+            },
+          )
+        },
       },
     },
     terminal: {
@@ -101,15 +103,15 @@ function useSandboxInternal() {
     processTabs.close(sandboxKnownProcesses.install)
     // Open terminal first to avoid waiting for other processes.
     if (!watchers.value.reinstall) {
-      await options.processStarters.terminal?.()
+      await options.process.starters?.terminal?.()
     }
     // Install dependencies.
-    await options.processStarters.install?.()
+    await options.process.starters?.install?.()
     // Wait for installation to finish.
     await processTabs.findTab(sandboxKnownProcesses.install)?.context?.process
       ?.exit
     // Run dev-server.
-    await options.processStarters.devServer?.()
+    await options.process.starters?.devServer?.()
     // Setup reinstall watcher.
     if (!watchers.value.reinstall) {
       watchers.value.reinstall = container.value?.fs.watch(
@@ -137,7 +139,7 @@ function useSandboxInternal() {
     container: computed(() => container.value),
     editorTabs,
     explorer,
-    options: toRefs(options),
+    options: readonly(options),
     previewFrame,
     previewUrl: computed(() => previewUrl.value ?? ''),
     processTabs,
