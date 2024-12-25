@@ -17,6 +17,9 @@ export type SandboxOptions = {
     readonly?: string[]
     reinstall?: string[]
   }
+  preview: {
+    suppressAddressBar?: boolean
+  }
   process: {
     commands: {
       install: string

@@ -1,8 +1,5 @@
 import { asyncComputed, createSharedComposable } from '@vueuse/core'
-import {
-  type IFSWatcher,
-  reloadPreview as wcReloadPreview,
-} from '@webcontainer/api'
+import { type IFSWatcher, reloadPreview } from '@webcontainer/api'
 import { computed, reactive, readonly, ref } from 'vue'
 
 import type { SandboxOptions } from '../types/Sandbox.ts'
@@ -40,6 +37,7 @@ function useSandboxInternal() {
       ],
       reinstall: ['./package.json'],
     },
+    preview: {},
     process: {
       commands: {
         install: 'npm install',
@@ -131,8 +129,16 @@ function useSandboxInternal() {
     // Kill already running processes (need for reinstall).
     processTabs.close(options.process.commands.devServer)
     processTabs.close(options.process.commands.install)
-    // Open terminal first to avoid waiting for other processes.
     if (!watchers.value.reinstall) {
+      // This code gets injected into every preview and helps emit the current URL to the parent window
+      // to be shown in the address bar of the preview panel.
+      await container.value?.setPreviewScript(`
+        window.parent.postMessage({ type: 'navigation', href: window.location.href}, '*');
+        window.addEventListener('hashchange', () => {
+          window.parent.postMessage({ type: 'navigation', href: window.location.href}, '*');
+        })
+      `)
+      // Open terminal first to avoid waiting for other processes.
       await options.process.starters?.terminal?.()
     }
     // Install dependencies.
@@ -158,22 +164,23 @@ function useSandboxInternal() {
     }
   }
 
-  const reloadPreview = () => {
-    if (previewFrame.value) {
-      wcReloadPreview(previewFrame.value)
-    }
-  }
-
   return {
     bootstrap,
     container: computed(() => container.value),
     editorTabs,
     explorer,
     options: readonly(options),
-    previewFrame,
-    previewUrl: computed(() => previewUrl.value ?? ''),
+    preview: {
+      frame: previewFrame,
+      reload: async () => {
+        if (previewFrame.value) {
+          await reloadPreview(previewFrame.value)
+        }
+      },
+      suppressAddressBar: computed(() => options.preview.suppressAddressBar),
+      url: computed(() => previewUrl.value ?? ''),
+    },
     processTabs,
-    reloadPreview,
     setOption,
     setPackageManager,
   }

@@ -11,8 +11,8 @@ import express from 'express';
 const app = express();
 const port = 3111;
 
-app.get('/xxx', (req, res) => {
-     res.send('Welcome to a WebContainers app! 🥳');
+app.get('/api/demo', (req, res) => {
+     setTimeout(() => res.send('Welcome to a WebContainers app! 🥳'), 1000);
 });
 app.use('/', express.static('public'));
 
@@ -41,7 +41,22 @@ const html = `
 <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
+<nav>
+<a href="/">Home</a>
+&bull;
+<a href="/about.html">About</a>
+</nav>
 <h1>Slide 1 Headline</h1>
+<p class="response">Loading...</p>
+<p>
+Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci beatae cupiditate, delectus dolor esse excepturi
+fugiat incidunt ipsa itaque libero nam nisi provident quasi quidem recusandae saepe veniam vitae voluptatibus.
+</p>
+<p>
+Lorem ipsum dolor sit amet, consectetur adipisicing elit. Adipisci beatae cupiditate, delectus dolor esse excepturi
+fugiat incidunt ipsa itaque libero nam nisi provident quasi quidem recusandae saepe veniam vitae voluptatibus.
+</p>
+<a href="#anchor">Anchor link</a>
 <${'script'} src="./script.js"><${'/script'}>
 <${'script'}>doSomething()<${'/script'}>
 </body>
@@ -51,6 +66,10 @@ const html = `
 const script = `
 function doSomething() {
   console.log(document.querySelector('h1').innerText)
+
+  fetch('/api/demo')
+    .then((response) => response.text())
+    .then((data) => document.querySelector('.response').innerHTML = data)
 }
 `
 
@@ -70,6 +89,9 @@ const tree = ref<FileSystemTree>({
   public: {
     directory: {
       'index.html': { file: { contents: html } },
+      'about.html': {
+        file: { contents: html.replace('Slide 1 Headline', 'About Page') },
+      },
       'script.js': { file: { contents: script } },
       'style.css': { file: { contents: style } },
     },
