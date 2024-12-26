@@ -1,5 +1,6 @@
 export const en = {
   krgz: {
+    dir: 'ltr',
     sandbox: {
       toggle: {
         code: 'Code',

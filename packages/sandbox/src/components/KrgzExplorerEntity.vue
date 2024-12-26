@@ -4,7 +4,7 @@ import { File, Folder, FolderOpen } from 'lucide-vue-next'
 import { computed, ref, watch } from 'vue'
 
 import { useSandbox } from '../composables'
-import KrgzExplorer from './KrgzExplorer.vue'
+import KrgzExplorerSubdir from './KrgzExplorerSubdir.vue'
 
 const props = defineProps<{
   depth: number
@@ -76,7 +76,7 @@ const onClick = () => {
     >
       <component
         :is="entity.isFile() ? File : isExpanded ? FolderOpen : Folder"
-        class="krgz-explorer-entity-icon size-3.5"
+        class="krgz-explorer-entity-icon min-w-3.5 size-3.5"
         :class="{ 'opacity-50': isReadonly }"
       />
       <span
@@ -87,12 +87,12 @@ const onClick = () => {
         {{ entity.name }}
       </span>
     </a>
-    <KrgzExplorer
+    <KrgzExplorerSubdir
       v-if="isRendered && entity.isDirectory()"
       v-show="isExpanded"
       :depth="depth + 1"
       :path="entityPath"
-    ></KrgzExplorer>
+    ></KrgzExplorerSubdir>
   </li>
 </template>
 

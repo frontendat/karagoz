@@ -1,5 +1,8 @@
-export const de = {
+import type { MessageSchema } from '../types/vue-i18n'
+
+export const de: MessageSchema = {
   krgz: {
+    dir: 'ltr',
     sandbox: {
       toggle: {
         code: 'Code',

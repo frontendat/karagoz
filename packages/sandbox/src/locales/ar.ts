@@ -1,5 +1,8 @@
-export const ar = {
+import type { MessageSchema } from '../types/vue-i18n'
+
+export const ar: MessageSchema = {
   krgz: {
+    dir: 'rtl',
     sandbox: {
       toggle: {
         code: 'النص البرمجي',

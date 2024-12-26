@@ -7,12 +7,12 @@ import KrgzSandbox from './components/KrgzSandbox.vue'
 import { useSandbox, useSandboxBoot } from './composables'
 import { provideWebContainer } from './utils/WebContainer.ts'
 
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 
 onMounted(() => {
   document.documentElement.setAttribute('lang', locale.value)
   if (locale.value === 'ar') {
-    document.documentElement.setAttribute('dir', 'rtl')
+    document.documentElement.setAttribute('dir', t('krgz.dir'))
   }
 })
 
