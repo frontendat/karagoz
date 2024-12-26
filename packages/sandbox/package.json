@@ -43,12 +43,13 @@
     "@webcontainer/api": "^1.5.1",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
-    "autoprefixer": "^10.4.20",
     "codemirror": "^6.0.1",
     "ignore": "^6.0.2",
+    "lucide-vue-next": "^0.453.0",
     "radix-vue": "^1.9.7",
-    "tailwindcss": "^3.4.14",
-    "vue-codemirror": "^6.1.1"
+    "vue": "^3.4.21",
+    "vue-codemirror": "^6.1.1",
+    "vue-i18n": "^11.0.1"
   },
   "dependencies": {
     "@karagoz/shared": "workspace:^"

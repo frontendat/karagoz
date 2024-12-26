@@ -9,6 +9,7 @@ import KrgzProcess from './components/KrgzProcess.vue'
 import KrgzProcessTabs from './components/KrgzProcessTabs.vue'
 import KrgzSandbox from './components/KrgzSandbox.vue'
 import { useSandbox, useSandboxBoot } from './composables'
+import { ar, de, en } from './locales'
 import {
   injectWebContainer,
   provideWebContainer,
@@ -16,7 +17,10 @@ import {
 
 export * from './types/index'
 
+const i18nMessages = { ar, de, en }
+
 export {
+  i18nMessages,
   injectWebContainer,
   KrgzEditor,
   KrgzEditorTabs,

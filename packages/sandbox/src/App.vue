@@ -1,10 +1,20 @@
 <script setup lang="ts">
 import { FileSystemTree } from '@webcontainer/api'
 import { onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import KrgzSandbox from './components/KrgzSandbox.vue'
 import { useSandbox, useSandboxBoot } from './composables'
 import { provideWebContainer } from './utils/WebContainer.ts'
+
+const { locale } = useI18n()
+
+onMounted(() => {
+  document.documentElement.setAttribute('lang', locale.value)
+  if (locale.value === 'ar') {
+    document.documentElement.setAttribute('dir', 'rtl')
+  }
+})
 
 const index = `
 import express from 'express';
