@@ -27,7 +27,7 @@ const { dirEnts } = useSandboxReadDir('')
     <LoadingIndicator
       v-else
       class="absolute inset-0"
-      label="Files loading..."
+      :label="t('krgz.sandbox.loading.files')"
       variant="secondary"
     >
       <FolderCode class="size-12" />

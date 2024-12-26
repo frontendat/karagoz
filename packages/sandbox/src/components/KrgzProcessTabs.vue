@@ -22,14 +22,17 @@ import {
   ref,
   watch,
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useSandbox } from '../composables'
 import KrgzProcess from './KrgzProcess.vue'
+import KrgzTabIcon from './KrgzTabIcon.vue'
 
 const props = defineProps<{
   mode: 'process' | 'terminal'
 }>()
 
+const { t } = useI18n()
 const { options, processTabs } = useSandbox()
 const tabs = computed(() => processTabs.tabs.value)
 const tabList = ref<ComponentPublicInstance<InstanceType<typeof TabsList>>>()
@@ -78,6 +81,7 @@ const onTabChange = (value: string) => {
   <Tabs
     v-if="tabsToRender.length"
     class="h-full flex flex-col"
+    :dir="t('krgz.dir')"
     :model-value="current?.id"
     @update:model-value="onTabChange"
   >
@@ -93,25 +97,28 @@ const onTabChange = (value: string) => {
             <span :title="tab.label">
               {{ tab.label }}
             </span>
-            <RotateCw
+            <KrgzTabIcon
               v-if="!tab.context?.isTerminal && tab.context?.canRestart"
-              class="h-4 w-4"
+              :icon="RotateCw"
+              :tooltip="t('krgz.sandbox.general.restart')"
               @click.stop="processTabs.restart(tab.id)"
-            ></RotateCw>
-            <SquareX
+            />
+            <KrgzTabIcon
               v-if="
                 !tab.context?.isTerminal &&
                 tab.context?.canStop &&
                 tab.context?.exitCode === undefined
               "
-              class="h-4 w-4"
+              :icon="SquareX"
+              :tooltip="t('krgz.sandbox.general.stop')"
               @click.stop="processTabs.kill(tab.id)"
-            ></SquareX>
-            <X
+            />
+            <KrgzTabIcon
               v-if="!tab.context?.suppressClose"
-              class="h-4 w-4"
+              :icon="X"
+              :tooltip="t('krgz.sandbox.general.close')"
               @click.stop="processTabs.close(tab.id)"
-            ></X>
+            />
           </div>
         </TabsTrigger>
         <TabsTrigger
@@ -122,7 +129,10 @@ const onTabChange = (value: string) => {
           class="text-xs"
           value="CREATE_NEW_PROCESS"
         >
-          <Plus class="h-4 w-4"></Plus>
+          <KrgzTabIcon
+            :icon="Plus"
+            :tooltip="t('krgz.sandbox.panel.terminals.new')"
+          />
         </TabsTrigger>
       </TabsList>
     </div>
@@ -139,10 +149,10 @@ const onTabChange = (value: string) => {
     v-else
     :label="
       mode === 'process'
-        ? 'There are no running processes'
+        ? t('krgz.sandbox.loading.processes')
         : processTabs.availableTerminals.value
           ? undefined
-          : 'There are no available terminals'
+          : t('krgz.sandbox.loading.terminals')
     "
     suppress-spinner
     variant="secondary"
@@ -155,7 +165,7 @@ const onTabChange = (value: string) => {
         size="xs"
         variant="link"
         @click="options.process.starters?.terminal?.()"
-        >Open a terminal</Button
+        >{{ t('krgz.sandbox.panel.terminals.open') }}</Button
       >
     </template>
   </LoadingIndicator>

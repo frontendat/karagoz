@@ -14,10 +14,13 @@ import {
   ref,
   watch,
 } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useSandbox } from '../composables'
 import KrgzEditor from './KrgzEditor.vue'
+import KrgzTabIcon from './KrgzTabIcon.vue'
 
+const { t } = useI18n()
 const { editorTabs, explorer } = useSandbox()
 const tabList = ref<ComponentPublicInstance<InstanceType<typeof TabsList>>>()
 
@@ -37,6 +40,7 @@ watch(
   <Tabs
     v-if="editorTabs.tabs.value.length"
     class="h-full flex flex-col"
+    :dir="t('krgz.dir')"
     :model-value="editorTabs.current.value?.id"
     @update:model-value="editorTabs.open($event)"
   >
@@ -55,12 +59,18 @@ watch(
             >
               {{ tab.label.split('/').at(-1) }}
             </span>
-            <Lock v-if="readonly.ignores(tab.label)" class="h-4 w-4"></Lock>
-            <X
+            <KrgzTabIcon
+              v-if="readonly.ignores(tab.label)"
+              class="h-4 opacity-50 w-4"
+              :icon="Lock"
+              :tooltip="t('krgz.sandbox.panel.editor.readonly')"
+            />
+            <KrgzTabIcon
               v-if="!tab.context?.suppressClose"
-              class="h-4 w-4"
+              :icon="X"
+              :tooltip="t('krgz.sandbox.general.close')"
               @click.stop="editorTabs.close(tab.id)"
-            ></X>
+            />
           </div>
         </TabsTrigger>
       </TabsList>
@@ -72,6 +82,7 @@ watch(
       <template v-for="tab in editorTabs.tabs.value" :key="tab.id">
         <KrgzEditor
           v-show="tab.id === editorTabs.current.value?.id"
+          dir="ltr"
           :disabled="readonly.ignores(tab.id)"
           :path="tab.id"
           @close="editorTabs.close($event)"
@@ -81,7 +92,7 @@ watch(
   </Tabs>
   <LoadingIndicator
     v-else
-    label="Open a file to start editing"
+    :label="t('krgz.sandbox.loading.editor')"
     suppress-spinner
     variant="secondary"
   >

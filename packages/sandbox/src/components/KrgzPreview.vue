@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { Button, LoadingIndicator } from '@karagoz/shared'
-import { Eye, RefreshCw } from 'lucide-vue-next'
+import { Eye, RotateCw } from 'lucide-vue-next'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { useSandbox } from '../composables'
+import KrgzTabIcon from './KrgzTabIcon.vue'
 
+const { t } = useI18n()
 const sandbox = useSandbox()
 const previewFrame = sandbox.preview.frame
 const previewReady = ref(false)
@@ -56,12 +59,21 @@ onBeforeUnmount(() => {
         <div
           class="flex-grow self-center overflow-ellipsis overflow-hidden p-2 text-xs whitespace-nowrap"
         >
-          <a class="text-muted-foreground" :href="currentUrl" target="_blank">
+          <a
+            class="text-muted-foreground"
+            :href="currentUrl"
+            dir="ltr"
+            target="_blank"
+          >
             {{ currentUrlDisplay }}
           </a>
         </div>
         <Button size="sm" variant="ghost" @click="onReloadClick">
-          <RefreshCw class="size-3" />
+          <KrgzTabIcon
+            class="size-3"
+            :icon="RotateCw"
+            :tooltip="t('krgz.sandbox.panel.preview.reload')"
+          />
         </Button>
       </div>
       <iframe
@@ -73,7 +85,7 @@ onBeforeUnmount(() => {
     <LoadingIndicator
       v-if="!previewReady"
       class="absolute inset-0"
-      label="Preview loading..."
+      :label="t('krgz.sandbox.loading.preview')"
       variant="secondary"
     >
       <Eye class="size-12" />

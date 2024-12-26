@@ -45,7 +45,7 @@ defineEmits<{
           <slot />
         </Toggle>
       </TooltipTrigger>
-      <TooltipContent :side="side ?? 'right'" :side-offset="5">
+      <TooltipContent class="text-xs" :side="side ?? 'right'" :side-offset="5">
         {{ label }}
       </TooltipContent>
     </Tooltip>

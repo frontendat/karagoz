@@ -9,6 +9,7 @@ import {
 } from '@karagoz/shared'
 import { Binary } from 'lucide-vue-next'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import { type Panel, panels } from '../types/Panel.ts'
 import KrgzEditorTabs from './KrgzEditorTabs.vue'
@@ -38,6 +39,8 @@ const [shownPanels, setShownPanels] = useControlledModel<Panel[]>(
   ['code', 'processes', 'result', 'terminal'],
 )
 
+const { t } = useI18n()
+
 const togglePanel = (panel: Panel) => {
   setShownPanels(
     shownPanels.value.includes(panel)
@@ -62,7 +65,7 @@ const isRowDividerShown = computed(() => {
 <template>
   <LoadingIndicator
     v-if="booting"
-    label="Booting Web Container..."
+    :label="t('krgz.sandbox.loading.booting')"
     variant="secondary"
   >
     <Binary class="size-12" />
@@ -97,7 +100,7 @@ const isRowDividerShown = computed(() => {
                 <template v-if="!hideExplorer">
                   <ResizablePanel :default-size="30">
                     <slot name="explorer">
-                      <ScrollArea class="h-full overflow-auto">
+                      <ScrollArea class="h-full overflow-auto" :dir="t">
                         <KrgzExplorer />
                       </ScrollArea>
                     </slot>
