@@ -20,9 +20,9 @@
         "default": "./dist/karagoz-sandbox.umd.cjs"
       }
     },
-    "./dist/style.css": {
-      "import": "./dist/style.css",
-      "require": "./dist/style.css"
+    "./dist/karagoz-sandbox.css": {
+      "import": "./dist/karagoz-sandbox.css",
+      "require": "./dist/karagoz-sandbox.css"
     }
   },
   "scripts": {

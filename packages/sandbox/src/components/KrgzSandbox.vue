@@ -71,6 +71,7 @@ const isRowDividerShown = computed(() => {
     <Binary class="size-12" />
   </LoadingIndicator>
   <KrgzSandboxPanelToggles
+    v-else
     :available-panels="availablePanels"
     :hide-solve-button="hideSolveButton"
     :hide-theme-toggle="hideThemeToggle"
