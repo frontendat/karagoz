@@ -1,10 +1,10 @@
-import { WebContainer } from '@webcontainer/api'
+import { type BootOptions, WebContainer } from '@webcontainer/api'
 import { ref } from 'vue'
 
-export const useSandboxBoot = () => {
+export const useSandboxBoot = (options?: BootOptions) => {
   const isBooting = ref(true)
 
-  const boot = WebContainer.boot().then((container) => {
+  const boot = WebContainer.boot(options).then((container) => {
     isBooting.value = false
     return container
   })

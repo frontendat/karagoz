@@ -15,5 +15,9 @@ export default [
         project: './tsconfig.json',
       },
     },
+
+    rules: {
+      'vue/multi-word-component-names': 'off',
+    },
   },
 ]

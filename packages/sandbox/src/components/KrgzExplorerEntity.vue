@@ -97,19 +97,17 @@ const onClick = () => {
 </template>
 
 <style>
-@layer karagoz {
-  .krgz-explorer-entity-header {
-    align-items: center;
-    display: flex;
-    gap: 0.5rem;
-    padding-inline-start: calc(0.6rem * var(--krgz-depth));
-    cursor: pointer;
-  }
+.krgz-explorer-entity-header {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  padding-inline-start: calc(0.6rem * var(--krgz-depth));
+  cursor: pointer;
+}
 
-  .krgz-explorer-entity-name {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-  }
+.krgz-explorer-entity-name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 </style>

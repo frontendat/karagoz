@@ -1,0 +1,6 @@
+@import '@karagoz/shared/dist/style.css';
+@import '@karagoz/sandbox/dist/karagoz-sandbox.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;

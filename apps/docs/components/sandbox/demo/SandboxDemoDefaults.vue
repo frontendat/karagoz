@@ -1,22 +1,12 @@
 <script setup lang="ts">
-import '@karagoz/shared/dist/style.css'
-
-import { FileSystemTree } from '@webcontainer/api'
-import { onMounted, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
-
-import KrgzSandbox from './components/KrgzSandbox.vue'
-import { useSandbox, useSandboxBoot } from './composables'
-import { provideWebContainer } from './utils/WebContainer.ts'
-
-const { locale, t } = useI18n()
-
-onMounted(() => {
-  document.documentElement.setAttribute('lang', locale.value)
-  if (locale.value === 'ar') {
-    document.documentElement.setAttribute('dir', t('krgz.dir'))
-  }
-})
+import {
+  KrgzSandbox,
+  provideWebContainer,
+  useSandbox,
+  useSandboxBoot,
+} from '@karagoz/sandbox'
+import type { FileSystemTree } from '@webcontainer/api'
+import { onBeforeUnmount, onMounted } from 'vue'
 
 const index = `
 import express from 'express';
@@ -121,39 +111,14 @@ onMounted(async () => {
   // Continue initialisation
   await container.mount(tree.value)
   await sandbox.bootstrap()
-  sandbox.editorTabs.open('./public/script.js')
-  sandbox.editorTabs.open('./public/index.html')
+  await sandbox.editorTabs.open('./public/index.html')
 })
 
-const onSolveClick = async () => {
-  sandbox.container.value?.mount({
-    public: {
-      directory: {
-        'index.html': {
-          file: {
-            contents: html.replace(
-              'Slide 1 Headline',
-              'Slide 1 Headline SOLVED',
-            ),
-          },
-        },
-      },
-    },
-  })
-}
+onBeforeUnmount(() => sandbox.container.value?.teardown())
 </script>
 
 <template>
-  <KrgzSandbox :booting="isBooting" @solve="onSolveClick()" />
+  <div class="h-[400px]">
+    <KrgzSandbox :booting="isBooting"></KrgzSandbox>
+  </div>
 </template>
-
-<style>
-body {
-  height: 100dvh;
-  margin: 0;
-}
-
-#app {
-  height: 100%;
-}
-</style>

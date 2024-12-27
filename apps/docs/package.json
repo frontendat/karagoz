@@ -11,7 +11,10 @@
     "lint": "eslint \"./**/*.{ts,vue}\""
   },
   "dependencies": {
-    "@karagoz/puppeteer": "workspace:^",
+    "@karagoz/sandbox": "workspace:^",
+    "@karagoz/shared": "workspace:^",
+    "@nuxtjs/i18n": "^9.1.1",
+    "@nuxtjs/tailwindcss": "^6.12.2",
     "nuxt": "^3.11.2"
   }
 }

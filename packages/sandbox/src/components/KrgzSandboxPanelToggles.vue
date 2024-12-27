@@ -40,7 +40,7 @@ const isAvailable = computed(
 </script>
 
 <template>
-  <section class="grid h-screen w-full krgz-sandbox-grid">
+  <section class="grid h-full w-full krgz-sandbox-grid">
     <aside
       v-if="isAvailable.code || isAvailable.result"
       class="flex h-full flex-col border-e border-e-border"
@@ -120,17 +120,15 @@ const isAvailable = computed(
   </section>
 </template>
 
-<style scoped>
-@layer krgz {
-  .krgz-sandbox-grid:has(> aside:first-child) {
-    grid-template-columns: 60px minmax(calc(100% - 60px), 1fr);
-  }
-  .krgz-sandbox-grid:has(> aside:last-child) {
-    grid-template-columns: minmax(calc(100% - 60px), 1fr) 60px;
-  }
+<style>
+.krgz-sandbox-grid:has(> aside:first-child) {
+  grid-template-columns: 60px minmax(calc(100% - 60px), 1fr);
+}
+.krgz-sandbox-grid:has(> aside:last-child) {
+  grid-template-columns: minmax(calc(100% - 60px), 1fr) 60px;
+}
 
-  .krgz-sandbox-grid:has(> aside:first-child):has(> aside:last-child) {
-    grid-template-columns: 60px minmax(calc(100% - 120px), 1fr) 60px;
-  }
+.krgz-sandbox-grid:has(> aside:first-child):has(> aside:last-child) {
+  grid-template-columns: 60px minmax(calc(100% - 120px), 1fr) 60px;
 }
 </style>

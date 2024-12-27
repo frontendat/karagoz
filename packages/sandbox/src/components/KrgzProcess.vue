@@ -2,8 +2,8 @@
 import '@xterm/xterm/css/xterm.css'
 
 import { useDark } from '@vueuse/core'
-import { FitAddon } from '@xterm/addon-fit'
-import { Terminal } from '@xterm/xterm'
+import type { FitAddon } from '@xterm/addon-fit'
+import type { Terminal } from '@xterm/xterm'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 import { useSandbox } from '../composables'
@@ -47,8 +47,9 @@ onMounted(async () => {
   await nextTick()
 
   // Create instances.
-  fitAddon.value = new FitAddon()
-  terminal.value = new Terminal({
+  // Async imports needed to avoid errors in Nuxt.
+  fitAddon.value = new (await import('@xterm/addon-fit')).FitAddon()
+  terminal.value = new (await import('@xterm/xterm')).Terminal({
     convertEol: true,
     theme: theme.value,
   })

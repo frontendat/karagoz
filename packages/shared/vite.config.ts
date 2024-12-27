@@ -25,7 +25,7 @@ export default defineConfig({
     viteStaticCopy({
       targets: [
         {
-          src: ['src/style.css', 'tailwind.config.js'],
+          src: ['tailwind.config.js'],
           dest: 'config', // Copy directly to the root of the `dist` folder
         },
       ],
