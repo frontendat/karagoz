@@ -100,7 +100,7 @@ const isRowDividerShown = computed(() => {
                 <template v-if="!hideExplorer">
                   <ResizablePanel :default-size="30">
                     <slot name="explorer">
-                      <ScrollArea class="h-full overflow-auto" :dir="t">
+                      <ScrollArea class="h-full overflow-auto">
                         <KrgzExplorer />
                       </ScrollArea>
                     </slot>
