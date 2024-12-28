@@ -8,6 +8,9 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', href: '/karagoz-logo.svg', type: 'image/svg+xml' }],
     },
   },
+  content: {
+    defaultLocale: 'en',
+  },
   devtools: { enabled: true },
   devServer: {
     https: {
@@ -32,7 +35,12 @@ export default defineNuxtConfig({
     strategy: 'prefix_and_default',
     vueI18n: './i18n.config.ts', // if you are using custom path, default
   },
-  modules: ['@nuxtjs/i18n', '@nuxtjs/tailwindcss', 'shadcn-nuxt'],
+  modules: [
+    '@nuxt/content',
+    '@nuxtjs/i18n',
+    '@nuxtjs/tailwindcss',
+    'shadcn-nuxt',
+  ],
   nitro: {
     routeRules: {
       '**': {

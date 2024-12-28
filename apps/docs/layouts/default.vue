@@ -33,9 +33,7 @@ const title = computed(() =>
       <Body>
         <div class="min-h-full">
           <DocsTopBar />
-          <main>
-            <slot></slot>
-          </main>
+          <slot></slot>
         </div>
       </Body>
     </Html>

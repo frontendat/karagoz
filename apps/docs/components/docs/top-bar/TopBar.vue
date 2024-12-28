@@ -6,6 +6,7 @@ import { MoonStar, Sun } from 'lucide-vue-next'
 import { navigationMenuTriggerStyle } from '~/components/ui/navigation-menu'
 
 const { t } = useI18n()
+const localePath = useLocalePath()
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 </script>
@@ -33,9 +34,9 @@ const toggleDark = useToggle(isDark)
               >
                 <li class="row-span-5">
                   <NavigationMenuLink as-child>
-                    <a
+                    <NuxtLink
                       class="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                      href="/"
+                      :to="localePath({ path: 'sandbox' })"
                     >
                       <div class="mb-2 mt-4 text-lg font-medium">
                         Karagöz <br />
@@ -45,64 +46,64 @@ const toggleDark = useToggle(isDark)
                         Bring the power of web containers to your interactive
                         coding demos.
                       </p>
-                    </a>
+                    </NuxtLink>
                   </NavigationMenuLink>
                 </li>
 
                 <li>
                   <NavigationMenuLink as-child>
-                    <a
-                      href="/docs/installation"
+                    <NuxtLink
+                      :to="localePath({ path: '/sandbox/installation' })"
                       class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
                       <div class="text-sm font-medium leading-none">
                         Installation
                       </div>
-                    </a>
+                    </NuxtLink>
                   </NavigationMenuLink>
                 </li>
                 <li>
                   <NavigationMenuLink as-child>
-                    <a
-                      href="/docs/typography"
+                    <NuxtLink
+                      :to="localePath({ path: '/sandbox/getting-started' })"
                       class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
                       <div class="text-sm font-medium leading-none">
                         Getting Started
                       </div>
-                    </a>
+                    </NuxtLink>
                   </NavigationMenuLink>
                 </li>
                 <li>
                   <NavigationMenuLink as-child>
-                    <a
-                      href="/docs/typography"
+                    <NuxtLink
+                      :to="localePath({ path: '/sandbox/guides' })"
                       class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
-                      <div class="text-sm font-medium leading-none">Guide</div>
-                    </a>
+                      <div class="text-sm font-medium leading-none">Guides</div>
+                    </NuxtLink>
                   </NavigationMenuLink>
                 </li>
                 <li>
                   <NavigationMenuLink as-child>
-                    <a
-                      href="/docs/typography"
+                    <NuxtLink
+                      :to="localePath({ path: '/sandbox/api-reference' })"
                       class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
                       <div class="text-sm font-medium leading-none">
                         API Reference
                       </div>
-                    </a>
+                    </NuxtLink>
                   </NavigationMenuLink>
                 </li>
                 <li>
                   <NavigationMenuLink as-child>
-                    <a
-                      href="/docs/typography"
+                    <NuxtLink
+                      :to="localePath({ path: '/sandbox/demos' })"
                       class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
                       <div class="text-sm font-medium leading-none">Demos</div>
-                    </a>
+                    </NuxtLink>
                   </NavigationMenuLink>
                 </li>
               </ul>
