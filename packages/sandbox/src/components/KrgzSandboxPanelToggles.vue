@@ -124,6 +124,7 @@ const isAvailable = computed(
 .krgz-sandbox-grid:has(> aside:first-child) {
   grid-template-columns: 60px minmax(calc(100% - 60px), 1fr);
 }
+
 .krgz-sandbox-grid:has(> aside:last-child) {
   grid-template-columns: minmax(calc(100% - 60px), 1fr) 60px;
 }

@@ -2,22 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-/* For modern browsers */
-.krgz-tabs::-webkit-scrollbar {
+@layer components {
+  /* For modern browsers */
+  .krgz-tabs::-webkit-scrollbar {
     width: 0;
     height: 0;
-}
+  }
 
-.krgz-tabs::-webkit-scrollbar-thumb {
+  .krgz-tabs::-webkit-scrollbar-thumb {
     background-color: currentColor;
-}
+  }
 
-.krgz-tabs::-webkit-scrollbar-track {
+  .krgz-tabs::-webkit-scrollbar-track {
     background: transparent;
-}
+  }
 
-/* For Firefox */
-.krgz-tabs* {
+  /* For Firefox */
+  .krgz-tabs* {
     scrollbar-width: thin;
     scrollbar-color: currentColor transparent;
+  }
 }

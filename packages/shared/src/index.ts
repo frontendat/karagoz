@@ -1,5 +1,6 @@
 import './style.css'
 
+export { default as KaragozLogo } from '@/components/KaragozLogo.vue'
 export * from '@/components/ui/button'
 export * from '@/components/ui/loading-indicator'
 export * from '@/components/ui/resizable'
