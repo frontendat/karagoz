@@ -5,6 +5,7 @@ import { MoonStar, Sun } from 'lucide-vue-next'
 
 import { navigationMenuTriggerStyle } from '~/components/ui/navigation-menu'
 
+const { t } = useI18n()
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 </script>
@@ -15,7 +16,11 @@ const toggleDark = useToggle(isDark)
   >
     <div class="container flex h-14 items-center max-w-screen-2xl">
       <NuxtLink class="flex gap-2 items-center me-6" to="/">
-        <KaragozLogo class="h-8" />
+        <KaragozLogo
+          aria-hidden="true"
+          class="fill-primary h-8"
+          :title="t('layouts.siteName')"
+        />
         <span class="font-bold">Karagöz</span>
       </NuxtLink>
       <NavigationMenu>
@@ -116,6 +121,7 @@ const toggleDark = useToggle(isDark)
       <div
         class="flex flex-1 items-center justify-between space-x-2 md:justify-end"
       >
+        <DocsTopBarLanguageSwitcher />
         <nav class="flex items-center">
           <Button
             as="a"

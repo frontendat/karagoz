@@ -1,3 +1,9 @@
+<script setup lang="ts">
+definePageMeta({
+  title: 'pages.sandbox.demos.defaults.title',
+})
+</script>
+
 <template>
   <p>
     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus alias

@@ -16,7 +16,7 @@ import {
 
 <template>
   <section class="m-4">
-    <KaragozLogo class="size-12" />
+    <KaragozLogo class="size-16" />
     <h1 class="text-4xl">Karagoz Shared Components:</h1>
 
     <h2 class="mb-4 mt-8">Button</h2>

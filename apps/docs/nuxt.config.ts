@@ -16,16 +16,18 @@ export default defineNuxtConfig({
     },
   },
   i18n: {
+    baseUrl: 'https://karagoz.dev',
     defaultLocale: 'en',
     detectBrowserLanguage: {
       useCookie: true,
       cookieKey: 'i18n_redirected',
       fallbackLocale: 'en',
     },
+    lazy: true,
     locales: [
-      { code: 'ar', iso: 'ar-SY', name: 'العربية' },
-      { code: 'en', iso: 'en-UK', name: 'English' },
-      { code: 'de', iso: 'de-DE', name: 'Deutsch' },
+      { code: 'ar', dir: 'rtl', file: 'ar.ts', iso: 'ar-SY', name: 'العربية' },
+      { code: 'de', dir: 'ltr', file: 'de.ts', iso: 'de-DE', name: 'Deutsch' },
+      { code: 'en', dir: 'ltr', file: 'en.ts', iso: 'en-UK', name: 'English' },
     ],
     strategy: 'prefix_and_default',
     vueI18n: './i18n.config.ts', // if you are using custom path, default
