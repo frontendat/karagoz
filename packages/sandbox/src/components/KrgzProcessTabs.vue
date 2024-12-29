@@ -28,7 +28,18 @@ import { useSandbox } from '../composables'
 import KrgzProcess from './KrgzProcess.vue'
 import KrgzTabIcon from './KrgzTabIcon.vue'
 
+/**
+ * Renders a tabbed list of the running processes or open terminals
+ * and renders the currently focused one using `KrgzProcess`.
+ *
+ * This component takes no props and emits no events since it gets all it needs to operate by calling `useSandbox()`.
+ */
+defineOptions({})
+
 const props = defineProps<{
+  /**
+   * Whether to render running processes or open terminals.
+   */
   mode: 'process' | 'terminal'
 }>()
 

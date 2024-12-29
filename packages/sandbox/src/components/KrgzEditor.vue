@@ -10,12 +10,28 @@ import { Codemirror } from 'vue-codemirror'
 import { useSandbox } from '../composables'
 import { codemirrorDefaultTheme } from '../utils/codemirror.ts'
 
+/**
+ * Renders CodeMirror to edit the currently focused file in the editor tabs.
+ */
+defineOptions({})
+
 const props = defineProps<{
+  /**
+   * Disable editor and prevent editing. Used for readonly files.
+   */
   disabled?: boolean
+  /**
+   * Path of the file being edited.
+   */
   path?: string
 }>()
 
 const emit = defineEmits<{
+  /**
+   * When the editor cannot read the file contents (e.g. file does not exist or has been deleted)
+   * a close event is emitted to close the editor tab.
+   * @param {string} path file path to close
+   */
   (e: 'close', path: string): void
 }>()
 

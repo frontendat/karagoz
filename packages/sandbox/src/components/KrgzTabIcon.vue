@@ -7,12 +7,23 @@ import {
 } from '@karagoz/shared'
 import { FunctionalComponent } from 'vue'
 
+/**
+ * Tab icon.
+ *
+ * Renders an icon next to the lable of a tab and shows the provided tooltip on hover.
+ */
 defineOptions({
   inheritAttrs: false,
 })
 
 defineProps<{
+  /**
+   * Icon to show. Should be imported from `lucide-vue-next`.
+   */
   icon?: FunctionalComponent
+  /**
+   * Tooltip to show on hover.
+   */
   tooltip?: string
 }>()
 </script>

@@ -10,7 +10,15 @@ import { useSandbox } from '../composables'
 import { ProcessTabContext, Tab } from '../types'
 import { xtermDefaultTheme } from '../utils/xterm.ts'
 
+/**
+ * Renders the output of a process / terminal using `xterm` and, if enabled, allows input into it.
+ */
+defineOptions({})
+
 const props = defineProps<{
+  /**
+   * Tab to render.
+   */
   tab: Tab<ProcessTabContext>
 }>()
 

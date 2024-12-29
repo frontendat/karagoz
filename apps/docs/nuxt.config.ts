@@ -10,6 +10,9 @@ export default defineNuxtConfig({
   },
   content: {
     defaultLocale: 'en',
+    highlight: {
+      theme: 'monokai',
+    },
   },
   devtools: { enabled: true },
   devServer: {

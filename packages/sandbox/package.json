@@ -32,7 +32,8 @@
     "preview": "vite preview",
     "watch:vite": "vite build --watch",
     "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
-    "lint": "eslint \"src/**/*.{ts,vue}\""
+    "lint": "eslint \"src/**/*.{ts,vue}\"",
+    "docs:components": "vue-docgen -c docgen.config.cjs"
   },
   "peerDependencies": {
     "@codemirror/language": "^6.10.3",

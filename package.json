@@ -50,12 +50,13 @@
     "globals": "^15.14.0",
     "prettier": "^3.2.5",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7",
     "tailwindcss": "^3.4.14",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.2.2",
     "vite": "^6.0.5",
     "vite-plugin-dts": "^3.8.3",
     "vite-plugin-static-copy": "^2.0.0",
+    "vue-docgen-cli": "^4.79.0",
     "vue-eslint-parser": "^9.4.3",
     "vue-tsc": "^2.0.6"
   }

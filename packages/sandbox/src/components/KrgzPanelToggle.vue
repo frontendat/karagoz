@@ -9,14 +9,37 @@ import {
 } from '@karagoz/shared'
 import { TooltipContentProps } from 'radix-vue'
 
+/**
+ * Renders a panel toggle.
+ *
+ * This component is used to render panel toggles and additional functionality buttons
+ * in the default layout component `KrgzSandbox`.
+ */
+defineOptions({})
+
 defineProps<{
+  /**
+   * Render as a button and not a toggle.
+   */
   asButton?: boolean
+  /**
+   * Initial status of the toggle.
+   */
   pressed?: boolean
+  /**
+   * Label to be used as aria-label and tooltip content.
+   */
   label: string
+  /**
+   * Which side the tooltip should be shown on.
+   */
   side?: TooltipContentProps['side']
 }>()
 
 defineEmits<{
+  /**
+   * Emitted when the toggle / button is clicked.
+   */
   (e: 'press'): void
 }>()
 </script>

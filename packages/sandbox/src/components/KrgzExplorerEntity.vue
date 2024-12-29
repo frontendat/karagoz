@@ -6,13 +6,37 @@ import { computed, ref, watch } from 'vue'
 import { useSandbox } from '../composables'
 import KrgzExplorerSubdir from './KrgzExplorerSubdir.vue'
 
+/**
+ * Renders the provided file explorer entity (directory or file).
+ *
+ * If an entity is hidden (matches one of the patterns in `useSandbox().options.explorer.hidden`, it won't be rendered.
+ *
+ * If an entity is readonly (matches one of the patterns in `useSandbox().options.explorer.readonly`, then:
+ * - If it is a directory, then all of its contents will be treated as readonly, unless another pattern excludes them.
+ * - If it es a file, it can be viewed in the editor with a lock icon, but can not be edited.
+ */
+defineOptions({})
+
 const props = defineProps<{
+  /**
+   * Depth of current path. Needed to calculate padding.
+   */
   depth: number
+  /**
+   * The entity to be rendered.
+   */
   entity: DirEnt<string>
+  /**
+   * The path the entity exists under.
+   */
   path: string
 }>()
 
 const emit = defineEmits<{
+  /**
+   * Emitted when a file node is clicked.
+   * @param { string } path file path to open
+   */
   (e: 'fileClick', path: string): void
 }>()
 

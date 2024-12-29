@@ -15,15 +15,41 @@ import { useI18n } from 'vue-i18n'
 import { Panel, panels } from '../types/Panel.ts'
 import KrgzPanelToggle from './KrgzPanelToggle.vue'
 
+/**
+ * Layout component.
+ *
+ * This component wraps the sandbox panels and renders the available panel toggles and additional functionality buttons.
+ */
+defineOptions({})
+
 const props = defineProps<{
+  /**
+   * Panel toggles to show.
+   */
   availablePanels: Panel[]
+  /**
+   * Hide the solve button if it is not needed.
+   */
   hideSolveButton?: boolean
+  /**
+   * Hide the dark/light theme toggle.
+   */
   hideThemeToggle?: boolean
+  /**
+   * Shown panels
+   */
   shownPanels: Panel[]
 }>()
 
 defineEmits<{
+  /**
+   * Emitted when the solve button is clicked.
+   */
   (e: 'solve'): void
+  /**
+   * Emitted when a panel toggle is clicked.
+   * @param {Panel} panel clicked panel toggle. One of: code, processes, result, terminal
+   */
   (e: 'toggle', panel: Panel): void
 }>()
 
