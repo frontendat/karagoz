@@ -58,6 +58,7 @@
     "vite": "^6.0.5",
     "vite-plugin-dts": "^3.8.3",
     "vite-plugin-static-copy": "^2.0.0",
+    "vue-docgen-api": "^4.79.2",
     "vue-docgen-cli": "^4.79.0",
     "vue-eslint-parser": "^9.4.3",
     "vue-tsc": "^2.0.6"

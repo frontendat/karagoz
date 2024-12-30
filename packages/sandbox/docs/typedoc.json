@@ -1,19 +1,20 @@
 {
   "entryPoints": [
-    "src/typedoc-entry.ts"
+    "../src/typedoc-entry.ts"
   ],
   "exclude": [
-    "src/main.ts"
+    "../src/main.ts"
   ],
   "excludeExternals": true,
   "excludePrivate": true,
   "excludeProtected": true,
   "expandObjects": false,
+  "gitRevision": "main",
   "hideBreadcrumbs": true,
   "hidePageHeader": true,
   "includeHierarchySummary": false,
   "includeVersion": false,
-  "out": "../../apps/docs/content/en/sandbox/4.api-reference",
+  "out": "../../../apps/docs/content/en/sandbox/4.api-reference",
   "pageTitleTemplates": {
     "member": "{name}"
   },

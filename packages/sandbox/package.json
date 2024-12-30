@@ -34,8 +34,8 @@
     "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
     "lint": "eslint \"src/**/*.{ts,vue}\"",
     "docs": "pnpm docs:typescript && pnpm docs:components",
-    "docs:components": "vue-docgen -c docgen.config.cjs",
-    "docs:typescript": "typedoc && rm ../../apps/docs/content/en/sandbox/4.api-reference/README.md"
+    "docs:components": "vue-docgen -c docs/docgen.config.cjs",
+    "docs:typescript": "typedoc --options docs/typedoc.json && rm ../../apps/docs/content/en/sandbox/4.api-reference/README.md"
   },
   "peerDependencies": {
     "@codemirror/language": "^6.10.3",

@@ -6,4 +6,4 @@ const panels: readonly ["code", "processes", "result", "terminal"];
 
 ## Defined in
 
-[packages/sandbox/src/types/Panel.ts:1](https://github.com/frontendat/karagoz/blob/2ed8a18477b67dcd686f6dbd2423b5cb094dd530/packages/sandbox/src/types/Panel.ts#L1)
+[packages/sandbox/src/types/Panel.ts:1](https://github.com/frontendat/karagoz/blob/main/packages/sandbox/src/types/Panel.ts#L1)

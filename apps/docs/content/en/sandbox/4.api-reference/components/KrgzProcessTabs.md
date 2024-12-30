@@ -26,3 +26,7 @@ This component takes no props and emits no events since it gets all it needs to 
 ```vue
 <KrgzProcessTabs mode="terminal" />
 ```
+
+## Defined in
+
+[packages/sandbox/src/components/KrgzProcessTabs.vue](https://github.com/frontendat/karagoz/blob/main/packages/sandbox/src/components/KrgzProcessTabs.vue)

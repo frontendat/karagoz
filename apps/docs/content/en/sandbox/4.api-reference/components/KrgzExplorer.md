@@ -10,3 +10,7 @@ It initially renders a loading indicator until contents of the directory have be
 It takes no props and emits no events since it gets all that it needs to operate by calling `useSandbox()`.
 
 ---
+
+## Defined in
+
+[packages/sandbox/src/components/KrgzExplorer.vue](https://github.com/frontendat/karagoz/blob/main/packages/sandbox/src/components/KrgzExplorer.vue)

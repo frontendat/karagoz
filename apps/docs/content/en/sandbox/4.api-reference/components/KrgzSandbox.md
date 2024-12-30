@@ -114,3 +114,7 @@ const { boot, isBooting } = useSandboxBoot()
   </KrgzSandbox>
 </template>
 ```
+
+## Defined in
+
+[packages/sandbox/src/components/KrgzSandbox.vue](https://github.com/frontendat/karagoz/blob/main/packages/sandbox/src/components/KrgzSandbox.vue)

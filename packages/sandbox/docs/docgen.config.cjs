@@ -10,6 +10,9 @@ module.exports = {
   defaultExamples: false,
   outDir: resolve(
       __dirname,
-      '../../apps/docs/content/en/sandbox/4.api-reference/components',
+      '../../../apps/docs/content/en/sandbox/4.api-reference/components',
   ),
+  templates: {
+    component: require('./docgen.component.template.cjs'),
+  },
 }
