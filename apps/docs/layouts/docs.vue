@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import DefaultLayout from '~/layouts/default.vue'
-
-const route = useRoute()
 </script>
 
 <template>
@@ -17,7 +15,7 @@ const route = useRoute()
       <main
         class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]"
       >
-        <div class="mx-auto w-full min-w-0 prose">
+        <div class="mx-auto w-full min-w-0 prose dark:prose-invert">
           <slot></slot>
         </div>
         <div class="hidden text-sm xl:block">
