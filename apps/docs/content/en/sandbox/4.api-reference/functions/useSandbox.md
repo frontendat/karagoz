@@ -238,17 +238,29 @@ Editor related options.
 readonly optional suppressClose: boolean;
 ```
 
+Default value to be used when creating editor tabs.
+
 #### options.editor.theme?
 
 ```ts
 readonly optional theme: object;
 ```
 
+Themes to be used by codemirror.
+
+Using callbacks to overcome the readonly nature of the options returned by `useSandbox()`.
+
+It is also to avoid the "Type instantiation is excessively deep and possibly infinite." error.
+
+The callbacks return an array to allow passing multiple themes (e.g. base theme and a theme for overrides).
+
 #### options.editor.theme.dark()?
 
 ```ts
 readonly optional dark: () => Extension[];
 ```
+
+Callback that returns a list of dark codemirror themes.
 
 ##### Returns
 
@@ -260,6 +272,8 @@ readonly optional dark: () => Extension[];
 readonly optional light: () => Extension[];
 ```
 
+Callback that returns a list of light codemirror themes.
+
 ##### Returns
 
 `Extension`[]
@@ -270,11 +284,17 @@ readonly optional light: () => Extension[];
 readonly explorer: object;
 ```
 
+Path patterns to be used for matching.
+The matchers use .gitignore-style matching through [ignore](https://www.npmjs.com/package/ignore) to determine
+whether a give path matches one of the patterns.
+
 #### options.explorer.hidden?
 
 ```ts
 readonly optional hidden: readonly string[];
 ```
+
+List of patterns to determine whether an entity (directory or file) should be hidden in the file explorer.
 
 #### options.explorer.readonly?
 
@@ -282,11 +302,17 @@ readonly optional hidden: readonly string[];
 readonly optional readonly: readonly string[];
 ```
 
+List of patterns to determine whether an entity (directory or file) should be marked as readonly in the file
+explorer and editor tabs.
+
 #### options.explorer.reinstall?
 
 ```ts
 readonly optional reinstall: readonly string[];
 ```
+
+List of patterns to determine whether changing an entity (directory or file) should trigger the re-installation
+of dependencies and re-bootstrapping.
 
 #### options.preview
 
@@ -294,11 +320,15 @@ readonly optional reinstall: readonly string[];
 readonly preview: object;
 ```
 
+Preview related options.
+
 #### options.preview.suppressAddressBar?
 
 ```ts
 readonly optional suppressAddressBar: boolean;
 ```
+
+When true, the address bar in the preview panel will not be shown.
 
 #### options.process
 
@@ -306,16 +336,28 @@ readonly optional suppressAddressBar: boolean;
 readonly process: object;
 ```
 
+Preview / terminal related options.
+
 #### options.process.commands
 
 ```ts
 readonly commands: object;
 ```
 
+Predefined commands.
+
 #### options.process.commands.devServer
 
 ```ts
 readonly devServer: string;
+```
+
+Command to start dev server.
+
+##### Default
+
+```ts
+npm start
 ```
 
 #### options.process.commands.install
@@ -324,10 +366,26 @@ readonly devServer: string;
 readonly install: string;
 ```
 
+Dependency installation command.
+
+##### Default
+
+```ts
+npm install
+```
+
 #### options.process.commands.terminal
 
 ```ts
 readonly terminal: string;
+```
+
+Command to start a terminal.
+
+##### Default
+
+```ts
+jsh
 ```
 
 #### options.process.packageManager
@@ -336,17 +394,26 @@ readonly terminal: string;
 readonly packageManager: "npm" | "pnpm" | "yarn";
 ```
 
+Package manager. Setting this option adjusts the predefined commands accordingly.
+
 #### options.process.starters?
 
 ```ts
 readonly optional starters: object;
 ```
 
+Callbacks to spawn the processes of the predefined commands.
+Implemented as a sensible default and do some opinionated stuff.
+
+If more control is needed, a process can be started using `useSandbox().processTabs.open()`.
+
 #### options.process.starters.devServer()?
 
 ```ts
 readonly optional devServer: () => Promise<void>;
 ```
+
+Dev server process starter.
 
 ##### Returns
 
@@ -358,6 +425,8 @@ readonly optional devServer: () => Promise<void>;
 readonly optional install: () => Promise<void>;
 ```
 
+Dependency installation process starter.
+
 ##### Returns
 
 `Promise`\<`void`\>
@@ -367,6 +436,8 @@ readonly optional install: () => Promise<void>;
 ```ts
 readonly optional terminal: () => Promise<void>;
 ```
+
+Terminal process starter.
 
 ##### Returns
 
@@ -378,10 +449,20 @@ readonly optional terminal: () => Promise<void>;
 readonly terminal: object;
 ```
 
+Terminal related options.
+
 #### options.terminal.maxCount?
 
 ```ts
 readonly optional maxCount: number;
+```
+
+Maximum number of terminal tabs to be opened simultaneously.
+
+##### Default
+
+```ts
+3
 ```
 
 #### options.terminal.theme?
@@ -390,11 +471,17 @@ readonly optional maxCount: number;
 readonly optional theme: object;
 ```
 
+Theme to be used by xterm to output process and terminal logs.
+
+Using callbacks to overcome the readonly nature of the options returned by useSandbox().
+
 #### options.terminal.theme.dark()?
 
 ```ts
 readonly optional dark: () => ITheme;
 ```
+
+Callback to return dark xterm theme.
 
 ##### Returns
 
@@ -405,6 +492,8 @@ readonly optional dark: () => ITheme;
 ```ts
 readonly optional light: () => ITheme;
 ```
+
+Callback to return light xterm theme.
 
 ##### Returns
 
@@ -576,6 +665,17 @@ Open a process tab.If the process tab already exists, it is re-focused, otherwis
 ##### Returns
 
 `Promise`\<`void`\>
+
+##### Example
+
+```ts
+useSandbox()
+  .processTabs
+  .open('npm install', 'Install', {
+    command: 'npm',
+    arguments: ['install', '--frozen-lockfile']
+  })
+```
 
 #### processTabs.restart()
 

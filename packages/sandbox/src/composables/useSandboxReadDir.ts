@@ -4,6 +4,10 @@ import { MaybeRefOrGetter, ref, toValue, watch } from 'vue'
 import { readDirEnts } from '../utils/readDirEnts.ts'
 import { useSandbox } from './useSandbox.ts'
 
+/**
+ * A composable to read the contents of the given directory.
+ * @param pathRefOrGetter
+ */
 export const useSandboxReadDir = (
   pathRefOrGetter: MaybeRefOrGetter<string>,
 ) => {

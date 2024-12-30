@@ -1,8 +1,7 @@
 import { asyncComputed } from '@vueuse/core'
 import { computed, nextTick, toRaw } from 'vue'
 
-import { ProcessTabContext } from '../types'
-import { SandboxOptions } from '../types/Sandbox.ts'
+import { ProcessTabContext, SandboxOptions } from '../types'
 import { injectWebContainer } from '../utils/WebContainer.ts'
 import { useSandboxTabs } from './useSandboxTabs.ts'
 
@@ -80,6 +79,14 @@ export const useSandboxProcessTabs = (options: SandboxOptions) => {
 
   /**
    * Open a process tab.If the process tab already exists, it is re-focused, otherwise the process will be started.
+   *
+   * @example useSandbox()
+   *   .processTabs
+   *   .open('npm install', 'Install', {
+   *     command: 'npm',
+   *     arguments: ['install', '--frozen-lockfile']
+   *   })
+   *
    * @param id
    * @param label
    * @param context
