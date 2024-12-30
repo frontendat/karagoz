@@ -70,7 +70,7 @@ const shownPanelsModel = defineModel<Panel[] | undefined>('shownPanels')
 
 const [shownPanels, setShownPanels] = useControlledModel<Panel[]>(
   shownPanelsModel,
-  ['code', 'processes', 'result', 'terminal'],
+  ['code', 'result'],
 )
 
 const { t } = useI18n()

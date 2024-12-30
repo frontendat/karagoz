@@ -4,6 +4,13 @@
 function useSandbox(): object
 ```
 
+The main composable of Karagöz Sandbox.
+
+Injects and uses the provided web container promise, performs bootstrapping and returns an object that
+is the central piece in the logic of the sandbox.
+
+This composable is created as a shared instance (singleton, if you will) using VueUse's `createSharedComposable()`.
+
 ## Returns
 
 `object`
@@ -13,6 +20,19 @@ function useSandbox(): object
 ```ts
 bootstrap: () => Promise<void>;
 ```
+
+Bootstrap method. Should be called after the web container boots and the first batch of files
+(most importantly `package.json`) are mounted.
+
+Order of execution:
+- Kill dependency installation and dev server if either of them is running.
+- On first run: listen to URL change events in the preview iframe to emit the latest URL to the parent window.
+  This is needed to show the current UR in address bar of the preview.
+- Open a terminal window if allowed by the sandbox options.
+- Install dependencies.
+- Start dev server.
+- On first run: watch the current working directory to re-bootstrap when a file changes that should trigger
+  re-install (e.g. `package.json`).
 
 #### Returns
 
@@ -24,17 +44,23 @@ bootstrap: () => Promise<void>;
 container: ComputedRef<null | WebContainer>;
 ```
 
+A computed ref that gives access to the web container instance.
+
 ### editorTabs
 
 ```ts
 editorTabs: object;
 ```
 
+Editor tabs manager. Responsible for opening, focusing and closing editor tabs.
+
 #### editorTabs.close()
 
 ```ts
 close: (id) => void;
 ```
+
+Close a tab corresponding to given ID.
 
 ##### Parameters
 
@@ -54,6 +80,8 @@ current: ComputedRef<
 | Tab<EditorTabContext>>;
 ```
 
+Computed ref containing the currently focused tab.
+
 #### editorTabs.findTab()
 
 ```ts
@@ -61,6 +89,8 @@ findTab: (id) =>
   | undefined
 | Tab<EditorTabContext>;
 ```
+
+Find the tab corresponding to given ID.
 
 ##### Parameters
 
@@ -79,6 +109,8 @@ findTab: (id) =>
 findTabIndex: (id) => number;
 ```
 
+Find the tab index corresponding to given ID.
+
 ##### Parameters
 
 ###### id
@@ -95,11 +127,15 @@ findTabIndex: (id) => number;
 open: (id, label?, context?) => void;
 ```
 
+Open an editor tab for a file. If the file is already open it is re-focused.
+
 ##### Parameters
 
 ###### id
 
 `string`
+
+file path, used as an ID as well
 
 ###### label?
 
@@ -119,11 +155,15 @@ open: (id, label?, context?) => void;
 tabs: ComputedRef<Tab<EditorTabContext>[]>;
 ```
 
+List of tabs.
+
 #### editorTabs.updateContext()
 
 ```ts
 updateContext: (id, setter) => void;
 ```
+
+Update the context data of the tab corresponding to give ID.
 
 ##### Parameters
 
@@ -135,6 +175,8 @@ updateContext: (id, setter) => void;
 
 (`ctx`) => [`EditorTabContext`](../type-aliases/EditorTabContext.md)
 
+a callback that receives the old context and returns the new context to be set.
+
 ##### Returns
 
 `void`
@@ -145,11 +187,18 @@ updateContext: (id, setter) => void;
 explorer: object;
 ```
 
+Provides matchers for different purposes.
+The matchers use [ignore](https://www.npmjs.com/package/ignore) to determine whether a give path matches one
+of the patterns specified in the sandbox options.
+
 #### explorer.hidden
 
 ```ts
 hidden: ComputedRef<Ignore>;
 ```
+
+Computed ref containing a function to determine whether an entity (directory or file) should be
+hidden in the file explorer.
 
 #### explorer.readonly
 
@@ -157,11 +206,17 @@ hidden: ComputedRef<Ignore>;
 readonly: ComputedRef<Ignore>;
 ```
 
+Computed ref containing a function to determine whether an entity (directory or file) should be
+marked as readonly in the file explorer and editor tabs.
+
 #### explorer.reinstall
 
 ```ts
 reinstall: ComputedRef<Ignore>;
 ```
+
+Computed ref containing a function to determine whether changing an entity (directory or file) should
+trigger the re-installation of dependencies and re-bootstrapping.
 
 ### options
 
@@ -174,6 +229,8 @@ options: object;
 ```ts
 readonly editor: object;
 ```
+
+Editor related options.
 
 #### options.editor.suppressClose?
 
@@ -365,11 +422,15 @@ preview: object;
 frame: Ref<undefined | HTMLIFrameElement> = previewFrame;
 ```
 
+A reference to the preview iframe element.
+
 #### preview.reload()
 
 ```ts
 reload: () => Promise<void>;
 ```
+
+Reload the preview.
 
 ##### Returns
 
@@ -381,17 +442,23 @@ reload: () => Promise<void>;
 suppressAddressBar: ComputedRef<undefined | boolean>;
 ```
 
+Computed ref containing a boolean flag. When true, the address bar in the preview panel will not be shown.
+
 #### preview.url
 
 ```ts
 url: ComputedRef<string>;
 ```
 
+The preview URL.
+
 ### processTabs
 
 ```ts
 processTabs: object;
 ```
+
+Process tabs manager. Responsible for opening, focusing and closing process and terminal tabs.
 
 #### processTabs.availableTerminals
 
@@ -404,6 +471,8 @@ availableTerminals: ComputedRef<number>;
 ```ts
 close: (id) => void;
 ```
+
+Close the process tab corresponding to the given ID and kill the process attached to it.
 
 ##### Parameters
 
@@ -423,6 +492,8 @@ current: ComputedRef<
 | Tab<ProcessTabContext>>;
 ```
 
+Computed ref containing the currently focused tab.
+
 #### processTabs.findTab()
 
 ```ts
@@ -430,6 +501,8 @@ findTab: (id) =>
   | undefined
 | Tab<ProcessTabContext>;
 ```
+
+Find the tab corresponding to given ID.
 
 ##### Parameters
 
@@ -448,6 +521,8 @@ findTab: (id) =>
 findTabIndex: (id) => number;
 ```
 
+Find the tab index corresponding to given ID.
+
 ##### Parameters
 
 ###### id
@@ -464,6 +539,8 @@ findTabIndex: (id) => number;
 kill: (id) => void;
 ```
 
+Kill the process corresponding to the give ID.
+
 ##### Parameters
 
 ###### id
@@ -479,6 +556,8 @@ kill: (id) => void;
 ```ts
 open: (id, label?, context?) => Promise<void>;
 ```
+
+Open a process tab.If the process tab already exists, it is re-focused, otherwise the process will be started.
 
 ##### Parameters
 
@@ -504,6 +583,8 @@ open: (id, label?, context?) => Promise<void>;
 restart: (id) => Promise<void>;
 ```
 
+Restart the process corresponding to the given ID.
+
 ##### Parameters
 
 ###### id
@@ -520,11 +601,15 @@ restart: (id) => Promise<void>;
 tabs: ComputedRef<Tab<ProcessTabContext>[]>;
 ```
 
+List of tabs.
+
 #### processTabs.updateContext()
 
 ```ts
 updateContext: (id, setter) => void;
 ```
+
+Update the context data of the tab corresponding to give ID.
 
 ##### Parameters
 
@@ -536,6 +621,8 @@ updateContext: (id, setter) => void;
 
 (`ctx`) => [`ProcessTabContext`](../type-aliases/ProcessTabContext.md)
 
+a callback that receives the old context and returns the new context to be set.
+
 ##### Returns
 
 `void`
@@ -545,6 +632,12 @@ updateContext: (id, setter) => void;
 ```ts
 setOption: <K, T>(key, newValueOrSetter) => void;
 ```
+
+Set an option. Ideally options are set before calling `bootstrap()`.
+
+Rather than allowing the direct mutation of the options object, the return of `useSandbox()` exposes a readonly
+copy of the options and `setOption()` is used to set a specific option's value. This is to make sure that setting
+options is intentional and not by mistake.
 
 #### Type Parameters
 
@@ -595,6 +688,8 @@ setOption: <K, T>(key, newValueOrSetter) => void;
 
 ##### newValueOrSetter
 
+either a new value or a callback that receives the old value to produce the new value.
+
 `T` | (`oldValue`) => `T`
 
 #### Returns
@@ -606,6 +701,9 @@ setOption: <K, T>(key, newValueOrSetter) => void;
 ```ts
 setPackageManager: (pm) => void;
 ```
+
+Set the package manager option.
+This affects only the predefined commands and processes (in `SandboxOptions.process.commands`).
 
 #### Parameters
 
@@ -619,4 +717,4 @@ setPackageManager: (pm) => void;
 
 ## Defined in
 
-[packages/sandbox/src/composables/useSandbox.ts:189](https://github.com/frontendat/karagoz/blob/main/packages/sandbox/src/composables/useSandbox.ts#L189)
+[packages/sandbox/src/composables/useSandbox.ts:254](https://github.com/frontendat/karagoz/blob/main/packages/sandbox/src/composables/useSandbox.ts#L254)

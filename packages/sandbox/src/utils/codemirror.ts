@@ -1,6 +1,9 @@
-import { EditorView } from 'codemirror'
 import { oneDark } from '@codemirror/theme-one-dark'
+import { EditorView } from 'codemirror'
 
+/**
+ * Default dark and light codemirror themes
+ */
 export const codemirrorDefaultTheme = {
   dark: [
     EditorView.theme(

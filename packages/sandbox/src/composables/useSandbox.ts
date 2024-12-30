@@ -22,7 +22,9 @@ function useSandboxInternal() {
     reinstall?: IFSWatcher
   }>({})
 
-  // Default options
+  /**
+   * Default sandbox options.
+   */
   const options: SandboxOptions = reactive({
     editor: {
       suppressClose: false,
@@ -90,6 +92,16 @@ function useSandboxInternal() {
   const editorTabs = useSandboxEditorTabs(options)
   const processTabs = useSandboxProcessTabs(options)
 
+  /**
+   * Set an option. Ideally options are set before calling `bootstrap()`.
+   *
+   * Rather than allowing the direct mutation of the options object, the return of `useSandbox()` exposes a readonly
+   * copy of the options and `setOption()` is used to set a specific option's value. This is to make sure that setting
+   * options is intentional and not by mistake.
+   *
+   * @param key
+   * @param newValueOrSetter either a new value or a callback that receives the old value to produce the new value.
+   */
   const setOption = <
     K extends keyof SandboxOptions,
     T extends SandboxOptions[K],
@@ -104,6 +116,11 @@ function useSandboxInternal() {
     }
   }
 
+  /**
+   * Set the package manager option.
+   * This affects only the predefined commands and processes (in `SandboxOptions.process.commands`).
+   * @param pm
+   */
   const setPackageManager = (
     pm: SandboxOptions['process']['packageManager'],
   ) => {
@@ -125,6 +142,20 @@ function useSandboxInternal() {
     }
   }
 
+  /**
+   * Bootstrap method. Should be called after the web container boots and the first batch of files
+   * (most importantly `package.json`) are mounted.
+   *
+   * Order of execution:
+   * - Kill dependency installation and dev server if either of them is running.
+   * - On first run: listen to URL change events in the preview iframe to emit the latest URL to the parent window.
+   *   This is needed to show the current UR in address bar of the preview.
+   * - Open a terminal window if allowed by the sandbox options.
+   * - Install dependencies.
+   * - Start dev server.
+   * - On first run: watch the current working directory to re-bootstrap when a file changes that should trigger
+   *   re-install (e.g. `package.json`).
+   */
   const bootstrap = async () => {
     // Kill already running processes (need for reinstall).
     processTabs.close(options.process.commands.devServer)
@@ -166,24 +197,58 @@ function useSandboxInternal() {
 
   return {
     bootstrap,
+    /**
+     * A computed ref that gives access to the web container instance.
+     */
     container: computed(() => container.value),
+    /**
+     * Editor tabs manager. Responsible for opening, focusing and closing editor tabs.
+     */
     editorTabs,
+    /**
+     * Provides matchers for different purposes.
+     * The matchers use [ignore](https://www.npmjs.com/package/ignore) to determine whether a give path matches one
+     * of the patterns specified in the sandbox options.
+     */
     explorer,
     options: readonly(options),
     preview: {
+      /**
+       * A reference to the preview iframe element.
+       */
       frame: previewFrame,
+      /**
+       * Reload the preview.
+       */
       reload: async () => {
         if (previewFrame.value) {
           await reloadPreview(previewFrame.value)
         }
       },
+      /**
+       * Computed ref containing a boolean flag. When true, the address bar in the preview panel will not be shown.
+       */
       suppressAddressBar: computed(() => options.preview.suppressAddressBar),
+      /**
+       * The preview URL.
+       */
       url: computed(() => previewUrl.value ?? ''),
     },
+    /**
+     * Process tabs manager. Responsible for opening, focusing and closing process and terminal tabs.
+     */
     processTabs,
     setOption,
     setPackageManager,
   }
 }
 
+/**
+ * The main composable of Karagöz Sandbox.
+ *
+ * Injects and uses the provided web container promise, performs bootstrapping and returns an object that
+ * is the central piece in the logic of the sandbox.
+ *
+ * This composable is created as a shared instance (singleton, if you will) using VueUse's `createSharedComposable()`.
+ */
 export const useSandbox = createSharedComposable(useSandboxInternal)

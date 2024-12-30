@@ -1,5 +1,8 @@
 import { ITheme } from '@xterm/xterm'
 
+/**
+ * Default dark and light xterm themes
+ */
 const xtermDarkTheme: ITheme = {
   background: '#0a0a0a',
   foreground: '#cdd6f4',

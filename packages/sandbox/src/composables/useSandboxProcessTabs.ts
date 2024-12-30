@@ -6,10 +6,18 @@ import { SandboxOptions } from '../types/Sandbox.ts'
 import { injectWebContainer } from '../utils/WebContainer.ts'
 import { useSandboxTabs } from './useSandboxTabs.ts'
 
+/**
+ * Process tabs manager. Responsible for opening, focusing and closing process and terminal tabs.
+ */
 export const useSandboxProcessTabs = (options: SandboxOptions) => {
   const container = asyncComputed(injectWebContainer, undefined)
   const processTabs = useSandboxTabs<ProcessTabContext>()
 
+  /**
+   * Start a process with the given ID using the give context information.
+   * @param id
+   * @param context
+   */
   const startProcess = async (id: string, context: ProcessTabContext) => {
     // Create process
     const process = await container.value.spawn(
@@ -59,6 +67,10 @@ export const useSandboxProcessTabs = (options: SandboxOptions) => {
     }
   }
 
+  /**
+   * Kill the process corresponding to the give ID.
+   * @param id
+   */
   const kill = (id: string) => {
     const tab = processTabs.findTab(id)
     if (tab?.context?.exitCode === undefined) {
@@ -66,6 +78,12 @@ export const useSandboxProcessTabs = (options: SandboxOptions) => {
     }
   }
 
+  /**
+   * Open a process tab.If the process tab already exists, it is re-focused, otherwise the process will be started.
+   * @param id
+   * @param label
+   * @param context
+   */
   const open = async (
     id: string,
     label?: string,
@@ -79,6 +97,10 @@ export const useSandboxProcessTabs = (options: SandboxOptions) => {
     }
   }
 
+  /**
+   * Restart the process corresponding to the given ID.
+   * @param id
+   */
   const restart = async (id: string) => {
     const tab = processTabs.findTab(id)
     const context = tab?.context
@@ -99,11 +121,18 @@ export const useSandboxProcessTabs = (options: SandboxOptions) => {
     }
   }
 
+  /**
+   * Close the process tab corresponding to the given ID and kill the process attached to it.
+   * @param id
+   */
   const close = (id: string) => {
     kill(id)
     processTabs.close(id)
   }
 
+  /**
+   * List of non-hidden terminals (`isTerminal: true`).
+   */
   const availableTerminals = computed(
     () =>
       (options.terminal.maxCount ?? 0) -

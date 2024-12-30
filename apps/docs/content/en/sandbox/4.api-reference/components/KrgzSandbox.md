@@ -1,6 +1,6 @@
 # KrgzSandbox
 
-> Main sandbox component.
+Main sandbox component.
 
 This component provides the default layout, renders shown panels, available panel toggles and additional buttons.
 

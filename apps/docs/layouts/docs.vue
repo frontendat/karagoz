@@ -20,7 +20,9 @@ const route = useRoute()
         <div class="mx-auto w-full min-w-0 prose">
           <slot></slot>
         </div>
-        <div class="hidden text-sm xl:block">table of contents</div>
+        <div class="hidden text-sm xl:block">
+          <DocsTOC />
+        </div>
       </main>
     </div>
   </DefaultLayout>

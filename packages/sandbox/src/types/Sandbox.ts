@@ -2,6 +2,9 @@ import { Extension } from '@codemirror/state'
 import { ITheme } from '@xterm/xterm'
 
 export type SandboxOptions = {
+  /**
+   * Editor related options.
+   */
   editor: {
     suppressClose?: boolean
     theme?: {

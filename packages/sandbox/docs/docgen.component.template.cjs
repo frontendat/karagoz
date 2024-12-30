@@ -43,13 +43,13 @@ module.exports = function component(
   return `
   # ${displayName}
 
-  ${description ? '> ' + description : ''}
+  ${description ?? ''}
 
   ${renderedUsage.props}
   ${renderedUsage.methods}
   ${renderedUsage.events}
   ${renderedUsage.slots}
-  ${docsBlocks ? '---\n' + docsBlocks.join('\n---\n') : ''}
+  ${docsBlocks ? '---\n' + '## Usage\n' + docsBlocks.join('\n---\n') : ''}
   
   ## Defined in
   ${getSourceLinks(doc.sourceFiles)}

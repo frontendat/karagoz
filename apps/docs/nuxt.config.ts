@@ -10,6 +10,7 @@ export default defineNuxtConfig({
   },
   content: {
     defaultLocale: 'en',
+    documentDriven: true,
     highlight: {
       theme: 'monokai',
     },

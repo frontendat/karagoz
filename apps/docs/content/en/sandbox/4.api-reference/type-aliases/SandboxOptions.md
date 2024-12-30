@@ -12,6 +12,8 @@ type SandboxOptions = object;
 editor: object;
 ```
 
+Editor related options.
+
 #### editor.suppressClose?
 
 ```ts

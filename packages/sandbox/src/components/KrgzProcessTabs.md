@@ -1,5 +1,3 @@
-## Usage
-
 ### Running Processes
 
 ```vue

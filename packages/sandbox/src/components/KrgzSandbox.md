@@ -1,5 +1,3 @@
-## Usage
-
 ### Basic Usage
 
 ```vue
