@@ -1,6 +1,7 @@
 <script setup lang="ts">
 definePageMeta({
   title: 'pages.sandbox.demos.defaults.title',
+  layout: 'docs',
 })
 </script>
 

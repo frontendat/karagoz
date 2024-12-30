@@ -1,0 +1,26 @@
+{
+  "entryPoints": [
+    "src/typedoc-entry.ts"
+  ],
+  "exclude": [
+    "src/main.ts"
+  ],
+  "excludeExternals": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "expandObjects": false,
+  "hideBreadcrumbs": true,
+  "hidePageHeader": true,
+  "includeHierarchySummary": false,
+  "includeVersion": false,
+  "out": "../../apps/docs/content/en/sandbox/4.api-reference",
+  "pageTitleTemplates": {
+    "member": "{name}"
+  },
+  "plugin": [
+    "typedoc-plugin-markdown"
+  ],
+  "readme": "none",
+  "tsconfig": "tsconfig.typedoc.json",
+  "useCodeBlocks": true
+}

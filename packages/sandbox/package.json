@@ -33,7 +33,9 @@
     "watch:vite": "vite build --watch",
     "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
     "lint": "eslint \"src/**/*.{ts,vue}\"",
-    "docs:components": "vue-docgen -c docgen.config.cjs"
+    "docs": "pnpm docs:typescript && pnpm docs:components",
+    "docs:components": "vue-docgen -c docgen.config.cjs",
+    "docs:typescript": "typedoc && rm ../../apps/docs/content/en/sandbox/4.api-reference/README.md"
   },
   "peerDependencies": {
     "@codemirror/language": "^6.10.3",

@@ -1,59 +1,3 @@
-# KrgzEditorTabs
-
-> Renders a tabbed list of the open files and the editor of the currently focused tab.
-
-This component takes no props and emits no events since it gets all it needs to operate by calling `useSandbox()`.
-
----
-
-```vue live
-<KrgzEditorTabs />
-```
-# KrgzExplorer
-
-> Renders the file explorer.
-
-This component reads and renders the contents of the current working directory, as well as, any expanded directory
-by recursively using the internal components `KrgzExplorerEntity` and `KrgzExplorerSubdir`.
-
-It initially renders a loading indicator until contents of the directory have been read.
-
-It takes no props and emits no events since it gets all that it needs to operate by calling `useSandbox()`.
-
----
-
-```vue live
-<KrgzExplorer />
-```
-# KrgzPreview
-
-> Renders the result preview iframe and, if enabled, an address bar showing the current URL of the preview.
-
-This component takes no props and emits no events since it gets all it needs to operate by calling `useSandbox()`.
-
----
-
-```vue live
-<KrgzPreview />
-```
-# KrgzProcessTabs
-
-> Renders a tabbed list of the running processes or open terminals
-> and renders the currently focused one using `KrgzProcess`.
-
-This component takes no props and emits no events since it gets all it needs to operate by calling `useSandbox()`.
-
-## Props
-
-| Prop name | Description                                            | Type  | Values | Default |
-| --------- | ------------------------------------------------------ | ----- | ------ | ------- |
-| mode      | Whether to render running processes or open terminals. | union | -      |         |
-
----
-
-```vue live
-<KrgzProcessTabs :mode="Default Example Usage" />
-```
 # KrgzSandbox
 
 > Main sandbox component.
@@ -98,8 +42,6 @@ presentational nature.
 | processes | slot to render running process tabs             |          |
 
 ---
-
-<a href="https://github.com/vue-styleguidist/vue-styleguidist/edit/dev/examples/docgen/src/components/KrgzSandbox.md" class="docgen-edit-link">edit on github</a>
 
 ## Usage
 

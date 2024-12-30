@@ -1,5 +1,3 @@
 <template>
-  <main class="prose">
-    <ContentDoc />
-  </main>
+  <ContentDoc />
 </template>

@@ -20,5 +20,9 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "references": [{ "path": "./packages/puppeteer/tsconfig.json" }]
+  "references": [
+    { "path": "./packages/puppeteer/tsconfig.json" },
+    { "path": "./packages/sandbox/tsconfig.json" },
+    { "path": "./packages/shared/tsconfig.json" }
+  ]
 }

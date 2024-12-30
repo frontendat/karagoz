@@ -31,9 +31,14 @@ const title = computed(() =>
         </template>
       </Head>
       <Body>
-        <div class="min-h-full">
+        <div class="flex min-h-screen flex-col bg-background">
           <DocsTopBar />
-          <slot></slot>
+          <div class="flex-1 bg-background">
+            <div class="border-b">
+              <slot></slot>
+            </div>
+          </div>
+          <DocsFooter />
         </div>
       </Body>
     </Html>

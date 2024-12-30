@@ -1,9 +1,9 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'landing',
+  layout: 'docs',
 })
 </script>
 
 <template>
-  <h1>Home page</h1>
+  <ContentDoc />
 </template>
