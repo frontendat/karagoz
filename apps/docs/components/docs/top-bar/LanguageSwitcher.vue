@@ -7,7 +7,7 @@ const availableLocales = computed(() => {
 </script>
 
 <template>
-  <div class="bg-pink-200 flex gap-4">
+  <div class="bg-pink-200 gap-4 hidden md:flex">
     <a
       v-for="locale in availableLocales"
       :key="locale.code"

@@ -34,9 +34,7 @@ const title = computed(() =>
         <div class="flex min-h-screen flex-col bg-background">
           <DocsTopBar />
           <div class="flex-1 bg-background">
-            <div class="border-b">
-              <slot></slot>
-            </div>
+            <slot></slot>
           </div>
           <DocsFooter />
         </div>
