@@ -26,7 +26,7 @@ const { dirEnts } = useSandboxReadDir('')
 
 <template>
   <div :dir="t('krgz.dir')">
-    <ul v-if="dirEnts.length" class="text-xs select-none">
+    <ul v-if="dirEnts.length" class="select-none m-0 p-0 text-xs">
       <KrgzExplorerEntity
         v-for="entity in dirEnts"
         :key="entity.name"

@@ -18,12 +18,13 @@ presentational nature.
 
 ## Props
 
-| Prop name       | Description                                                                                          | Type    | Values | Default |
-| --------------- | ---------------------------------------------------------------------------------------------------- | ------- | ------ | ------- |
-| booting         | Show loading indicator. Important to pass it to not render panels before the web container is ready. | boolean | -      |         |
-| hideExplorer    | Hide file explorer (e.g. to only show a specific set of editor tabs).                                | boolean | -      |         |
-| hideSolveButton | Hide the solve button if it is not needed.                                                           | boolean | -      |         |
-| hideThemeToggle | Hide the dark/light theme toggle.                                                                    | boolean | -      |         |
+| Prop name            | Description                                                                                          | Type    | Values | Default |
+| -------------------- | ---------------------------------------------------------------------------------------------------- | ------- | ------ | ------- |
+| booting              | Show loading indicator. Important to pass it to not render panels before the web container is ready. | boolean | -      |         |
+| hideExplorer         | Hide file explorer (e.g. to only show a specific set of editor tabs).                                | boolean | -      |         |
+| hideFullScreenToggle | Hide fullscreen toggle.                                                                              | boolean | -      |         |
+| hideSolveButton      | Hide the solve button if it is not needed.                                                           | boolean | -      |         |
+| hideThemeToggle      | Hide the dark/light theme toggle.                                                                    | boolean | -      |         |
 
 ## Events
 

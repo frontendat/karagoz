@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import DefaultLayout from '~/layouts/default.vue'
+
+const { page } = useContent()
 </script>
 
 <template>
@@ -14,12 +16,15 @@ import DefaultLayout from '~/layouts/default.vue'
           <DocsSideBar />
         </aside>
         <main
-          class="relative py-6 lg:gap-10 lg:py-8 xl:grid xl:grid-cols-[1fr_300px]"
+          class="relative py-6 lg:gap-10 lg:py-8"
+          :class="{ 'xl:grid xl:grid-cols-[1fr_300px]': !page.hideToc }"
         >
-          <div class="mx-auto w-full min-w-0 prose dark:prose-invert">
+          <div
+            class="mx-auto w-full max-w-none min-w-0 prose dark:prose-invert"
+          >
             <slot></slot>
           </div>
-          <div class="hidden text-sm xl:block">
+          <div v-if="!page.hideToc" class="hidden text-sm xl:block">
             <DocsTOC />
           </div>
         </main>
@@ -27,3 +32,11 @@ import DefaultLayout from '~/layouts/default.vue'
     </div>
   </DefaultLayout>
 </template>
+
+<style scoped>
+.prose > :only-child > :not(.not-prose),
+.prose > :not(:only-child):not(.not-prose) {
+  margin-inline: auto;
+  max-width: 660px; /* around 65ch */
+}
+</style>

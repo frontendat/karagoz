@@ -67,7 +67,7 @@ onBeforeUnmount(() => {
           class="flex-grow self-center overflow-ellipsis overflow-hidden p-2 text-xs whitespace-nowrap"
         >
           <a
-            class="text-muted-foreground"
+            class="text-muted-foreground no-underline"
             :href="currentUrl"
             dir="ltr"
             target="_blank"

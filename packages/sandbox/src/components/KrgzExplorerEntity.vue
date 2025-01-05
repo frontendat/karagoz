@@ -94,7 +94,7 @@ const onClick = () => {
     :style="{ '--krgz-depth': depth }"
   >
     <a
-      class="krgz-explorer-entity-header hover:bg-secondary"
+      class="krgz-explorer-entity-header no-underline hover:bg-secondary"
       :class="{ 'font-bold': isCurrentEditorTab }"
       @click="onClick"
     >
@@ -125,6 +125,8 @@ const onClick = () => {
   align-items: center;
   display: flex;
   gap: 0.5rem;
+  margin: 0;
+  padding: 0;
   padding-inline-start: calc(0.6rem * var(--krgz-depth));
   cursor: pointer;
 }

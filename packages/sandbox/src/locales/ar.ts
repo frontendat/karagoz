@@ -31,8 +31,9 @@ export const ar: MessageSchema = {
       },
       toggle: {
         code: 'النص البرمجي',
-        result: 'النتيجة',
+        fullscreen: 'مل٫ الشاشة',
         processes: 'العمليات',
+        result: 'النتيجة',
         solve: 'تنفيذ الحل',
         theme: 'تبديل نمط الإضاءة',
         terminal: 'سطر الأوامر',

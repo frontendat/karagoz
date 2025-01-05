@@ -29,8 +29,9 @@ export const en = {
       },
       toggle: {
         code: 'Code',
-        result: 'Result',
+        fullscreen: 'Full screen',
         processes: 'Processes',
+        result: 'Result',
         solve: 'Solve',
         theme: 'Toggle theme',
         terminal: 'Terminal',

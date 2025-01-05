@@ -1,18 +1,20 @@
 <script setup lang="ts">
-import { useDark, useToggle } from '@vueuse/core'
+import { useDark, useFullscreen, useToggle } from '@vueuse/core'
 import {
   Eye,
   FileCode,
   Lightbulb,
+  Maximize,
+  Minimize,
   MoonStar,
   Play,
   Sun,
   TerminalSquare,
 } from 'lucide-vue-next'
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { Panel, panels } from '../types/Panel.ts'
+import { Panel, panels } from '../types'
 import KrgzPanelToggle from './KrgzPanelToggle.vue'
 
 /**
@@ -27,6 +29,10 @@ const props = defineProps<{
    * Panel toggles to show.
    */
   availablePanels: Panel[]
+  /**
+   * Hide fullscreen toggle.
+   */
+  hideFullScreenToggle?: boolean
   /**
    * Hide the solve button if it is not needed.
    */
@@ -54,6 +60,8 @@ defineEmits<{
 }>()
 
 const { t } = useI18n()
+const $el = ref<HTMLElement>()
+const fullscreen = useFullscreen($el)
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
@@ -66,10 +74,14 @@ const isAvailable = computed(
 </script>
 
 <template>
-  <section class="grid h-full w-full krgz-sandbox-grid">
+  <section
+    ref="$el"
+    class="grid h-full w-full krgz-sandbox-grid"
+    :class="{ 'is-fullscreen': fullscreen.isFullscreen.value }"
+  >
     <aside
       v-if="isAvailable.code || isAvailable.result"
-      class="flex h-full flex-col border-e border-e-border"
+      class="border-e border-e-border flex flex-col h-full"
     >
       <nav v-if="isAvailable.code" class="grid gap-2 p-2">
         <KrgzPanelToggle
@@ -84,10 +96,19 @@ const isAvailable = computed(
         <div class="border-t border-t-border"></div>
 
         <KrgzPanelToggle
+          v-if="!hideFullScreenToggle"
+          as-button
+          :label="t('krgz.sandbox.toggle.fullscreen')"
+          @press="fullscreen.toggle"
+        >
+          <Minimize v-if="fullscreen.isFullscreen.value" class="size-5" />
+          <Maximize v-else class="size-5" />
+        </KrgzPanelToggle>
+
+        <KrgzPanelToggle
           v-if="!hideSolveButton"
           as-button
           :label="t('krgz.sandbox.toggle.solve')"
-          :pressed="undefined"
           @press="$emit('solve')"
         >
           <Lightbulb class="size-5" />
@@ -97,7 +118,6 @@ const isAvailable = computed(
           v-if="!hideThemeToggle"
           as-button
           :label="t('krgz.sandbox.toggle.theme')"
-          :pressed="undefined"
           @press="toggleDark()"
         >
           <Sun v-if="isDark" class="size-5" />
@@ -120,7 +140,7 @@ const isAvailable = computed(
     </div>
     <aside
       v-if="isAvailable.processes || isAvailable.terminal"
-      class="flex h-full flex-col border-s border-s-border"
+      class="border-s border-s-border flex flex-col h-full"
     >
       <nav v-if="isAvailable.terminal" class="grid gap-2 p-2">
         <KrgzPanelToggle
@@ -147,6 +167,10 @@ const isAvailable = computed(
 </template>
 
 <style>
+.krgz-sandbox-grid.is-fullscreen {
+  background-color: hsl(var(--background));
+}
+
 .krgz-sandbox-grid:has(> aside:first-child) {
   grid-template-columns: 60px minmax(calc(100% - 60px), 1fr);
 }

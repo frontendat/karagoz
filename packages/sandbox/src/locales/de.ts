@@ -31,8 +31,9 @@ export const de: MessageSchema = {
       },
       toggle: {
         code: 'Kode',
-        result: 'Ergebnis',
+        fullscreen: 'Vollbild',
         processes: 'Prozesse',
+        result: 'Ergebnis',
         solve: 'Lösen',
         theme: 'Design umschalten',
         terminal: 'Kommandozeile',

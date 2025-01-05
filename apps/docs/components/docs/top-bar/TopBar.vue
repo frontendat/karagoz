@@ -35,16 +35,16 @@ const toggleDark = useToggle(isDark)
                 <li class="row-span-5">
                   <NavigationMenuLink as-child>
                     <NuxtLink
-                      class="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                      :to="localePath({ path: 'sandbox' })"
+                      class="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-4 no-underline outline-none focus:shadow-md"
+                      :to="localePath({ path: '/sandbox' })"
                     >
                       <div class="mb-2 mt-4 text-lg font-medium">
                         Karagöz <br />
                         Sandbox
                       </div>
-                      <p class="text-sm leading-tight text-muted-foreground">
-                        Bring the power of web containers to your interactive
-                        coding demos.
+                      <p class="text-xs leading-tight text-muted-foreground">
+                        Boost your interactive code demos with the power of
+                        WebContainers.
                       </p>
                     </NuxtLink>
                   </NavigationMenuLink>

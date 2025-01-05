@@ -47,6 +47,10 @@ defineProps<{
    */
   hideExplorer?: boolean
   /**
+   * Hide fullscreen toggle.
+   */
+  hideFullScreenToggle?: boolean
+  /**
    * Hide the solve button if it is not needed.
    */
   hideSolveButton?: boolean
@@ -107,6 +111,7 @@ const isRowDividerShown = computed(() => {
   <KrgzSandboxPanelToggles
     v-else
     :available-panels="availablePanels"
+    :hide-full-screen-toggle="hideFullScreenToggle"
     :hide-solve-button="hideSolveButton"
     :hide-theme-toggle="hideThemeToggle"
     :shown-panels="shownPanels"
