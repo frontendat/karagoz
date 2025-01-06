@@ -75,7 +75,9 @@ watch(
   async () => {
     await nextTick()
     // bring active tab trigger into view
-    tabList.value?.$el?.querySelector('[data-active="true"]')?.scrollIntoView()
+    tabList.value?.$el
+      ?.querySelector('[data-active="true"]')
+      ?.scrollIntoView({ block: 'nearest', inline: 'start' })
   },
 )
 

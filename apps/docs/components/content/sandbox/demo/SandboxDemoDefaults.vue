@@ -119,11 +119,9 @@ onBeforeUnmount(() => sandbox.container.value?.teardown())
 
 <template>
   <ClientOnly>
-    <div class="border border-border h-[600px] not-prose">
-      <KrgzSandbox
-        :booting="isBooting"
-        :shown-panels="['code', 'processes', 'result', 'terminal']"
-      ></KrgzSandbox>
-    </div>
+    <KrgzSandbox
+      :booting="isBooting"
+      :shown-panels="['code', 'processes', 'result', 'terminal']"
+    ></KrgzSandbox>
   </ClientOnly>
 </template>
