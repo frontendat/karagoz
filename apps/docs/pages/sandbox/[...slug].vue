@@ -5,5 +5,7 @@ definePageMeta({
 </script>
 
 <template>
-  <ContentDoc />
+  <ContentDoc>
+    <template #not-found> List sub pages here </template>
+  </ContentDoc>
 </template>

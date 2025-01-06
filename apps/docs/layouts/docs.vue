@@ -17,14 +17,14 @@ const { page } = useContent()
         </aside>
         <main
           class="relative py-6 lg:gap-10 lg:py-8"
-          :class="{ 'xl:grid xl:grid-cols-[1fr_300px]': !page.hideToc }"
+          :class="{ 'xl:grid xl:grid-cols-[1fr_300px]': !page?.hideToc }"
         >
           <div
             class="mx-auto w-full max-w-none min-w-0 prose dark:prose-invert"
           >
             <slot></slot>
           </div>
-          <div v-if="!page.hideToc" class="hidden text-sm xl:block">
+          <div v-if="!page?.hideToc" class="hidden text-sm xl:block">
             <DocsTOC />
           </div>
         </main>

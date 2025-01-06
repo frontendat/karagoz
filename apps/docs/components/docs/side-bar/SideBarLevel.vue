@@ -7,6 +7,7 @@ const props = withDefaults(
     initLevel?: number
     level?: number
     maxLevel?: number
+    title?: string
   }>(),
   {
     initLevel: 0,
@@ -27,8 +28,20 @@ const levelItems = computed(() => {
 
 <template>
   <ul v-if="levelItems.length" :style="{ '--sidebar-level': level }">
+    <li v-if="title">
+      <div class="block font-bold px-2 py-1">
+        {{ title }}
+      </div>
+    </li>
     <li v-for="item of levelItems" :key="item._path">
-      <NuxtLink :to="item._path">{{ item.title }}</NuxtLink>
+      <div>
+        <NuxtLink
+          class="block px-2 py-1 hover:underline text-muted-foreground"
+          :to="item._path"
+        >
+          {{ item.title }}
+        </NuxtLink>
+      </div>
       <DocsSideBarLevel
         v-if="item.children && level < maxLevel - 1"
         :items="item.children"
@@ -40,7 +53,15 @@ const levelItems = computed(() => {
 </template>
 
 <style scoped>
-ul {
-  padding-inline-start: calc(0.5rem * var(--sidebar-level, 0));
+li > div {
+  padding-inline-start: calc(1rem * var(--sidebar-level, 0));
+}
+
+div:has(> .router-link-active) {
+  background: hsl(var(--secondary));
+}
+
+.router-link-active {
+  color: hsl(var(--secondary-foreground));
 }
 </style>
