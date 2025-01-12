@@ -44,7 +44,7 @@ const { data: bottomTitle } = useAsyncData(() => getTitle(bottomPath.value), {
 </script>
 
 <template>
-  <nav class="pe-6 py-6 text-sm">
+  <nav class="pe-6 py-8 text-sm">
     <ContentNavigation
       v-if="topQuery"
       v-slot="{ navigation }"

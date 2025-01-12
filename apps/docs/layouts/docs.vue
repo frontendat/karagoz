@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ScrollArea } from '@karagoz/shared'
+
 import DefaultLayout from '~/layouts/default.vue'
 
 const { page } = useContent()
@@ -13,9 +15,11 @@ const hideToc = computed(() => !page.value || page.value.hideToc)
         class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"
       >
         <aside
-          class="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-9.5rem-2px)] w-full shrink-0 md:sticky md:block overflow-y-auto"
+          class="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block overflow-hidden"
         >
-          <DocsSideBar />
+          <ScrollArea type="auto" class="h-full">
+            <DocsSideBar />
+          </ScrollArea>
         </aside>
         <main
           class="relative py-6 lg:gap-10 lg:py-8"
@@ -28,7 +32,13 @@ const hideToc = computed(() => !page.value || page.value.hideToc)
             <slot></slot>
           </div>
           <div v-if="!hideToc" class="hidden text-sm xl:block">
-            <DocsTOC />
+            <div
+              class="h-[calc(100vh-7rem)] overflow-hidden sticky top-24 w-full z-30"
+            >
+              <ScrollArea type="auto" class="h-full">
+                <DocsTOC />
+              </ScrollArea>
+            </div>
           </div>
         </main>
       </div>

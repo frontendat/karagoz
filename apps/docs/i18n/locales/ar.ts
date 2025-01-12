@@ -12,6 +12,7 @@ export default defineI18nLocale(async (locale) => {
     layouts: {
       siteName: 'Karagöz',
       title: 'مكونات برمجية تفاعلية - Karagöz قره كوز',
+      tocTitle: 'في هذه الصفحة:',
     },
     pages: {
       notFound: {
