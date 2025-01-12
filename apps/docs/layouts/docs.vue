@@ -22,24 +22,16 @@ const hideToc = computed(() => !page.value || page.value.hideToc)
           </ScrollArea>
         </aside>
         <main
-          class="relative py-6 lg:gap-10 lg:py-8"
-          :class="{ 'xl:grid xl:grid-cols-[1fr_300px]': !hideToc }"
+          class="gap-6 grid py-6 lg:py-8 relative"
+          :class="{ 'xl:gap-10 xl:grid-cols-[1fr_300px]': !hideToc }"
         >
           <div
-            class="mx-auto w-full max-w-none min-w-0 prose dark:prose-invert"
+            class="mx-auto w-full max-w-none min-w-0 order-2 xl:order-1 prose dark:prose-invert"
             :class="{ 'no-toc': hideToc }"
           >
             <slot></slot>
           </div>
-          <div v-if="!hideToc" class="hidden text-sm xl:block">
-            <div
-              class="h-[calc(100vh-7rem)] overflow-hidden sticky top-24 w-full z-30"
-            >
-              <ScrollArea type="auto" class="h-full">
-                <DocsTOC />
-              </ScrollArea>
-            </div>
-          </div>
+          <DocsTOCResponsive v-if="!hideToc" class="order-1 xl:order-2" />
         </main>
       </div>
     </div>

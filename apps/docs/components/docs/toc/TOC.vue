@@ -1,4 +1,8 @@
 <script setup lang="ts">
+defineProps<{
+  noTitle?: boolean
+}>()
+
 const { toc } = useContent()
 
 const { t } = useI18n()
@@ -6,7 +10,7 @@ const { t } = useI18n()
 
 <template>
   <div class="space-y-2">
-    <p class="font-medium">{{ t('layouts.tocTitle') }}</p>
+    <p v-if="!noTitle" class="font-medium">{{ t('layouts.tocTitle') }}</p>
     <ul v-if="toc && toc.links" class="m-0 list-none">
       <li v-for="link in toc.links" :key="link.text" class="pt-2">
         <a

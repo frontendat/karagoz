@@ -12,6 +12,7 @@ export default defineI18nLocale(async (locale) => {
     layouts: {
       siteName: 'Karagöz',
       title: 'Karagöz - interaktive Programmierkomponenten',
+      tocButton: 'In dieser Seite',
       tocTitle: 'In dieser Seite:',
     },
     pages: {
