@@ -14,7 +14,26 @@ export default defineI18nLocale(async (locale) => {
       title: 'Karagöz - interaktive Programmierkomponenten',
     },
     pages: {
+      notFound: {
+        title: 'Nicht gefunden',
+        content: 'Schau dir folgende Seiten:',
+        noContent: 'Nichts zu sehen!',
+      },
       sandbox: {
+        apiReference: {
+          components: {
+            title: 'Komponenten',
+          },
+          functions: {
+            title: 'Funktionen',
+          },
+          typeAliases: {
+            title: 'Typ-Aliase',
+          },
+          variables: {
+            title: 'Variablen',
+          },
+        },
         demos: {
           defaults: {
             title: 'Standarddemo',

@@ -2,6 +2,8 @@
 import DefaultLayout from '~/layouts/default.vue'
 
 const { page } = useContent()
+
+const hideToc = computed(() => !page.value || page.value.hideToc)
 </script>
 
 <template>
@@ -17,14 +19,15 @@ const { page } = useContent()
         </aside>
         <main
           class="relative py-6 lg:gap-10 lg:py-8"
-          :class="{ 'xl:grid xl:grid-cols-[1fr_300px]': !page?.hideToc }"
+          :class="{ 'xl:grid xl:grid-cols-[1fr_300px]': !hideToc }"
         >
           <div
             class="mx-auto w-full max-w-none min-w-0 prose dark:prose-invert"
+            :class="{ 'no-toc': hideToc }"
           >
             <slot></slot>
           </div>
-          <div v-if="!page?.hideToc" class="hidden text-sm xl:block">
+          <div v-if="!hideToc" class="hidden text-sm xl:block">
             <DocsTOC />
           </div>
         </main>
@@ -34,8 +37,8 @@ const { page } = useContent()
 </template>
 
 <style scoped>
-.prose > :only-child > :not(.not-prose),
-.prose > :not(:only-child):not(.not-prose) {
+.no-toc > :only-child > :not(.not-prose),
+.no-toc > :not(:only-child):not(.not-prose) {
   margin-inline: auto;
   max-width: 660px; /* around 65ch */
 }

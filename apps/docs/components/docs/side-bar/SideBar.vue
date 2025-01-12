@@ -1,34 +1,31 @@
 <script setup lang="ts">
-import type { ParsedContent, QueryBuilder } from '@nuxt/content'
-
 const route = useRouter().currentRoute
 
 const pathParts = computed(() => route.value.path.split('/').slice(0, 3))
-const topPath = computed(() => pathParts.value.slice(0, 2).join('/'))
-const bottomPath = computed(() => pathParts.value.join('/'))
+const topPath = computed(() =>
+  2 <= pathParts.value.length
+    ? pathParts.value.slice(0, 2).join('/')
+    : undefined,
+)
+const bottomPath = computed(() =>
+  3 === pathParts.value.length ? pathParts.value.join('/') : undefined,
+)
 
 const topQuery = computed(() =>
-  2 <= pathParts.value.length ? queryContent(topPath.value) : undefined,
+  topPath.value ? queryContent(topPath.value) : undefined,
 )
 
 const bottomQuery = computed(() =>
-  3 === pathParts.value.length
+  bottomPath.value
     ? queryContent(bottomPath.value).where({
         _id: { $not: { $regex: /index.md$/ } },
       })
     : undefined,
 )
 
-const getTitle = async (
-  query: QueryBuilder<ParsedContent> | undefined,
-  path: string,
-) => {
-  if (!query) return undefined
-  const content = await query
-    .where({
-      _path: path,
-    })
-    .findOne()
+const getTitle = async (path?: string) => {
+  if (!path) return '...'
+  const content = await queryContent(path).findOne()
   return (
     content?.navigation?.sidebarTitle ??
     content?.navigation?.title ??
@@ -37,15 +34,13 @@ const getTitle = async (
   )
 }
 
-const { data: topTitle } = useAsyncData(
-  () => getTitle(topQuery.value, topPath.value),
-  { watch: [topPath] },
-)
+const { data: topTitle } = useAsyncData(() => getTitle(topPath.value), {
+  watch: [topPath],
+})
 
-const { data: bottomTitle } = useAsyncData(
-  () => getTitle(topQuery.value, bottomPath.value),
-  { watch: [bottomPath] },
-)
+const { data: bottomTitle } = useAsyncData(() => getTitle(bottomPath.value), {
+  watch: [bottomPath],
+})
 </script>
 
 <template>

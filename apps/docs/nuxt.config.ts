@@ -10,7 +10,9 @@ export default defineNuxtConfig({
   },
   content: {
     defaultLocale: 'en',
-    documentDriven: true,
+    documentDriven: {
+      injectPage: false,
+    },
     highlight: {
       theme: 'monokai',
     },
@@ -21,6 +23,9 @@ export default defineNuxtConfig({
       key: fs.readFileSync(path.resolve(__dirname, 'localhost.key'), 'utf-8'),
       cert: fs.readFileSync(path.resolve(__dirname, 'localhost.crt'), 'utf-8'),
     },
+  },
+  experimental: {
+    scanPageMeta: true,
   },
   i18n: {
     baseUrl: 'https://karagoz.dev',

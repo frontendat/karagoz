@@ -14,7 +14,26 @@ export default defineI18nLocale(async (locale) => {
       title: 'Karagöz - interactive coding components',
     },
     pages: {
+      notFound: {
+        title: 'Not Found',
+        content: 'Check out these pages:',
+        noContent: 'Nothing to see here!',
+      },
       sandbox: {
+        apiReference: {
+          components: {
+            title: 'Components',
+          },
+          functions: {
+            title: 'Functions',
+          },
+          typeAliases: {
+            title: 'Type Aliases',
+          },
+          variables: {
+            title: 'Variables',
+          },
+        },
         demos: {
           defaults: {
             title: 'Defaults demo',

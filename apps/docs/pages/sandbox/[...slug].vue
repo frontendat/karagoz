@@ -6,6 +6,8 @@ definePageMeta({
 
 <template>
   <ContentDoc>
-    <template #not-found> List sub pages here </template>
+    <template #not-found>
+      <DocsNotFound />
+    </template>
   </ContentDoc>
 </template>

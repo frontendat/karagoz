@@ -14,7 +14,26 @@ export default defineI18nLocale(async (locale) => {
       title: 'مكونات برمجية تفاعلية - Karagöz قره كوز',
     },
     pages: {
+      notFound: {
+        title: 'غير موجود',
+        content: 'ألق نظرة على الصفحات التالية:',
+        noContent: 'لا شيئ للاطلاع عليه هنا!',
+      },
       sandbox: {
+        apiReference: {
+          components: {
+            title: 'المكونات',
+          },
+          functions: {
+            title: 'التوابع',
+          },
+          typeAliases: {
+            title: 'الأنواع',
+          },
+          variables: {
+            title: 'المتغيرات',
+          },
+        },
         demos: {
           defaults: {
             title: 'مثال بالإعدادات الافتراضية',

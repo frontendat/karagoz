@@ -34,7 +34,7 @@ const levelItems = computed(() => {
       </div>
     </li>
     <li v-for="item of levelItems" :key="item._path">
-      <div>
+      <div class="item">
         <NuxtLink
           class="block px-2 py-1 hover:underline text-muted-foreground"
           :to="item._path"
@@ -53,11 +53,11 @@ const levelItems = computed(() => {
 </template>
 
 <style scoped>
-li > div {
+.item {
   padding-inline-start: calc(1rem * var(--sidebar-level, 0));
 }
 
-div:has(> .router-link-active) {
+.item:has(> .router-link-active) {
   background: hsl(var(--secondary));
 }
 
