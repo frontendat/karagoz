@@ -27,6 +27,18 @@ export default defineNuxtConfig({
   experimental: {
     scanPageMeta: true,
   },
+  hooks: {
+    // This helped enable crossOriginIsolated for the WebContainer API and get Nuxt DevTools working simultaneously
+    'vite:serverCreated': (server) => {
+      server.middlewares.use((_req, res, next) => {
+        res.setHeader('Cross-Origin-Resource-Policy', 'same-origin')
+        res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp')
+        res.setHeader('Cross-Origin-Opener-Policy', 'same-origin')
+        res.setHeader('Access-Control-Allow-Origin', 'https://localhost:3000')
+        next()
+      })
+    },
+  },
   i18n: {
     baseUrl: 'https://karagoz.dev',
     defaultLocale: 'en',
