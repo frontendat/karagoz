@@ -6,8 +6,7 @@ const route = useRouter().currentRoute
 const pathParts = computed(() => route.value.path.split('/'))
 
 const titleKey = computed(
-  () =>
-    `pages${pathParts.value.join('.').replaceAll(/(-+)([a-z])/g, (_, __, char) => char.toUpperCase())}.title`,
+  () => `pages${kebabCaseToCamelCase(pathParts.value.join('.'))}.title`,
 )
 
 const query: QueryBuilderParams = {
