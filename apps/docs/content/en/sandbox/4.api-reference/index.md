@@ -1,3 +1,7 @@
+---
+hideToc: true
+---
+
 # API Reference
 
 Check out these pages:

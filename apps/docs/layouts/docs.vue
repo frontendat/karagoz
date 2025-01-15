@@ -21,17 +21,13 @@ const hideToc = computed(() => !page.value || page.value.hideToc)
             <DocsSideBar />
           </ScrollArea>
         </aside>
-        <main
-          class="gap-6 grid py-6 lg:py-8 relative"
-          :class="{ 'xl:gap-10 xl:grid-cols-[1fr_300px]': !hideToc }"
-        >
+        <main class="gap-6 grid py-6 lg:py-8 relative">
           <div
-            class="mx-auto w-full max-w-none min-w-0 order-2 xl:order-1 prose dark:prose-invert"
-            :class="{ 'no-toc': hideToc }"
+            class="w-full max-w-none min-w-0 order-2 xl:order-1 prose dark:prose-invert"
           >
             <slot></slot>
           </div>
-          <DocsTOCResponsive v-if="!hideToc" class="order-1 xl:order-2" />
+          <DocsTOCResponsive v-if="!hideToc" class="toc order-1 xl:order-2" />
         </main>
       </div>
     </div>
@@ -39,9 +35,10 @@ const hideToc = computed(() => !page.value || page.value.hideToc)
 </template>
 
 <style scoped>
-.no-toc > :only-child > :not(.not-prose),
-.no-toc > :not(:only-child):not(.not-prose) {
-  margin-inline: auto;
-  max-width: 660px; /* around 65ch */
+@screen xl {
+  main:has(.toc) {
+    @apply gap-10;
+    grid-template-columns: 1fr 300px;
+  }
 }
 </style>

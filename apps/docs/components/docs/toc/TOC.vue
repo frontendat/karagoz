@@ -1,9 +1,16 @@
 <script setup lang="ts">
+type TOCLink = {
+  children: TOCLink[]
+  id: string
+  text: string
+}
+
 defineProps<{
   noTitle?: boolean
+  toc: {
+    links: TOCLink[]
+  }
 }>()
-
-const { toc } = useContent()
 
 const { t } = useI18n()
 </script>

@@ -16,7 +16,7 @@ const query: QueryBuilderParams = {
 </script>
 
 <template>
-  <div class="prose">
+  <div>
     <h1>{{ t(titleKey, t('pages.notFound.title')) }}</h1>
 
     <ContentList :key="route.path" :path="route.path" :query="query">
