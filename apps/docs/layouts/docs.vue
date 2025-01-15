@@ -22,7 +22,7 @@ const hideToc = computed(() => !page.value || page.value.hideToc)
           </ScrollArea>
         </aside>
         <main class="gap-6 grid py-6 lg:py-8 relative">
-          <div class="order-2 xl:order-1">
+          <div class="overflow-hidden order-2 xl:order-1">
             <DocsBreadcrumb v-if="!page?.hideBreadcrumb" class="mb-4" />
             <div class="max-w-none min-w-0 w-full prose dark:prose-invert">
               <slot></slot>
