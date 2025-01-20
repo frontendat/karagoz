@@ -28,7 +28,9 @@ const onRunClick = async () => {
 
 <template>
   <div class="border border-border my-12 not-prose" :class="heightClass">
-    <slot v-if="isRunning"></slot>
+    <ClientOnly v-if="isRunning">
+      <slot></slot>
+    </ClientOnly>
     <LoadingIndicator v-else suppress-spinner variant="secondary">
       <PlayCircle class="size-12" />
       <Button size="xs" variant="link" @click="onRunClick">

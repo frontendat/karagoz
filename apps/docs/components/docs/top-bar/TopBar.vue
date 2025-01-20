@@ -53,12 +53,10 @@ const toggleDark = useToggle(isDark)
                 <li>
                   <NavigationMenuLink as-child>
                     <NuxtLink
-                      :to="localePath({ path: '/sandbox/installation' })"
+                      :to="localePath({ path: '/sandbox/setup' })"
                       class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
-                      <div class="text-sm font-medium leading-none">
-                        Installation
-                      </div>
+                      <div class="text-sm font-medium leading-none">Setup</div>
                     </NuxtLink>
                   </NavigationMenuLink>
                 </li>
@@ -93,16 +91,6 @@ const toggleDark = useToggle(isDark)
                       <div class="text-sm font-medium leading-none">
                         API Reference
                       </div>
-                    </NuxtLink>
-                  </NavigationMenuLink>
-                </li>
-                <li>
-                  <NavigationMenuLink as-child>
-                    <NuxtLink
-                      :to="localePath({ path: '/sandbox/demos' })"
-                      class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                    >
-                      <div class="text-sm font-medium leading-none">Demos</div>
                     </NuxtLink>
                   </NavigationMenuLink>
                 </li>

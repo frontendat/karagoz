@@ -29,7 +29,7 @@ const IconComponent = computed(
 </script>
 
 <template>
-  <div>
+  <div class="hint">
     <Alert class="not-prose" :variant="variant">
       <IconComponent v-if="IconComponent && !hideIcon" class="size-4" />
       <AlertTitle v-if="!hideTitle">{{
@@ -41,3 +41,9 @@ const IconComponent = computed(
     </Alert>
   </div>
 </template>
+
+<style scoped>
+.hint :deep(a) {
+  @apply underline;
+}
+</style>
