@@ -36,10 +36,8 @@ export default defineI18nLocale(async (locale) => {
             title: 'المتغيرات',
           },
         },
-        demos: {
-          defaults: {
-            title: 'مثال بالإعدادات الافتراضية',
-          },
+        handbook: {
+          title: 'دليل الاستخدام',
         },
       },
     },

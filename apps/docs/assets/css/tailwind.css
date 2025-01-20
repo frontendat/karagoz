@@ -79,3 +79,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .external::after {
+    content: ' ↗';
+  }
+}

@@ -75,10 +75,12 @@ const toggleDark = useToggle(isDark)
                 <li>
                   <NavigationMenuLink as-child>
                     <NuxtLink
-                      :to="localePath({ path: '/sandbox/guides' })"
+                      :to="localePath({ path: '/sandbox/handbook' })"
                       class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
-                      <div class="text-sm font-medium leading-none">Guides</div>
+                      <div class="text-sm font-medium leading-none">
+                        Handbook
+                      </div>
                     </NuxtLink>
                   </NavigationMenuLink>
                 </li>

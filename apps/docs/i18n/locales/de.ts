@@ -36,10 +36,8 @@ export default defineI18nLocale(async (locale) => {
             title: 'Variablen',
           },
         },
-        demos: {
-          defaults: {
-            title: 'Standarddemo',
-          },
+        handbook: {
+          title: 'Handbuch',
         },
       },
     },
