@@ -8,25 +8,30 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', href: '/karagoz-logo.svg', type: 'image/svg+xml' }],
     },
   },
+
   content: {
-    defaultLocale: 'en',
-    documentDriven: {
-      injectPage: false,
-    },
-    highlight: {
-      theme: 'monokai',
+    build: {
+      markdown: {
+        highlight: {
+          theme: 'monokai',
+        },
+      },
     },
   },
+
   devtools: { enabled: true },
+
   devServer: {
     https: {
       key: fs.readFileSync(path.resolve(__dirname, 'localhost.key'), 'utf-8'),
       cert: fs.readFileSync(path.resolve(__dirname, 'localhost.crt'), 'utf-8'),
     },
   },
+
   experimental: {
     scanPageMeta: true,
   },
+
   hooks: {
     // This helped enable crossOriginIsolated for the WebContainer API and get Nuxt DevTools working simultaneously
     'vite:serverCreated': (server) => {
@@ -39,6 +44,7 @@ export default defineNuxtConfig({
       })
     },
   },
+
   i18n: {
     baseUrl: 'https://karagoz.dev',
     defaultLocale: 'en',
@@ -56,12 +62,14 @@ export default defineNuxtConfig({
     strategy: 'prefix_and_default',
     vueI18n: './i18n.config.ts', // if you are using custom path, default
   },
+
   modules: [
     '@nuxt/content',
     '@nuxtjs/i18n',
     '@nuxtjs/tailwindcss',
     'shadcn-nuxt',
   ],
+
   nitro: {
     routeRules: {
       '**': {
@@ -72,12 +80,16 @@ export default defineNuxtConfig({
       },
     },
   },
+
   shadcn: {
     prefix: '',
     componentDir: './components/ui',
   },
+
   tailwindcss: {
     cssPath: ['~/assets/css/tailwind.css', { injectPosition: 'first' }],
     configPath: 'tailwind.config',
   },
+
+  compatibilityDate: '2025-01-29',
 })

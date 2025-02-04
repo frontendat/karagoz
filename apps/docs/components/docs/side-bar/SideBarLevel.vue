@@ -1,24 +1,25 @@
 <script setup lang="ts">
-import type { NavItem } from '@nuxt/content'
+import type { ContentNavigationItem } from '@nuxt/content'
 
 const props = withDefaults(
   defineProps<{
-    items: NavItem[]
+    items: ContentNavigationItem[]
     initLevel?: number
     level?: number
     maxLevel?: number
-    title?: string
+    title: string | null
   }>(),
   {
     initLevel: 0,
     level: 0,
     maxLevel: Infinity,
+    title: null,
   },
 )
 
 const levelItems = computed(() => {
   if (props.level) return props.items
-  let items: NavItem[] | undefined = props.items
+  let items: ContentNavigationItem[] | undefined = props.items
   for (let i = 0; i < props.initLevel; i++) {
     items = items?.at(0)?.children
   }
@@ -33,11 +34,11 @@ const levelItems = computed(() => {
         {{ title }}
       </div>
     </li>
-    <li v-for="item of levelItems" :key="item._path">
+    <li v-for="item of levelItems" :key="item.path">
       <div class="item">
         <NuxtLink
           class="block px-2 py-1 hover:underline text-muted-foreground"
-          :to="item._path"
+          :to="item.path"
         >
           {{ item.title }}
         </NuxtLink>

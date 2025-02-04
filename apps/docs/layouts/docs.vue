@@ -3,7 +3,16 @@ import { ScrollArea } from '@karagoz/shared'
 
 import DefaultLayout from '~/layouts/default.vue'
 
-const { page } = useContent()
+const route = useRouter().currentRoute
+const queryLocalisedCollection = useLocalisedCollection()
+const { data: page } = await useAsyncData(
+  route.value.path,
+  () =>
+    queryLocalisedCollection((builder) =>
+      builder.path(route.value.path).first(),
+    ),
+  { watch: [() => route.value.path] },
+)
 
 const hideToc = computed(() => !page.value || page.value.hideToc)
 </script>
@@ -23,7 +32,9 @@ const hideToc = computed(() => !page.value || page.value.hideToc)
         </aside>
         <main class="gap-6 grid py-6 lg:py-8 relative">
           <div class="overflow-hidden order-2 xl:order-1">
-            <DocsBreadcrumb v-if="!page?.hideBreadcrumb" class="mb-4" />
+            <div v-if="!page || !page?.hideBreadcrumb" class="mb-4">
+              <DocsBreadcrumb />
+            </div>
             <div class="max-w-none min-w-0 w-full prose dark:prose-invert">
               <slot></slot>
             </div>

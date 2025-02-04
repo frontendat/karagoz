@@ -1,11 +1,17 @@
+<script lang="ts" setup>
+const route = useRoute()
+const queryLocalisedCollection = useLocalisedCollection()
+
+const { data: page } = await useAsyncData(route.path, () => {
+  return queryLocalisedCollection((builder) => builder.path(route.path).first())
+})
+</script>
+
 <template>
-  <ContentDoc>
-    <template #not-found>
-      <div class="container">
-        <div class="mx-auto py-6 lg:py-8 prose dark:prose-invert">
-          <DocsNotFound />
-        </div>
-      </div>
-    </template>
-  </ContentDoc>
+  <ContentRenderer v-if="page" :value="page" />
+  <div v-else class="container">
+    <div class="mx-auto py-6 lg:py-8 prose dark:prose-invert">
+      <DocsNotFound />
+    </div>
+  </div>
 </template>

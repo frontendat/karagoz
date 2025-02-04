@@ -1,15 +1,9 @@
 <script setup lang="ts">
-type TOCLink = {
-  children: TOCLink[]
-  id: string
-  text: string
-}
+import type { Toc } from '@nuxt/content'
 
 defineProps<{
   noTitle?: boolean
-  toc: {
-    links: TOCLink[]
-  }
+  toc: Toc
 }>()
 
 const { t } = useI18n()
