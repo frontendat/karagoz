@@ -9,6 +9,7 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
+const isDev = import.meta.dev
 </script>
 
 <template>
@@ -22,12 +23,14 @@ const toggleDark = useToggle(isDark)
           class="fill-primary h-8"
           :title="t('layouts.siteName')"
         />
-        <span class="font-bold">Karagöz</span>
+        <span class="font-bold">{{ t('layouts.siteName') }}</span>
       </NuxtLink>
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger>Sandbox</NavigationMenuTrigger>
+            <NavigationMenuTrigger>{{
+              t('layouts.default.topBar.nav.sandbox')
+            }}</NavigationMenuTrigger>
             <NavigationMenuContent>
               <ul
                 class="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[minmax(0,.75fr)_minmax(0,1fr)]"
@@ -39,12 +42,11 @@ const toggleDark = useToggle(isDark)
                       :to="localePath({ path: '/sandbox' })"
                     >
                       <div class="mb-2 mt-4 text-lg font-medium">
-                        Karagöz <br />
-                        Sandbox
+                        {{ t('layouts.siteName') }} <br />
+                        {{ t('layouts.default.topBar.nav.sandbox') }}
                       </div>
                       <p class="text-xs leading-tight text-muted-foreground">
-                        Boost your interactive code demos with the power of
-                        WebContainers.
+                        {{ t('layouts.default.topBar.nav.sandboxTeaser') }}
                       </p>
                     </NuxtLink>
                   </NavigationMenuLink>
@@ -56,7 +58,9 @@ const toggleDark = useToggle(isDark)
                       :to="localePath({ path: '/sandbox/setup' })"
                       class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
-                      <div class="text-sm font-medium leading-none">Setup</div>
+                      <div class="text-sm font-medium leading-none">
+                        {{ t('layouts.default.topBar.nav.sandboxSetup') }}
+                      </div>
                     </NuxtLink>
                   </NavigationMenuLink>
                 </li>
@@ -67,7 +71,9 @@ const toggleDark = useToggle(isDark)
                       class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
                       <div class="text-sm font-medium leading-none">
-                        Getting Started
+                        {{
+                          t('layouts.default.topBar.nav.sandboxGettingStarted')
+                        }}
                       </div>
                     </NuxtLink>
                   </NavigationMenuLink>
@@ -79,7 +85,7 @@ const toggleDark = useToggle(isDark)
                       class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
                       <div class="text-sm font-medium leading-none">
-                        Handbook
+                        {{ t('layouts.default.topBar.nav.sandboxHandbook') }}
                       </div>
                     </NuxtLink>
                   </NavigationMenuLink>
@@ -91,7 +97,9 @@ const toggleDark = useToggle(isDark)
                       class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
                       <div class="text-sm font-medium leading-none">
-                        API Reference
+                        {{
+                          t('layouts.default.topBar.nav.sandboxApiReference')
+                        }}
                       </div>
                     </NuxtLink>
                   </NavigationMenuLink>
@@ -99,12 +107,12 @@ const toggleDark = useToggle(isDark)
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
-          <NavigationMenuItem>
+          <NavigationMenuItem v-if="!isDev">
             <NavigationMenuLink
               href="/docs/introduction"
               :class="navigationMenuTriggerStyle()"
             >
-              Blog
+              {{ t('layouts.default.topBar.nav.blog') }}
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
@@ -112,19 +120,35 @@ const toggleDark = useToggle(isDark)
       <div
         class="flex flex-1 items-center justify-between space-x-2 md:justify-end"
       >
-        <DocsTopBarLanguageSwitcher />
+        <DocsTopBarLanguageSwitcher v-if="!isDev" />
         <nav class="flex items-center">
           <Button
             as="a"
+            :aria-label="t('layouts.default.topBar.extras.github')"
             href="https://github.com/frontendat/karagoz"
             size="icon"
             target="_blank"
+            :title="t('layouts.default.topBar.extras.github')"
             variant="ghost"
           >
             <IconGitHub class="size-5" />
           </Button>
           <ClientOnly>
-            <Button size="icon" variant="ghost" @click="toggleDark()">
+            <Button
+              :aria-label="
+                isDark
+                  ? t('layouts.default.topBar.extras.switchToLightTheme')
+                  : t('layouts.default.topBar.extras.switchToDarkTheme')
+              "
+              size="icon"
+              :title="
+                isDark
+                  ? t('layouts.default.topBar.extras.switchToLightTheme')
+                  : t('layouts.default.topBar.extras.switchToDarkTheme')
+              "
+              variant="ghost"
+              @click="toggleDark()"
+            >
               <Sun v-if="isDark" class="size-5" />
               <MoonStar v-else class="size-5" />
             </Button>

@@ -116,7 +116,7 @@ provideWebContainer(boot)
 const sandbox = useSandbox()
 
 onMounted(async () => {
-  // Ensure injected promise has been resolved in composables
+  // Ensure injected promise has been resolved
   const container = await boot
   // Continue initialisation
   await container.mount(tree.value)

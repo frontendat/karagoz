@@ -14,6 +14,30 @@ export default defineI18nLocale(async (locale) => {
       title: 'Karagöz - interaktive Programmierkomponenten',
       tocButton: 'In dieser Seite',
       tocTitle: 'In dieser Seite:',
+      default: {
+        topBar: {
+          nav: {
+            sandbox: 'Sandbox',
+            sandboxTeaser:
+              'Optimiere deine interaktiven Code-Demos mit der Leistung von WebContainern.',
+            sandboxSetup: 'Installation',
+            sandboxGettingStarted: 'Erste Schritte',
+            sandboxHandbook: 'Handbuch',
+            sandboxApiReference: 'API Referenz',
+            blog: 'Blog',
+          },
+          extras: {
+            switchToDarkTheme: 'Zum Dunkelmodus wechseln',
+            switchToLightTheme: 'Zum Lichtmodus wechseln',
+            github: 'Code auf GitHub',
+          },
+        },
+        footer: {
+          licenseText: 'Veröffentlicht unter {0}.',
+          licenseName: 'MIT-Lizenz',
+          copyright: 'Copyright © 2024-{year} Mahmoud Aldaas.',
+        },
+      },
     },
     pages: {
       notFound: {

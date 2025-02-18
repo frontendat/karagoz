@@ -29,7 +29,7 @@ const { data: solveSnapshot, execute: fetchSolveSnapshot } =
 
 onMounted(async () => {
   if (!initialSnapshot.value) return
-  // Ensure injected promise has been resolved in composables
+  // Ensure injected promise has been resolved
   const container = await boot
   // Continue initialisation
   await container.mount(await initialSnapshot.value.arrayBuffer())

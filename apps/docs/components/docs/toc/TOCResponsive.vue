@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Button, ScrollArea } from '@karagoz/shared'
+
 const route = useRouter().currentRoute
 const { t } = useI18n()
 const queryLocalisedCollection = useLocalisedCollection()

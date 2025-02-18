@@ -7,13 +7,12 @@ const props = withDefaults(
     initLevel?: number
     level?: number
     maxLevel?: number
-    title: string | null
+    title?: string
   }>(),
   {
     initLevel: 0,
     level: 0,
     maxLevel: Infinity,
-    title: null,
   },
 )
 
