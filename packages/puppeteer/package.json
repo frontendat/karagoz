@@ -1,7 +1,7 @@
 {
   "name": "@karagoz/puppeteer",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "files": [
     "dist"
@@ -29,6 +29,7 @@
     "dev": "pnpm --filter @karagoz/puppeteer --parallel /^watch:/",
     "dev-hmr": "vite",
     "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
+    "prepublish": "pnpm build",
     "preview": "vite preview",
     "watch:vite": "vite build --watch",
     "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
