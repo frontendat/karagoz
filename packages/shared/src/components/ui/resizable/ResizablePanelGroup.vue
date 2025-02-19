@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { cn } from '@/utils'
-import { SplitterGroup, type SplitterGroupEmits, type SplitterGroupProps, useForwardPropsEmits } from 'radix-vue'
+import {
+  SplitterGroup,
+  type SplitterGroupEmits,
+  type SplitterGroupProps,
+  useForwardPropsEmits,
+} from 'radix-vue'
 import { computed, type HTMLAttributes } from 'vue'
 
-const props = defineProps<SplitterGroupProps & { class?: HTMLAttributes['class'] }>()
+import { cn } from '@/utils'
+
+const props = defineProps<
+  SplitterGroupProps & { class?: HTMLAttributes['class'] }
+>()
 const emits = defineEmits<SplitterGroupEmits>()
 
 const delegatedProps = computed(() => {
@@ -15,7 +23,16 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
 </script>
 
 <template>
-  <SplitterGroup v-bind="forwarded" :class="cn('flex h-full w-full data-[panel-group-direction=vertical]:flex-col', props.class)">
+  <SplitterGroup
+    v-bind="forwarded"
+    :direction="forwarded.value.value.direction ?? 'horizontal'"
+    :class="
+      cn(
+        'flex h-full w-full data-[panel-group-direction=vertical]:flex-col',
+        props.class,
+      )
+    "
+  >
     <slot />
   </SplitterGroup>
 </template>
