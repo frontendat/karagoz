@@ -1,0 +1,1 @@
+import{e as t,o as a,h as o,w as n,y as s,d as r,t as l,B as d}from"./DU3geLts.js";const u=t({__name:"HtmlTag",props:{tag:{default:"div"},content:{default:void 0}},setup(p){return(e,c)=>(a(),o(d(e.tag),null,{default:n(()=>[s(e.$slots,"default",{},()=>[r(l(e.content),1)])]),_:3}))}});export{u as default};

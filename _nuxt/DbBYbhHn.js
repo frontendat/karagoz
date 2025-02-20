@@ -1,0 +1,6 @@
+import{_ as p}from"./CQhG5cyz.js";import{h as d,b as f}from"./O9fGKo9V.js";import{e as k,f as y}from"./DDWDzz7v.js";import{u as _}from"./D6zVTiYe.js";import{c as g}from"./tHcswnMc.js";import{e as h,I as C,o as a,c as R,g as e,h as c,w as t,y as x,b as i,d as b,t as v,x as I,aZ as w}from"./DU3geLts.js";/**
+ * @license lucide-vue-next v0.469.0 - ISC
+ *
+ * This source code is licensed under the ISC license.
+ * See the LICENSE file in the root directory of this source tree.
+ */const D=g("CirclePlayIcon",[["circle",{cx:"12",cy:"12",r:"10",key:"1mglay"}],["polygon",{points:"10 8 16 12 10 16 10 8",key:"1cimsy"}]]),S=()=>{const n=y();return{killRunning:()=>n.trigger(),onKillRunning:o=>n.on(o)}},z=k(S),H=h({__name:"DemoRunner",props:{heightClass:{default:"h-[600px]"}},setup(n){const{t:o}=_(),r=z(),s=C(!1);r.onKillRunning(()=>s.value=!1);const u=async()=>{await r.killRunning(),await w(),s.value=!0};return(l,B)=>{const m=p;return a(),R("div",{class:I(["border border-border my-12 not-prose",l.heightClass])},[e(s)?(a(),c(m,{key:0},{default:t(()=>[x(l.$slots,"default")]),_:3})):(a(),c(e(f),{key:1,"suppress-spinner":"",variant:"secondary"},{default:t(()=>[i(e(D),{class:"size-12"}),i(e(d),{size:"xs",variant:"link",onClick:u},{default:t(()=>[b(v(e(o)("component.demoRunner.clickToStart")),1)]),_:1})]),_:1}))],2)}}});export{H as default};

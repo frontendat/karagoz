@@ -1,1 +1,0 @@
-import{aN as u}from"./B53LhvXH.js";function t(e){throw u({fatal:!0,statusCode:500,statusMessage:`${e} is provided by @nuxt/image. Check your console to install it or run 'npx nuxi@latest module add @nuxt/image'`})}const s={setup:()=>t("<NuxtImg>")},o={setup:()=>t("<NuxtPicture>")};export{s as NuxtImg,o as NuxtPicture};
