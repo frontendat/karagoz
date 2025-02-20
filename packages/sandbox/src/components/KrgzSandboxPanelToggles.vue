@@ -11,7 +11,7 @@ import {
   Sun,
   TerminalSquare,
 } from 'lucide-vue-next'
-import { computed, ref } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { Panel, panels } from '../types'
@@ -60,7 +60,7 @@ defineEmits<{
 }>()
 
 const { t } = useI18n()
-const $el = ref<HTMLElement>()
+const $el = useTemplateRef<HTMLElement>('$el')
 const fullscreen = useFullscreen($el)
 const isDark = useDark()
 const toggleDark = useToggle(isDark)

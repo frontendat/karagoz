@@ -1,5 +1,5 @@
-import '@karagoz/shared/dist/style.css'
-import '@karagoz/sandbox/dist/style.css'
+import '@karagoz/shared/dist/karagoz-shared.css'
+import '@karagoz/sandbox/dist/karagoz-sandbox.css'
 import './style.css'
 
 import { createApp, h, Suspense } from 'vue'

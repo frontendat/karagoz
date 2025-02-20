@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import '@karagoz/shared/dist/style.css'
+import '@karagoz/shared/dist/karagoz-shared.css'
 
 import { FileSystemTree } from '@webcontainer/api'
 import { onMounted, ref } from 'vue'

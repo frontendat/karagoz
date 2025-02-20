@@ -20,9 +20,9 @@
         "default": "./dist/karagoz-shared.umd.cjs"
       }
     },
-    "./dist/style.css": {
-      "import": "./dist/style.css",
-      "require": "./dist/style.css"
+    "./dist/karagoz-shared.css": {
+      "import": "./dist/karagoz-shared.css",
+      "require": "./dist/karagoz-shared.css"
     },
     "./dist/config/*": "./dist/config/*"
   },
@@ -37,6 +37,9 @@
     "lint": "eslint \"src/**/*.{ts,vue}\""
   },
   "peerDependencies": {
-    "vue": "^3.4.21"
+    "vue": "^3.5.13"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

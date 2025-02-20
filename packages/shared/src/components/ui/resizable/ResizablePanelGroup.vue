@@ -25,7 +25,6 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
 <template>
   <SplitterGroup
     v-bind="forwarded"
-    :direction="forwarded.value.value.direction ?? 'horizontal'"
     :class="
       cn(
         'flex h-full w-full data-[panel-group-direction=vertical]:flex-col',
