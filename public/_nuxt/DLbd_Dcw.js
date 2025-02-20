@@ -1,0 +1,1 @@
+import{j as a,o as t,ae as o,an as n,r as s,ao as r,ap as l,b4 as p}from"./B53LhvXH.js";const u=a({__name:"HtmlTag",props:{tag:{default:"div"},content:{default:void 0}},setup(d){return(e,c)=>(t(),o(p(e.tag),null,{default:n(()=>[s(e.$slots,"default",{},()=>[r(l(e.content),1)])]),_:3}))}});export{u as default};
