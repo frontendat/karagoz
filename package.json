@@ -2,6 +2,7 @@
   "private": true,
   "description": "Karagöz Learning Tools",
   "license": "ISC",
+  "packageManager": "pnpm@8.6.6",
   "scripts": {
     "@docs": "pnpm --filter @karagoz/docs",
     "@puppeteer": "pnpm --filter @karagoz/puppeteer",
