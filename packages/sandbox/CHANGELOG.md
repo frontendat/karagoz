@@ -1,5 +1,13 @@
 # @karagoz/sandbox
 
+## 0.1.1
+
+### Patch Changes
+
+- fix path of karagoz-shared.css
+- Updated dependencies
+  - @karagoz/shared@0.1.1
+
 ## 0.1.0
 
 ### Minor Changes
