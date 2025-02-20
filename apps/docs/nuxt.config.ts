@@ -22,10 +22,18 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   devServer: {
-    https: {
-      key: fs.readFileSync(path.resolve(__dirname, 'localhost.key'), 'utf-8'),
-      cert: fs.readFileSync(path.resolve(__dirname, 'localhost.crt'), 'utf-8'),
-    },
+    https: import.meta.dev
+      ? {
+          key: fs.readFileSync(
+            path.resolve(__dirname, 'localhost.key'),
+            'utf-8',
+          ),
+          cert: fs.readFileSync(
+            path.resolve(__dirname, 'localhost.crt'),
+            'utf-8',
+          ),
+        }
+      : {},
   },
 
   experimental: {
