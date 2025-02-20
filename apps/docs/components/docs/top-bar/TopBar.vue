@@ -107,7 +107,7 @@ const isDev = import.meta.dev
               </ul>
             </NavigationMenuContent>
           </NavigationMenuItem>
-          <NavigationMenuItem v-if="!isDev">
+          <NavigationMenuItem v-if="isDev">
             <NavigationMenuLink
               href="/docs/introduction"
               :class="navigationMenuTriggerStyle()"
@@ -120,7 +120,7 @@ const isDev = import.meta.dev
       <div
         class="flex flex-1 items-center justify-between space-x-2 md:justify-end"
       >
-        <DocsTopBarLanguageSwitcher v-if="!isDev" />
+        <DocsTopBarLanguageSwitcher v-if="isDev" />
         <nav class="flex items-center">
           <Button
             as="a"

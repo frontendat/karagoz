@@ -56,11 +56,14 @@ export default defineNuxtConfig({
   i18n: {
     baseUrl: 'https://karagoz.dev',
     defaultLocale: 'en',
-    detectBrowserLanguage: {
-      useCookie: true,
-      cookieKey: 'i18n_redirected',
-      fallbackLocale: 'en',
-    },
+    // currently only English in production
+    detectBrowserLanguage: import.meta.dev
+      ? {
+          useCookie: true,
+          cookieKey: 'i18n_redirected',
+          fallbackLocale: 'en',
+        }
+      : false,
     lazy: true,
     locales: [
       { code: 'ar', dir: 'rtl', file: 'ar.ts', iso: 'ar-SY', name: 'العربية' },
