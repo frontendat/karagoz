@@ -33,7 +33,7 @@ export default defineNuxtConfig({
             'utf-8',
           ),
         }
-      : {},
+      : undefined,
   },
 
   experimental: {
