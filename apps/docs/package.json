@@ -3,11 +3,14 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "check-build": "node ./check-build.mjs",
+    "check-build:shared": "pnpm check-build ../../packages/shared/dist \"cd ../.. && pnpm @shared build\"\n",
+    "check-build:sandbox": "pnpm check-build ../../packages/sandbox/dist \"cd ../.. && pnpm @sandbox build\"\n",
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "postinstall": "pnpm check-build:shared && pnpm check-build:sandbox && nuxt prepare",
     "lint": "eslint \"./**/*.{ts,vue}\""
   },
   "dependencies": {
