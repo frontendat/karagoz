@@ -19,6 +19,10 @@ export default defineNuxtConfig({
         },
       },
     },
+    database: {
+      type: 'sqlite',
+      filename: '/tmp/contents.sqlite',
+    },
   },
 
   devtools: { enabled: true },
