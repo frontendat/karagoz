@@ -83,6 +83,16 @@ export default defineNuxtConfig({
     'shadcn-nuxt',
   ],
 
+  nitro: {
+    prerender: {
+      routes: ['/'],
+    },
+    preset: 'vercel',
+    routeRules: {
+      '/:pathMatch(.*)*': { ssr: true }, // Ensures SSR works for all routes
+    },
+  },
+
   routeRules: {
     '/*': {
       headers: {
@@ -96,6 +106,8 @@ export default defineNuxtConfig({
     prefix: '',
     componentDir: './components/ui',
   },
+
+  ssr: true,
 
   tailwindcss: {
     cssPath: ['~/assets/css/tailwind.css', { injectPosition: 'first' }],
