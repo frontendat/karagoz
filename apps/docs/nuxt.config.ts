@@ -9,6 +9,8 @@ export default defineNuxtConfig({
     },
   },
 
+  compatibilityDate: '2025-01-29',
+
   content: {
     build: {
       markdown: {
@@ -83,7 +85,7 @@ export default defineNuxtConfig({
 
   nitro: {
     routeRules: {
-      '**': {
+      '*': {
         headers: {
           'Cross-Origin-Embedder-Policy': 'require-corp',
           'Cross-Origin-Opener-Policy': 'same-origin',
@@ -101,6 +103,4 @@ export default defineNuxtConfig({
     cssPath: ['~/assets/css/tailwind.css', { injectPosition: 'first' }],
     configPath: 'tailwind.config',
   },
-
-  compatibilityDate: '2025-01-29',
 })
