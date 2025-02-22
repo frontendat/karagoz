@@ -12,7 +12,7 @@ const { data: page } = await useAsyncData(
     ),
   { watch: [() => route.value.path] },
 )
-const toc = computed(() => page.value?.body.toc)
+const toc = computed(() => page.value?.body?.toc)
 const tocIsOpen = ref(false)
 </script>
 
