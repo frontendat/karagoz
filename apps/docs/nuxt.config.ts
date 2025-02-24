@@ -87,7 +87,7 @@ export default defineNuxtConfig({
     prerender: {
       routes: ['/'],
     },
-    preset: 'netlify',
+    preset: 'vercel',
     routeRules: {
       '/:pathMatch(.*)*': { ssr: true }, // Ensures SSR works for all routes
     },
