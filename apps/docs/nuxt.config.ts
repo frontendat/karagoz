@@ -91,6 +91,7 @@ export default defineNuxtConfig({
     routeRules: {
       '/:pathMatch(.*)*': { ssr: true }, // Ensures SSR works for all routes
     },
+    scanDirs: ['server'],
   },
 
   routeRules: {
