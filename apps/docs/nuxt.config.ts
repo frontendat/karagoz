@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     },
   },
 
-  devtools: { enabled: true },
+  devtools: { enabled: import.meta.dev },
 
   devServer: {
     https: import.meta.dev

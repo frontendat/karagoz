@@ -35,3 +35,7 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Local folder
+.netlify
+.vercel
