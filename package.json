@@ -19,7 +19,6 @@
     "@eslint/compat": "^1.2.4",
     "@vueuse/core": "^10.9.0",
     "@webcontainer/api": "^1.5.1",
-    "@webcontainer/snapshot": "^0.1.0",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
     "class-variance-authority": "^0.7.0",

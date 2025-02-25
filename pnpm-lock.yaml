@@ -32,9 +32,6 @@ importers:
       '@webcontainer/api':
         specifier: ^1.5.1
         version: 1.5.1
-      '@webcontainer/snapshot':
-        specifier: ^0.1.0
-        version: 0.1.0
       '@xterm/addon-fit':
         specifier: ^0.10.0
         version: 0.10.0(@xterm/xterm@5.5.0)
@@ -2485,11 +2482,6 @@ packages:
       rollup: 4.29.1
     dev: false
 
-  /@msgpack/msgpack@3.0.0-beta2:
-    resolution: {integrity: sha512-y+l1PNV0XDyY8sM3YtuMLK5vE3/hkfId+Do8pLo/OPxfxuFAUwcGz3oiiUuV46/aBpwTzZ+mRWVMtlSKbradhw==}
-    engines: {node: '>= 14'}
-    dev: false
-
   /@neon-rs/load@0.0.4:
     resolution: {integrity: sha512-kTPhdZyTQxB+2wpiRcFWrDcejc4JI6tkPuS7UZCG4l6Zvc5kU/gGQ/ozvHTh1XR5tS+UlfAfGuPajjzQjCiHCw==}
     dev: false
@@ -4450,13 +4442,6 @@ packages:
 
   /@webcontainer/api@1.5.1:
     resolution: {integrity: sha512-+ELk+TbTOUx0LawAUdB+nnxaofg/FxUXo/Ac/+CzHSP3SOc3ebBAW3fLo4UZfvJdUW+ygWZOiQMthPLQXvKZEg==}
-    dev: false
-
-  /@webcontainer/snapshot@0.1.0:
-    resolution: {integrity: sha512-PTIGQ3osUpTbK/dqB8RYbcZGv8IK+DJACx709z5sFbeIlngB3hUFpTEYFYs1SbUvr/AEQqvd0/bhc4ectrPRRw==}
-    engines: {node: '>=16'}
-    dependencies:
-      '@msgpack/msgpack': 3.0.0-beta2
     dev: false
 
   /@xterm/addon-fit@0.10.0(@xterm/xterm@5.5.0):

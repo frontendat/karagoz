@@ -5,6 +5,7 @@ import {
   useSandbox,
   useSandboxBoot,
 } from '@karagoz/sandbox'
+import type { FileSystemTree } from '@webcontainer/api'
 import { onBeforeUnmount, onMounted } from 'vue'
 
 const { boot, isBooting } = useSandboxBoot()
@@ -12,19 +13,13 @@ provideWebContainer(boot)
 
 const sandbox = useSandbox()
 
-const { data: initialSnapshot } = await useFetch<Response>(
+const { data: initialSnapshot } = await useFetch<FileSystemTree>(
   '/api/snapshot/express',
-  {
-    headers: { Accept: 'application/octet-stream' },
-    responseType: 'blob',
-  },
 )
 
 const { data: solveSnapshot, execute: fetchSolveSnapshot } =
-  await useFetch<Response>('/api/snapshot/express-solve', {
-    headers: { Accept: 'application/octet-stream' },
+  await useFetch<FileSystemTree>('/api/snapshot/express-solve', {
     immediate: false,
-    responseType: 'blob',
   })
 
 onMounted(async () => {
@@ -32,7 +27,7 @@ onMounted(async () => {
   // Ensure injected promise has been resolved
   const container = await boot
   // Continue initialisation
-  await container.mount(await initialSnapshot.value.arrayBuffer())
+  await container.mount(await initialSnapshot.value)
   await sandbox.bootstrap()
   sandbox.editorTabs.open('./public/index.html')
 })
@@ -42,7 +37,7 @@ onBeforeUnmount(() => sandbox.container.value?.teardown())
 const onSolveClick = async () => {
   await fetchSolveSnapshot()
   if (!solveSnapshot.value) return
-  sandbox.container.value?.mount(await solveSnapshot.value.arrayBuffer())
+  sandbox.container.value?.mount(await solveSnapshot.value)
 }
 </script>
 
