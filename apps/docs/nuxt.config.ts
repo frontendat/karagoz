@@ -56,7 +56,6 @@ export default defineNuxtConfig({
   },
 
   i18n: {
-    baseUrl: 'https://karagoz.dev',
     defaultLocale: 'en',
     // currently only English in production
     detectBrowserLanguage: import.meta.dev
@@ -85,9 +84,9 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
+      crawlLinks: true,
       routes: ['/'],
     },
-    preset: 'vercel',
     routeRules: {
       '/:pathMatch(.*)*': { ssr: true }, // Ensures SSR works for all routes
     },
