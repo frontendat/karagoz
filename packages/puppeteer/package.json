@@ -36,9 +36,9 @@
     "lint": "eslint \"src/**/*.{ts,vue}\""
   },
   "peerDependencies": {
-    "@codemirror/language": "^6.10.3",
+    "@codemirror/language": "^6.10.8",
     "@codemirror/language-data": "^6.5.1",
-    "@codemirror/state": "^6.4.1",
+    "@codemirror/state": "^6.5.2",
     "@codemirror/theme-one-dark": "^6.1.2",
     "@tailwindcss/typography": "^0.5.15",
     "@types/markdown-it": "^14.1.2",
