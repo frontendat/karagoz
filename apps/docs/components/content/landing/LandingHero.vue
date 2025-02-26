@@ -9,7 +9,7 @@ defineProps<{
 
 <template>
   <section
-    class="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20 page-header page-header pb-8 prose dark:prose-dark"
+    class="mx-auto flex max-w-[980px] flex-col items-center gap-2 py-8 md:py-12 md:pb-8 lg:py-24 lg:pb-20 page-header page-header pb-8 prose dark:prose-invert"
   >
     <KaragozLogo class="fill-primary size-[170px]" />
     <h1 class="mb-0">

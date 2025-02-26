@@ -80,6 +80,12 @@
   }
 }
 
+@layer components {
+  .prose {
+    --tw-prose-invert-pre-bg: #1f2937;
+  }
+}
+
 @layer utilities {
   .external::after {
     content: ' ↗';

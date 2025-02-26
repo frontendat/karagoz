@@ -34,7 +34,7 @@ count: 2
 
 :::
 
-:::html-tag{tag='div' class='mx-auto prose'}
+:::html-tag{tag='div' class='mx-auto prose dark:prose-invert'}
 
 :html-tag{tag='h3' content='A bit of history...'}
     
