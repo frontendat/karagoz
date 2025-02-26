@@ -46,4 +46,8 @@ const IconComponent = computed(
 .hint :deep(a) {
   @apply underline;
 }
+
+.hint + .hint {
+  @apply mt-8;
+}
 </style>
