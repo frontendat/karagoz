@@ -6,6 +6,12 @@ export default defineNuxtConfig({
   app: {
     head: {
       link: [{ rel: 'icon', href: '/karagoz-logo.svg', type: 'image/svg+xml' }],
+      meta: [
+        {
+          name: 'og:image',
+          content: 'http://karagoz.dev/img/karagoz-og-image.png',
+        },
+      ],
     },
   },
 
