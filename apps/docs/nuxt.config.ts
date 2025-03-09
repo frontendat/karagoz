@@ -49,7 +49,7 @@ export default defineNuxtConfig({
   },
 
   hooks: {
-    // This helped enable crossOriginIsolated for the WebContainer API and get Nuxt DevTools working simultaneously
+    // This helps enable crossOriginIsolated for the WebContainer API and get Nuxt DevTools working simultaneously
     'vite:serverCreated': (server) => {
       server.middlewares.use((_req, res, next) => {
         res.setHeader('Cross-Origin-Resource-Policy', 'same-origin')
