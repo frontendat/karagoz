@@ -1,4 +1,4 @@
-export default defineI18nLocale(async (locale) => {
+export default defineI18nLocale(async () => {
   return {
     ...(await import('@karagoz/sandbox')).i18nMessages.de,
     component: {
@@ -33,9 +33,10 @@ export default defineI18nLocale(async (locale) => {
           },
         },
         footer: {
-          licenseText: 'Veröffentlicht unter {0}.',
+          licenseText: 'Veröffentlicht unter {0}',
           licenseName: 'MIT-Lizenz',
-          copyright: 'Copyright © 2024-{year} Mahmoud Aldaas.',
+          copyright: 'Copyright © 2024-{year} Mahmoud Aldaas',
+          privacyPolicy: 'Datenschutzerklärung',
         },
       },
     },

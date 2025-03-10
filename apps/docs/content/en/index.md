@@ -1,5 +1,4 @@
 ---
-layout: landing
 h1Class: "mb-0"
 ---
 

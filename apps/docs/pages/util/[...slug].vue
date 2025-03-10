@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 definePageMeta({
-  layout: 'landing',
+  layout: 'util',
 })
 
 const route = useRoute()

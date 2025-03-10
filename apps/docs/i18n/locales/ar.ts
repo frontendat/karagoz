@@ -1,4 +1,4 @@
-export default defineI18nLocale(async (locale) => {
+export default defineI18nLocale(async () => {
   return {
     ...(await import('@karagoz/sandbox')).i18nMessages.ar,
     component: {
@@ -33,9 +33,10 @@ export default defineI18nLocale(async (locale) => {
           },
         },
         footer: {
-          licenseText: 'المحتوى يخضع إلى {0}.',
+          licenseText: 'المحتوى يخضع إلى {0}',
           licenseName: 'رخصة MIT',
-          copyright: 'حقوق النشر © 2024-{year} محمود الدعاس.',
+          copyright: 'حقوق النشر © 2024-{year} محمود الدعاس',
+          privacyPolicy: 'سياسة الخصوصوية',
         },
       },
     },

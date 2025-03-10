@@ -1,6 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
-
+const localePath = useLocalePath()
 const year = new Date().getFullYear()
 </script>
 
@@ -19,6 +19,13 @@ const year = new Date().getFullYear()
             {{ t('layouts.default.footer.licenseName') }}
           </a>
         </i18n-t>
+        &bull;
+        <NuxtLink
+          class="underline"
+          :to="localePath({ path: '/util/privacy-policy' })"
+        >
+          {{ t('layouts.default.footer.privacyPolicy') }}
+        </NuxtLink>
         <br />
         <span>
           {{ t('layouts.default.footer.copyright', { year }) }}
