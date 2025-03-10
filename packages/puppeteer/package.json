@@ -1,6 +1,11 @@
 {
   "name": "@karagoz/puppeteer",
   "private": true,
+  "homepage": "https://karagoz.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frontendat/karagoz.git"
+  },
   "version": "0.0.2",
   "type": "module",
   "files": [

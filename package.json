@@ -1,8 +1,13 @@
 {
   "private": true,
   "description": "Karagöz Learning Tools",
-  "license": "ISC",
+  "license": "MIT",
+  "homepage": "https://karagoz.dev",
   "packageManager": "pnpm@8.6.6",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frontendat/karagoz.git"
+  },
   "scripts": {
     "@docs": "pnpm --filter @karagoz/docs",
     "@puppeteer": "pnpm --filter @karagoz/puppeteer",
