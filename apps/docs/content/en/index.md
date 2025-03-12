@@ -37,10 +37,10 @@ count: 2
 
 :html-tag{tag='h3' content='A bit of history...'}
     
-The name **Karagöz** refers to 
-<a class="external" href="https://en.wikipedia.org/wiki/Karag%C3%B6z_and_Hacivat" target="_blank">Karagöz and 
-Hacivat</a>, 
-the lead characters of the traditional Turkish shadow play, popularized during the Ottoman period and then spread to most nation states of the Ottoman Empire.
+The name **Karagöz** refers 
+to :external-link{href='https://en.wikipedia.org/wiki/Karag%C3%B6z_and_Hacivat' content='Karagöz and Hacivat'},
+the lead characters of the traditional Turkish shadow play, popularized during the Ottoman period and then spread to 
+most nation states of the Ottoman Empire.
 
 <figure>
     <img src="img/karagoz-and-hacivat.png" alt="Karagöz and Hacivat - Source: Wikipedia" class="max-w-[265px]" />
@@ -55,9 +55,9 @@ Besides, naming things is hard. I was happy to find a unique name and an availab
 
 :html-tag{tag='h3' content='But, why Vue.js?'}
 
-My initial thought was to create a bunch of 
-<a class="external" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components" target="_blank"> Web 
-Components</a> that can be used in any context. However, I quickly ran into the hurdles of my limited experience 
+My initial thought was to create a bunch 
+of :external-link{href='https://developer.mozilla.org/en-US/docs/Web/API/Web_components' content='Web Components'} 
+that can be used in any context. However, I quickly ran into the hurdles of my limited experience 
 with the technology and high level or required interactivity and reactivity.
 
 For that reason, as well as, Vue.js being my preferred framework, I opted to create the components specifically for 

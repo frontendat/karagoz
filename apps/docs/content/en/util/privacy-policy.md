@@ -20,7 +20,7 @@ affect the functionality of specific features on our site.
 
 For more detailed information on how these technologies handle data and cookies, please refer to their respective documentation:
 
-* <a target="_blank" href="https://vercel.com/docs/analytics/package">Vercel Web Analytics</a> 
-* <a target="_blank" href="https://webcontainers.io">WebContainer API</a> 
+* :external-link{href='https://vercel.com/docs/analytics/package' content='Vercel Web Analytics'}
+* :external-link{href='https://webcontainers.io' content='WebContainer API'}
 
 By continuing to use our site, you acknowledge and accept our cookie practices as outlined above.
