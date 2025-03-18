@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
             ? {
                 file: {
                   contents: key.endsWith('.json')
-                    ? JSON.stringify(await assets.getItem(key))
+                    ? JSON.stringify(await assets.getItem(key), undefined, 2)
                     : await assets.getItem(key),
                 },
               }

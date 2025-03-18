@@ -13,16 +13,16 @@ provideWebContainer(boot)
 
 const sandbox = useSandbox()
 
-const { data: initialSnapshot } = await useFetch<FileSystemTree>(
+const { data: snapshot } = await useFetch<FileSystemTree>(
   '/api/snapshot/express',
 )
 
 onMounted(async () => {
-  if (!initialSnapshot.value) return
+  if (!snapshot.value) return
   // Ensure injected promise has been resolved
   const container = await boot
   // Continue initialisation
-  await container.mount(await initialSnapshot.value)
+  await container.mount(await snapshot.value)
   await sandbox.bootstrap()
   sandbox.editorTabs.open('./public/index.html')
 })
