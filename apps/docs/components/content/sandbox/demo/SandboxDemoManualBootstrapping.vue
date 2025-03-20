@@ -14,6 +14,7 @@ provideWebContainer(boot)
 
 const sandbox = useSandbox()
 const buttonsDisabled = ref(true)
+const installationCompleted = ref(false)
 
 const { data: snapshot } = await useFetch<FileSystemTree>(
   '/api/snapshot/express',
@@ -25,12 +26,46 @@ onMounted(async () => {
   const container = await boot
   // Continue initialisation
   await container.mount(await snapshot.value)
-  await sandbox.bootstrap()
+  // await sandbox.bootstrap()
   sandbox.editorTabs.open('./public/index.html')
   buttonsDisabled.value = false
 })
 
 onBeforeUnmount(() => sandbox.container.value?.teardown())
+
+const installDeps = async () => {
+  // we await to correctly set installationCompleted flag
+  await sandbox.processTabs.open('npm install', 'Install Dependencies', {
+    command: 'npm',
+    args: ['install'],
+    suppressClose: true,
+    suppressInput: true,
+  })
+  installationCompleted.value = true
+}
+
+const startDevServer = () => {
+  sandbox.processTabs.close('npm install')
+  // No need to await here because nothing depends on finishing this process
+  sandbox.processTabs.open('npm start', 'Dev Server', {
+    command: 'npm',
+    args: ['start'],
+    canRestart: true,
+    canStop: true,
+    suppressInput: true,
+  })
+}
+
+const openTerminal = () => {
+  sandbox.processTabs.open('terminal', 'Terminal', {
+    command: 'jsh',
+    isTerminal: true,
+  })
+}
+
+const closeTerminal = () => {
+  sandbox.processTabs.close('terminal')
+}
 
 const showDialog = (message: number | string) => alert(message)
 </script>
@@ -42,64 +77,37 @@ const showDialog = (message: number | string) => alert(message)
         :disabled="buttonsDisabled"
         size="xs"
         variant="secondary"
-        @click="sandbox.editorTabs.open('./public/style.css')"
-        >Open style.css</Button
+        @click="installDeps"
+        >Install dependencies</Button
+      >
+      <Button
+        :disabled="buttonsDisabled || !installationCompleted"
+        size="xs"
+        variant="secondary"
+        @click="startDevServer"
+        >Start dev server</Button
       >
       <Button
         :disabled="buttonsDisabled"
         size="xs"
         variant="secondary"
-        @click="sandbox.editorTabs.close('./public/style.css')"
-        >Close style.css</Button
+        @click="openTerminal"
+        >Open terminal</Button
       >
       <Button
         :disabled="buttonsDisabled"
         size="xs"
         variant="secondary"
-        @click="sandbox.editorTabs.open('./server.js', 'SERVER FILE')"
-        >Open server.js with label</Button
-      >
-      <Button
-        :disabled="buttonsDisabled"
-        size="xs"
-        variant="secondary"
-        @click="
-          sandbox.editorTabs.open('./package-lock.json', undefined, {
-            suppressClose: true,
-          })
-        "
-        >Open non-closable lock-file</Button
-      >
-      <Button
-        :disabled="buttonsDisabled"
-        size="xs"
-        variant="secondary"
-        @click="showDialog(sandbox.editorTabs.tabs.value.length)"
-        >Alert number of tabs</Button
-      >
-      <Button
-        :disabled="buttonsDisabled"
-        size="xs"
-        variant="secondary"
-        @click="showDialog(sandbox.editorTabs.current.value?.id ?? 'n/a')"
-        >Alert current tab path</Button
-      >
-      <Button
-        :disabled="buttonsDisabled"
-        size="xs"
-        variant="secondary"
-        @click="
-          showDialog(
-            sandbox.editorTabs.findTab('./package.json')
-              ? 'package.json is open'
-              : 'package.json is not open',
-          )
-        "
-        >Alert whether package.json is open</Button
+        @click="closeTerminal"
+        >Close terminal</Button
       >
     </div>
     <div class="flex-grow">
-      <KrgzSandbox :booting="isBooting" hide-solve-button></KrgzSandbox>
+      <KrgzSandbox
+        :booting="isBooting"
+        hide-solve-button
+        :shown-panels="['code', 'processes', 'result', 'terminal']"
+      ></KrgzSandbox>
     </div>
   </div>
 </template>

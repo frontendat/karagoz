@@ -149,7 +149,7 @@ function useSandboxInternal() {
    * Order of execution:
    * - Kill dependency installation and dev server if either of them is running.
    * - On first run: listen to URL change events in the preview iframe to emit the latest URL to the parent window.
-   *   This is needed to show the current UR in address bar of the preview.
+   *   This is needed to show the current URL in address bar of the preview.
    * - Open a terminal window if allowed by the sandbox options.
    * - Install dependencies.
    * - Start dev server.
