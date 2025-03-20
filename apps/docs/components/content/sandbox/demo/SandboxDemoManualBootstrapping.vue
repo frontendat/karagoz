@@ -26,7 +26,6 @@ onMounted(async () => {
   const container = await boot
   // Continue initialisation
   await container.mount(await snapshot.value)
-  await sandbox.bootstrap()
   sandbox.editorTabs.open('./public/index.html')
   buttonsDisabled.value = false
 })
