@@ -26,7 +26,7 @@ onMounted(async () => {
   const container = await boot
   // Continue initialisation
   await container.mount(await snapshot.value)
-  // await sandbox.bootstrap()
+  await sandbox.bootstrap()
   sandbox.editorTabs.open('./public/index.html')
   buttonsDisabled.value = false
 })
@@ -34,13 +34,14 @@ onMounted(async () => {
 onBeforeUnmount(() => sandbox.container.value?.teardown())
 
 const installDeps = async () => {
-  // we await to correctly set installationCompleted flag
   await sandbox.processTabs.open('npm install', 'Install Dependencies', {
     command: 'npm',
     args: ['install'],
     suppressClose: true,
     suppressInput: true,
   })
+  // we await to correctly set installationCompleted flag
+  await sandbox.processTabs.findTab('npm install')?.context?.process?.exit
   installationCompleted.value = true
 }
 
@@ -66,8 +67,6 @@ const openTerminal = () => {
 const closeTerminal = () => {
   sandbox.processTabs.close('terminal')
 }
-
-const showDialog = (message: number | string) => alert(message)
 </script>
 
 <template>
