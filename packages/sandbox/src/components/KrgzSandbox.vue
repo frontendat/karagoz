@@ -5,13 +5,12 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
   ScrollArea,
-  useControlledModel,
 } from '@karagoz/shared'
 import { Binary } from 'lucide-vue-next'
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { type Panel, panels } from '../types/Panel.ts'
+import { type Panel, panels } from '../types'
 import KrgzEditorTabs from './KrgzEditorTabs.vue'
 import KrgzExplorer from './KrgzExplorer.vue'
 import KrgzPreview from './KrgzPreview.vue'
@@ -70,21 +69,16 @@ defineEmits<{
 const availablePanels = defineModel<Panel[]>('availablePanels', {
   default: ['code', 'processes', 'result', 'terminal'],
 })
-const shownPanelsModel = defineModel<Panel[] | undefined>('shownPanels')
-
-const [shownPanels, setShownPanels] = useControlledModel<Panel[]>(
-  shownPanelsModel,
-  ['code', 'result'],
-)
+const shownPanels = defineModel<Panel[]>('shownPanels', {
+  default: ['code', 'result'],
+})
 
 const { t } = useI18n()
 
 const togglePanel = (panel: Panel) => {
-  setShownPanels(
-    shownPanels.value.includes(panel)
-      ? shownPanels.value.filter((p) => p !== panel)
-      : [...shownPanels.value, panel],
-  )
+  shownPanels.value = shownPanels.value.includes(panel)
+    ? shownPanels.value.filter((p) => p !== panel)
+    : [...(shownPanels.value ?? []), panel]
 }
 
 const isShown = computed(
