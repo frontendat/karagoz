@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/frontendat/karagoz.git"
   },
-  "version": "0.0.2",
+  "version": "0.1.1",
   "type": "module",
   "files": [
     "dist"
