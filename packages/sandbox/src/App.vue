@@ -144,7 +144,11 @@ const onSolveClick = async () => {
 </script>
 
 <template>
-  <KrgzSandbox :booting="isBooting" @solve="onSolveClick()" />
+  <KrgzSandbox
+    :booting="isBooting"
+    multi-panel-from="3xl"
+    @solve="onSolveClick()"
+  />
 </template>
 
 <style>

@@ -139,5 +139,9 @@ onBeforeUnmount(() => sandbox.container.value?.teardown())
 </script>
 
 <template>
-  <KrgzSandbox :booting="isBooting" hide-solve-button></KrgzSandbox>
+  <KrgzSandbox
+    :booting="isBooting"
+    hide-solve-button
+    multi-panel-from="xl"
+  ></KrgzSandbox>
 </template>

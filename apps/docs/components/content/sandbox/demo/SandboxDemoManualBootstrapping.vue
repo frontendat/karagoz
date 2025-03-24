@@ -104,6 +104,7 @@ const closeTerminal = () => {
       <KrgzSandbox
         :booting="isBooting"
         hide-solve-button
+        multi-panel-from="xl"
         :shown-panels="['code', 'processes', 'result', 'terminal']"
       ></KrgzSandbox>
     </div>

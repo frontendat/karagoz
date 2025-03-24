@@ -99,7 +99,11 @@ const showDialog = (message: number | string) => alert(message)
       >
     </div>
     <div class="flex-grow">
-      <KrgzSandbox :booting="isBooting" hide-solve-button></KrgzSandbox>
+      <KrgzSandbox
+        :booting="isBooting"
+        hide-solve-button
+        multi-panel-from="xl"
+      ></KrgzSandbox>
     </div>
   </div>
 </template>

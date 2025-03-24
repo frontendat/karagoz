@@ -1,5 +1,11 @@
 # @karagoz/shared
 
+## 0.2.0
+
+### Minor Changes
+
+- Switching between rendering only one or multiple sandbox panels based on container width
+
 ## 0.1.1
 
 ### Patch Changes
