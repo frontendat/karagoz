@@ -13,7 +13,8 @@
     "@puppeteer": "pnpm --filter @karagoz/puppeteer",
     "@sandbox": "pnpm --filter @karagoz/sandbox",
     "@shared": "pnpm --filter @karagoz/shared",
-    "dev": "pnpm --recursive --parallel --stream run dev"
+    "dev": "pnpm --recursive --parallel --stream run dev",
+    "changeset": "changeset"
   },
   "dependencies": {
     "@changesets/cli": "^2.28.0",
@@ -22,7 +23,7 @@
     "@codemirror/state": "^6.5.2",
     "@codemirror/theme-one-dark": "^6.1.2",
     "@eslint/compat": "^1.2.4",
-    "@vueuse/core": "^10.9.0",
+    "@vueuse/core": "^13.0.0",
     "@webcontainer/api": "^1.5.1",
     "@xterm/addon-fit": "^0.10.0",
     "@xterm/xterm": "^5.5.0",
@@ -34,13 +35,14 @@
     "radix-vue": "^1.9.7",
     "vue": "^3.5.13",
     "vue-codemirror": "^6.1.1",
-    "vue-i18n": "^11.0.1",
+    "vue-i18n": "^11.1.2",
     "vue-markdown-render": "^2.2.1",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.17.0",
+    "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/typography": "^0.5.15",
     "@types/markdown-it": "^14.1.2",
     "@types/node": "^20.12.7",
@@ -62,7 +64,7 @@
     "typedoc": "^0.27.6",
     "typedoc-plugin-markdown": "^4.3.3",
     "typescript": "^5.2.2",
-    "vite": "^6.0.5",
+    "vite": "^6.2.2",
     "vite-plugin-dts": "^3.8.3",
     "vite-plugin-static-copy": "^2.0.0",
     "vue-docgen-api": "^4.79.2",

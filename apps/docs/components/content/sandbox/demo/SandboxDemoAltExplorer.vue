@@ -31,7 +31,7 @@ onBeforeUnmount(() => sandbox.container.value?.teardown())
 </script>
 
 <template>
-  <KrgzSandbox :booting="isBooting" hide-solve-button>
+  <KrgzSandbox :booting="isBooting" hide-solve-button multi-panel-from="xl">
     <template #explorer>
       <div class="p-1 text-sm">
         Your files:

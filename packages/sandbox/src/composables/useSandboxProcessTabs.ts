@@ -18,6 +18,8 @@ export const useSandboxProcessTabs = (options: SandboxOptions) => {
    * @param context
    */
   const startProcess = async (id: string, context: ProcessTabContext) => {
+    if (!container.value) throw new Error('Container is missing')
+
     // Create process
     const process = await container.value.spawn(
       context.command,
