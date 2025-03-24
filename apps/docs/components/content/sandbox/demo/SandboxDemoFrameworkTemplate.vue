@@ -68,6 +68,7 @@ onBeforeUnmount(() => sandbox.container.value?.teardown())
   <KrgzSandbox
     :booting="isBooting"
     hide-solve-button
+    multi-panel-from="xl"
     :shown-panels="['code', 'processes', 'result']"
   ></KrgzSandbox>
 </template>
