@@ -4,6 +4,11 @@ import { Files, Terminal } from 'lucide-vue-next'
 import KaragozLogo from '@/components/KaragozLogo.vue'
 import { Button } from '@/components/ui/button'
 import LoadingIndicator from '@/components/ui/loading-indicator/LoadingIndicator.vue'
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@/components/ui/resizable'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Toggle } from '@/components/ui/toggle'
 import {
@@ -33,18 +38,36 @@ import {
         <Files class="size-12" />
       </LoadingIndicator>
     </div>
-    <div class="h-[200px] w-[200px]">
-      <LoadingIndicator label="Loading..." variant="primary">
-        <Files class="size-12" />
-      </LoadingIndicator>
-    </div>
-    <div class="h-[200px] w-[200px]">
-      <LoadingIndicator variant="secondary">
-        <Files class="size-12" />
-      </LoadingIndicator>
-    </div>
-    <div class="h-[200px] w-[200px]">
-      <LoadingIndicator label="Loading..." variant="destructive" />
+
+    <h2 class="mb-4 mt-8">Resizable</h2>
+    <div class="h-[500px] w-[500px]">
+      <ResizablePanelGroup
+        id="demo-group-1"
+        direction="horizontal"
+        class="max-w-md rounded-lg border"
+      >
+        <ResizablePanel id="demo-panel-1" :default-size="50">
+          <div class="flex h-[200px] items-center justify-center p-6">
+            <span class="font-semibold">One</span>
+          </div>
+        </ResizablePanel>
+        <ResizableHandle id="demo-handle-1" />
+        <ResizablePanel id="demo-panel-2" :default-size="50">
+          <ResizablePanelGroup id="demo-group-2" direction="vertical">
+            <ResizablePanel id="demo-panel-3" :default-size="25">
+              <div class="flex h-full items-center justify-center p-6">
+                <span class="font-semibold">Two</span>
+              </div>
+            </ResizablePanel>
+            <ResizableHandle id="demo-handle-2" />
+            <ResizablePanel id="demo-panel-4" :default-size="75">
+              <div class="flex h-full items-center justify-center p-6">
+                <span class="font-semibold">Three</span>
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </ResizablePanel>
+      </ResizablePanelGroup>
     </div>
 
     <h2 class="mb-4 mt-8">Tabs</h2>
