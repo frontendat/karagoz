@@ -1,5 +1,14 @@
 # @karagoz/puppeteer
 
+## 0.2.1
+
+### Patch Changes
+
+- Update dependencies to solve CVE-2024-12905
+- Updated dependencies
+  - @karagoz/sandbox@0.2.1
+  - @karagoz/shared@0.2.1
+
 ## 0.2.0
 
 ### Minor Changes
