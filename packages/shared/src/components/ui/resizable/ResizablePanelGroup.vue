@@ -20,12 +20,16 @@ const delegatedProps = computed(() => {
 })
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits)
+// todo remove temporary compilation fix
+const direction = computed((): any => {
+  return forwarded.value?.direction ?? 'horizontal'
+})
 </script>
 
 <template>
   <SplitterGroup
     v-bind="forwarded"
-    :direction="forwarded.value.value.direction"
+    :direction="direction"
     :class="
       cn(
         'flex h-full w-full data-[panel-group-direction=vertical]:flex-col',
