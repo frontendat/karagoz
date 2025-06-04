@@ -1,20 +1,30 @@
 <script setup lang="ts">
-import { provideWebContainer, useKaragozSandbox } from '@karagoz/sandbox'
-import { FileSystemTree, WebContainer } from '@webcontainer/api'
+import {
+  provideWebContainer,
+  useSandbox,
+  useSandboxBoot,
+} from '@karagoz/sandbox'
+import { FileSystemTree } from '@webcontainer/api'
+import { onBeforeUnmount, onMounted } from 'vue'
 
 import KrgzPuppeteer from './components/KrgzPuppeteer.vue'
 import { type KrgzStory } from './models.ts'
 
-provideWebContainer(await WebContainer.boot())
-const sandbox = useKaragozSandbox()
+const { boot, isBooting } = useSandboxBoot()
+provideWebContainer(boot)
+
+const sandbox = useSandbox()
 
 const index = `
 import express from 'express';
 const app = express();
 const port = 3111;
 
-app.get('/xxx', (req, res) => {
-     res.send('Welcome to a WebContainers app! 🥳');
+app.get('/', (req, res) => {
+     res.send('Welcome to a WebContainers app! 🥳 <a href="/sub">Sub</a>');
+});
+app.get('/sub', (req, res) => {
+     res.send('Welcome to a WebContainers app! 🥳 <a href="/">Home</a>');
 });
 app.use('/', express.static('.'));
 
@@ -84,7 +94,13 @@ const setupFiles: FileSystemTree = {
   'index.js': { file: { contents: index } },
 }
 
-sandbox.mount(setupFiles, { shouldReinstall: true, shouldRestart: true })
+onMounted(async () => {
+  const container = await boot
+  await container.mount(setupFiles)
+  await sandbox.bootstrap()
+})
+
+onBeforeUnmount(() => sandbox.container.value?.teardown())
 
 const story: KrgzStory = {
   subject: 'Demo Story',

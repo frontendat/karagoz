@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { KrgzSandbox, useKaragozSandbox } from '@karagoz/sandbox'
+import { KrgzSandbox, useSandbox } from '@karagoz/sandbox'
 import {
   ResizableHandle,
   ResizablePanel,
@@ -12,7 +12,7 @@ import { computed, watch } from 'vue'
 import { KrgzSlide, type KrgzStory, KrgzTopic } from '../models.ts'
 import KrgzExplanation from './KrgzExplanation.vue'
 
-const sandbox = useKaragozSandbox()
+const sandbox = useSandbox()
 
 const topicModel = defineModel<number | undefined>('topic')
 const slideModel = defineModel<number | undefined>('slide')
@@ -43,7 +43,7 @@ watch(
   selectedSlide,
   () => {
     if (selectedSlide.value) {
-      sandbox.mount(selectedSlide.value.tree, { shouldReinstall: true })
+      sandbox.container.value?.mount(selectedSlide.value.tree)
     }
   },
   { immediate: true },

@@ -5,6 +5,7 @@ import './style.css'
 import { createApp, h, Suspense } from 'vue'
 
 import App from './App.vue'
+import { i18n } from './i18n.ts'
 
 createApp({
   render: () =>
@@ -12,4 +13,6 @@ createApp({
       default: h(App),
       fallback: h('div', 'Initialising Web Container...'),
     }),
-}).mount('#app')
+})
+  .use(i18n)
+  .mount('#app')
