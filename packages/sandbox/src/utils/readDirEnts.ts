@@ -6,14 +6,11 @@ import type { WebContainer } from '@webcontainer/api'
  * @param container
  * @param path
  */
-export const readDirEnts = async (container: WebContainer, path: string) =>
-  (
-    await container.fs.readdir(path, {
-      withFileTypes: true,
-    })
-  ).sort((a, b) => {
-    if (a.isDirectory() && b.isFile()) {
-      return -1
-    }
-    return 0
+export const readDirEnts = async (container: WebContainer, path: string) => {
+  const ents = await container.fs.readdir(path, { withFileTypes: true })
+  return ents.sort((a, b) => {
+    if (a.isDirectory() && b.isFile()) return -1
+    if (a.isFile() && b.isDirectory()) return 1
+    return a.name.localeCompare(b.name)
   })
+}
