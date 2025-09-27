@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { Analytics } from '@vercel/analytics/nuxt'
-
 const route = useRoute()
 const { t } = useI18n()
 const head = useLocaleHead()
@@ -40,7 +38,6 @@ const title = computed(() =>
           </div>
           <DocsFooter />
         </div>
-        <Analytics />
       </Body>
     </Html>
   </div>

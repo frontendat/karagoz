@@ -16,26 +16,32 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "pnpm check-build:shared && pnpm check-build:sandbox && nuxt prepare",
-    "lint": "eslint \"./**/*.{ts,vue}\""
+    "lint": "eslint \"./**/*.{ts,vue}\"",
+    "debug": "pnpm postinstall && nuxt build && nuxthub preview",
+    "deploy": "nuxthub deploy"
   },
   "dependencies": {
     "@karagoz/sandbox": "workspace:^",
     "@karagoz/shared": "workspace:^",
     "@nuxt/content": "^3.5.1",
+    "@nuxthub/core": "0.9.0",
     "@nuxtjs/color-mode": "^3.5.2",
     "@nuxtjs/i18n": "^9.4.0",
     "@nuxtjs/tailwindcss": "^6.12.2",
-    "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.469.0",
-    "nuxt": "^3.17.5",
+    "nuxt": "^4.1.2",
     "radix-vue": "^1.9.11",
     "shadcn-nuxt": "^0.11.3",
     "tailwind-merge": "^2.6.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vue": "^3.5.21",
+    "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "vite-plugin-vue-tracer": "^0.1.3"
+    "nuxthub": "^0.9.3",
+    "vite-plugin-vue-tracer": "^0.1.3",
+    "wrangler": "^4.40.0"
   }
 }

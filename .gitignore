@@ -39,3 +39,4 @@ Thumbs.db
 # Local folder
 .netlify
 .vercel
+.data

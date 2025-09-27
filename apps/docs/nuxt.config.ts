@@ -61,6 +61,11 @@ export default defineNuxtConfig({
     },
   },
 
+  hub: {
+    database: true,
+    kv: true,
+  },
+
   i18n: {
     baseUrl: 'https://karagoz.dev',
     defaultLocale: 'en',
@@ -87,14 +92,16 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxtjs/tailwindcss',
     'shadcn-nuxt',
+    '@nuxthub/core',
   ],
 
   nitro: {
+    minify: false,
     prerender: {
       crawlLinks: false,
-      routes: ['/'],
+      routes: [],
     },
-    preset: 'vercel',
+    preset: 'cloudflare_pages',
     routeRules: {
       '/:pathMatch(.*)*': { ssr: true }, // Ensures SSR works for all routes
     },
