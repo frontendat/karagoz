@@ -1,0 +1,26 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // empty'); [[ \"$file\" =~ \\.(ts|vue)$ ]] && pnpm eslint --fix \"$file\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // empty'); [[ \"$file\" == *\"apps/docs\"* ]] && { for d in packages/shared packages/sandbox packages/puppeteer; do [ ! -d \"$d/dist\" ] && echo \"WARNING: $d/dist missing — run pnpm --filter $(basename $d) build first\" && exit 2; done; } || true"
+          }
+        ]
+      }
+    ]
+  }
+}
