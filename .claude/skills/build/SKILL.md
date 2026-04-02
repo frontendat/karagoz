@@ -10,10 +10,9 @@ allowed-tools: Bash
 
 Build target from $ARGUMENTS (or all if blank).
 
-Package map: `packages/shared` → `@shared`, `packages/sandbox` → `@sandbox`, `packages/puppeteer` → `@puppeteer`, `apps/docs` → `@docs`.
+Package map: `packages/shared` → `@karagoz/shared`, `packages/sandbox` → `@karagoz/sandbox`, `packages/puppeteer` → `@karagoz/puppeteer`, `apps/docs` → `@karagoz/docs`.
 
-Dependency order: @sandbox needs @shared first; @puppeteer needs @shared + @sandbox; @docs needs all three.
-
-Build any missing upstream deps in order before the target, then run `pnpm --filter <pkg> build`.
+- Single package: `nx run @karagoz/<pkg>:build` — Nx builds upstream deps automatically via `dependsOn`.
+- All packages: `nx run-many -t build`
 
 Report what was built and any errors.

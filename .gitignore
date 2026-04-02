@@ -40,3 +40,7 @@ Thumbs.db
 .netlify
 .vercel
 .data
+
+# Nx
+.nx/cache
+.nx/workspace-data

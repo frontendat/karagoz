@@ -10,7 +10,7 @@ import { onBeforeUnmount, onMounted } from 'vue'
 import KrgzPuppeteer from './components/KrgzPuppeteer.vue'
 import { type KrgzStory } from './models.ts'
 
-const { boot, isBooting } = useSandboxBoot()
+const { boot } = useSandboxBoot()
 provideWebContainer(boot)
 
 const sandbox = useSandbox()
