@@ -1,6 +1,7 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "defaultBase": "main",
+  "tui": { "enabled": true },
   "targetDefaults": {
     "build": {
       "dependsOn": ["^build"],
@@ -19,6 +20,12 @@
     },
     "dev": {
       "dependsOn": ["^build"],
+      "continuous": true,
+      "cache": false
+    },
+    "dev-hmr": {
+      "dependsOn": ["^build"],
+      "continuous": true,
       "cache": false
     },
     "generate": {

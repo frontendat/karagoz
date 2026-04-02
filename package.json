@@ -40,7 +40,7 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "nx": "^19.8.0",
+    "nx": "^20.8.4",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.17.0",
     "@tailwindcss/container-queries": "^0.1.1",
