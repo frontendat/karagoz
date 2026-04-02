@@ -16,7 +16,7 @@ pnpm workspaces. Dependency order: `shared` → `sandbox` → `puppeteer` → `d
 - `packages/sandbox` — WebContainer-powered code sandbox, depends on shared
 - `packages/puppeteer` — Explanation/walkthrough components, depends on sandbox + shared
 
-Workspace filter shorthand: `pnpm @docs dev`, `pnpm @shared build`, etc.
+Run targets via Nx: `nx run @karagoz/docs:dev`, `nx run @karagoz/shared:build`, etc. Nx respects dependency order automatically.
 
 ## Architecture Notes
 
@@ -31,4 +31,4 @@ The sandbox UI is thin — all logic lives in composables under `packages/sandbo
 
 ## Deployment
 
-Cloudflare Pages via NuxthHub. Deploy with `pnpm @docs deploy`.
+Cloudflare Pages via NuxthHub. Deploy with `nx run @karagoz/docs:deploy`.

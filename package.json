@@ -9,10 +9,6 @@
     "url": "https://github.com/frontendat/karagoz.git"
   },
   "scripts": {
-    "@docs": "pnpm --filter @karagoz/docs",
-    "@puppeteer": "pnpm --filter @karagoz/puppeteer",
-    "@sandbox": "pnpm --filter @karagoz/sandbox",
-    "@shared": "pnpm --filter @karagoz/shared",
     "dev": "nx run-many -t dev",
     "build": "nx run-many -t build",
     "build:affected": "nx affected -t build",

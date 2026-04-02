@@ -10,8 +10,7 @@ allowed-tools: Bash
 
 Deploy pipeline:
 
-1. Build any missing upstream packages in order: shared → sandbox → puppeteer.
-2. `pnpm @docs build`
-3. `pnpm @docs deploy`
+1. `nx run @karagoz/docs:build` — Nx builds upstream deps (shared → sandbox → puppeteer) automatically via `dependsOn`.
+2. `nx run @karagoz/docs:deploy`
 
 Report the deploy URL on success.
