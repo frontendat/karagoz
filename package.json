@@ -13,7 +13,11 @@
     "@puppeteer": "pnpm --filter @karagoz/puppeteer",
     "@sandbox": "pnpm --filter @karagoz/sandbox",
     "@shared": "pnpm --filter @karagoz/shared",
-    "dev": "pnpm --recursive --parallel --stream run dev",
+    "dev": "nx run-many -t dev",
+    "build": "nx run-many -t build",
+    "build:affected": "nx affected -t build",
+    "lint": "nx run-many -t lint",
+    "lint:affected": "nx affected -t lint",
     "changeset": "changeset"
   },
   "dependencies": {
@@ -40,6 +44,7 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "nx": "^19.8.0",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.17.0",
     "@tailwindcss/container-queries": "^0.1.1",
