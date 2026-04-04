@@ -1,35 +1,21 @@
 import { fileURLToPath } from 'node:url'
 
 import vue from '@vitejs/plugin-vue'
-import autoprefixer from 'autoprefixer'
 import { resolve } from 'path'
-import tailwind from 'tailwindcss'
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  css: {
-    postcss: {
-      plugins: [tailwind(), autoprefixer()],
-    },
-  },
   plugins: [
+    tailwindcss(),
     vue({
       script: {
         defineModel: true,
       },
     }),
     dts({ insertTypesEntry: true, rollupTypes: true }),
-    viteStaticCopy({
-      targets: [
-        {
-          src: ['tailwind.config.js'],
-          dest: 'config', // Copy directly to the root of the `dist` folder
-        },
-      ],
-    }),
   ],
   resolve: {
     alias: {

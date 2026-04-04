@@ -1,18 +1,13 @@
 import vue from '@vitejs/plugin-vue'
-import autoprefixer from 'autoprefixer'
 import { resolve } from 'path'
-import tailwind from 'tailwindcss'
+import tailwindcss from '@tailwindcss/vite'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  css: {
-    postcss: {
-      plugins: [tailwind(), autoprefixer()],
-    },
-  },
   plugins: [
+    tailwindcss(),
     vue({
       script: {
         defineModel: true,

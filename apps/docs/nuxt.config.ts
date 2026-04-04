@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -16,6 +17,8 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2025-01-29',
+
+  css: ['~/assets/css/tailwind.css'],
 
   content: {
     build: {
@@ -90,10 +93,12 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
     '@nuxtjs/i18n',
-    '@nuxtjs/tailwindcss',
-    'shadcn-nuxt',
     '@nuxthub/core',
   ],
+
+  vite: {
+    plugins: [tailwindcss()],
+  },
 
   nitro: {
     cloudflare: {
@@ -118,15 +123,5 @@ export default defineNuxtConfig({
     },
   },
 
-  shadcn: {
-    prefix: '',
-    componentDir: './components/ui',
-  },
-
   ssr: true,
-
-  tailwindcss: {
-    cssPath: ['~/assets/css/tailwind.css', { injectPosition: 'first' }],
-    configPath: 'tailwind.config',
-  },
 })
