@@ -2,10 +2,6 @@
 @import "@karagoz/shared/style.css";
 @import "@karagoz/sandbox/style.css";
 
-@source "../../../../packages/shared/src";
-@source "../../../../packages/sandbox/src";
-
-@plugin "tailwindcss-animate";
 @plugin "@tailwindcss/typography";
 
 @layer components {

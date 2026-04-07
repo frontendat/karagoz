@@ -10,7 +10,7 @@
   "type": "module",
   "files": [
     "dist",
-    "src/style.css"
+    "src/lib.css"
   ],
   "main": "./dist/karagoz-sandbox.umd.cjs",
   "module": "./dist/karagoz-sandbox.js",
@@ -30,7 +30,7 @@
       "import": "./dist/karagoz-sandbox.css",
       "require": "./dist/karagoz-sandbox.css"
     },
-    "./style.css": "./src/style.css"
+    "./style.css": "./src/lib.css"
   },
   "scripts": {
     "dev": "pnpm --filter @karagoz/sandbox --parallel /^watch:/",

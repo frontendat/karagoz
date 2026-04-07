@@ -26,11 +26,11 @@
       "import": "./dist/karagoz-shared.css",
       "require": "./dist/karagoz-shared.css"
     },
-    "./style.css": "./src/style.css"
+    "./style.css": "./src/lib.css"
   },
   "files": [
     "dist",
-    "src/style.css"
+    "src/lib.css"
   ],
   "scripts": {
     "dev": "pnpm --filter @karagoz/shared --parallel /^watch:/",
