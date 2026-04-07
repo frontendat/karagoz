@@ -40,9 +40,9 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "nx": "^20.8.4",
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.17.0",
+    "@tailwindcss/postcss": "^4.2.2",
     "@tailwindcss/typography": "^0.5.15",
     "@tailwindcss/vite": "^4",
     "@types/markdown-it": "^14.1.2",
@@ -57,6 +57,7 @@
     "eslint-plugin-unused-imports": "^4.1.4",
     "eslint-plugin-vue": "^9.25.0",
     "globals": "^15.14.0",
+    "nx": "^20.8.4",
     "prettier": "^3.2.5",
     "tailwind-merge": "^2.5.4",
     "tailwindcss": "^4",

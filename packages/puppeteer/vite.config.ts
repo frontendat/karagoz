@@ -1,13 +1,17 @@
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
-import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from '@tailwindcss/postcss'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  css: {
+    postcss: {
+      plugins: [tailwindcss()],
+    },
+  },
   plugins: [
-    tailwindcss(),
     vue({
       script: {
         defineModel: true,
