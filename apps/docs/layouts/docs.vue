@@ -47,6 +47,8 @@ const hideToc = computed(() => !page.value || page.value.hideToc)
 </template>
 
 <style scoped>
+@reference "tailwindcss";
+
 @screen xl {
   main:has(.toc) {
     @apply gap-10;

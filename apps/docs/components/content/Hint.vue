@@ -43,6 +43,8 @@ const IconComponent = computed(
 </template>
 
 <style scoped>
+@reference "tailwindcss";
+
 .hint :deep(a) {
   @apply underline;
 }
