@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import tailwindcss from '@tailwindcss/vite'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -96,8 +95,10 @@ export default defineNuxtConfig({
     '@nuxthub/core',
   ],
 
-  vite: {
-    plugins: [tailwindcss()],
+  postcss: {
+    plugins: {
+      '@tailwindcss/postcss': {},
+    },
   },
 
   nitro: {
