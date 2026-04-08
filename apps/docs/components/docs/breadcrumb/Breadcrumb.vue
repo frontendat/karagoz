@@ -37,9 +37,10 @@ const fetchBreadcrumb = () => {
   )
 }
 
-const { data: breadcrumb } = await useAsyncData(fetchBreadcrumb, {
-  watch: [() => route.value.path],
-})
+const { data: breadcrumb } = await useAsyncData(
+  () => `breadcrumb-${route.value.path}`,
+  fetchBreadcrumb,
+)
 </script>
 
 <template>

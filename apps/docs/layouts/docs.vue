@@ -6,15 +6,15 @@ import DefaultLayout from '~/layouts/default.vue'
 const route = useRouter().currentRoute
 const queryLocalisedCollection = useLocalisedCollection()
 const { data: page } = await useAsyncData(
-  route.value.path,
+  () => route.value.path,
   () =>
     queryLocalisedCollection((builder) =>
       builder.path(route.value.path).first(),
     ),
-  { watch: [() => route.value.path] },
 )
 
 const hideToc = computed(() => !page.value || page.value.hideToc)
+const toc = computed(() => page.value?.body?.toc)
 </script>
 
 <template>
@@ -39,7 +39,7 @@ const hideToc = computed(() => !page.value || page.value.hideToc)
               <slot></slot>
             </div>
           </div>
-          <DocsTOCResponsive v-if="!hideToc" class="toc order-1 xl:order-2" />
+          <DocsTOCResponsive v-if="!hideToc" :toc="toc" class="toc order-1 xl:order-2" />
         </main>
       </div>
     </div>

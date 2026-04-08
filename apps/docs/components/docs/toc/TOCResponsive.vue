@@ -1,27 +1,21 @@
 <script setup lang="ts">
 import { Button, ScrollArea } from '@karagoz/shared'
 
-const route = useRouter().currentRoute
 const { t } = useI18n()
-const queryLocalisedCollection = useLocalisedCollection()
-const { data: page } = await useAsyncData(
-  route.value.path,
-  () =>
-    queryLocalisedCollection((builder) =>
-      builder.path(route.value.path).first(),
-    ),
-  { watch: [() => route.value.path] },
-)
-const toc = computed(() => page.value?.body?.toc)
+
+const props = defineProps<{
+  toc: { links?: unknown[] } | null | undefined
+}>()
+
 const tocIsOpen = ref(false)
 </script>
 
 <template>
-  <div v-if="toc?.links?.length" class="text-sm">
+  <div v-if="props.toc?.links?.length" class="text-sm">
     <div class="hidden sticky top-24 xl:block">
       <div class="h-[calc(100vh-7rem)] overflow-hidden w-full z-30">
         <ScrollArea type="auto" class="h-full">
-          <DocsTOC :toc="toc" />
+          <DocsTOC :toc="props.toc" />
         </ScrollArea>
       </div>
     </div>
@@ -32,7 +26,7 @@ const tocIsOpen = ref(false)
         </CollapsibleTrigger>
         <CollapsibleContent>
           <div class="border-s ps-4">
-            <DocsTOC class="mt-4" no-title :toc="toc" />
+            <DocsTOC class="mt-4" no-title :toc="props.toc" />
           </div>
         </CollapsibleContent>
       </Collapsible>
