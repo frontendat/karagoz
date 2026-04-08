@@ -13,7 +13,7 @@ const localePath = useLocalePath()
 </script>
 
 <template>
-  <UiCard class="grid" :class="{ 'opacity-50': !buttonLink }">
+  <UiCard class="grid border-border" :class="{ 'opacity-50': !buttonLink }">
     <UiCardHeader>
       <UiCardTitle class="text-center">{{ headline }}</UiCardTitle>
     </UiCardHeader>
