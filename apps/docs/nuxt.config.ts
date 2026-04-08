@@ -17,6 +17,11 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-29',
 
+  components: [
+    { path: '~/components/ui', pathPrefix: false },
+    '~/components',
+  ],
+
   css: ['~/assets/css/tailwind.css'],
 
   content: {
