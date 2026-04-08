@@ -1,6 +1,6 @@
+@import "@karagoz/shared/dist/karagoz-shared.css";
+@import "@karagoz/sandbox/dist/karagoz-sandbox.css";
 @import "tailwindcss";
-@import "@karagoz/shared/style.css";
-@import "@karagoz/sandbox/style.css";
 
 @source "../../../../packages/shared/src";
 @source "../../../../packages/sandbox/src";
@@ -15,6 +15,9 @@
 }
 
 @layer utilities {
+  .border-border {
+      border-color: hsl(var(--border));
+  }
   .external::after {
     content: ' ↗';
   }
