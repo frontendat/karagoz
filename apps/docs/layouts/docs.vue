@@ -49,7 +49,7 @@ const toc = computed(() => page.value?.body?.toc)
 <style scoped>
 @reference "tailwindcss";
 
-@screen xl {
+@media (width >= theme(--breakpoint-xl)) {
   main:has(.toc) {
     @apply gap-10;
     grid-template-columns: 1fr 300px;

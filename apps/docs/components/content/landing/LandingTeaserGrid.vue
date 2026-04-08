@@ -14,8 +14,10 @@ defineProps<{
 </template>
 
 <style scoped>
+@reference "tailwindcss";
+
 div {
-  @screen md {
+  @media (width >= theme(--breakpoint-md)) {
     grid-template-columns: repeat(var(--teaser-count, 2), minmax(0, 1fr));
   }
 }
