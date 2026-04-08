@@ -6,7 +6,7 @@ defineProps<{
 
 <template>
   <div
-    class="grid gap-8 justify-stretch items-stretch mx-auto max-w-[760px] pb-8 md:pb-12 lg:pb-24"
+    class="grid gap-8 justify-stretch items-stretch mx-auto max-w-190 pb-8 md:pb-12 lg:pb-24"
     :style="{ '--teaser-count': count }"
   >
     <slot></slot>

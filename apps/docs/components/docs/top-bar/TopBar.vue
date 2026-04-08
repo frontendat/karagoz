@@ -16,7 +16,7 @@ const isDev = import.meta.dev
   <header
     class="sticky z-40 top-0 bg-background/80 backdrop-blur-lg border-b border-border"
   >
-    <div class="container flex h-14 items-center max-w-screen-2xl">
+    <div class="container flex h-14 items-center max-w-384 mx-auto px-8">
       <NuxtLink class="flex gap-2 items-center me-6" to="/">
         <KaragozLogo
           aria-hidden="true"
@@ -33,12 +33,12 @@ const isDev = import.meta.dev
             }}</UiNavigationMenuTrigger>
             <UiNavigationMenuContent>
               <ul
-                class="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[minmax(0,.75fr)_minmax(0,1fr)]"
+                class="grid gap-3 p-6 md:w-100 lg:w-125 lg:grid-cols-[minmax(0,.75fr)_minmax(0,1fr)]"
               >
                 <li class="row-span-5">
                   <UiNavigationMenuLink as-child>
                     <NuxtLink
-                      class="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-4 no-underline outline-none focus:shadow-md"
+                      class="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-4 no-underline outline-none focus:shadow-md"
                       :to="localePath({ path: '/sandbox' })"
                     >
                       <div class="mb-2 mt-4 text-lg font-medium">
