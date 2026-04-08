@@ -1,11 +1,5 @@
 <script setup lang="ts">
 import { NuxtLink } from '#components'
-import {
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from '~/components/ui/breadcrumb'
 
 const { t } = useI18n()
 const route = useRouter().currentRoute
@@ -44,18 +38,18 @@ const { data: breadcrumb } = await useAsyncData(
 </script>
 
 <template>
-  <Breadcrumb v-if="breadcrumb?.length">
-    <BreadcrumbList>
+  <UiBreadcrumb v-if="breadcrumb?.length">
+    <UiBreadcrumbList>
       <template v-for="(step, index) of breadcrumb" :key="step.path">
-        <BreadcrumbSeparator v-if="index" />
-        <BreadcrumbItem>
-          <BreadcrumbLink :as="NuxtLink" :to="step.path">
+        <UiBreadcrumbSeparator v-if="index" />
+        <UiBreadcrumbItem>
+          <UiBreadcrumbLink :as="NuxtLink" :to="step.path">
             {{ step.title }}
-          </BreadcrumbLink>
-        </BreadcrumbItem>
+          </UiBreadcrumbLink>
+        </UiBreadcrumbItem>
       </template>
-    </BreadcrumbList>
-  </Breadcrumb>
+    </UiBreadcrumbList>
+  </UiBreadcrumb>
 </template>
 
 <style scoped></style>

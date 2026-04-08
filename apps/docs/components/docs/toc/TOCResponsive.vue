@@ -20,16 +20,16 @@ const tocIsOpen = ref(false)
       </div>
     </div>
     <div class="block xl:hidden">
-      <Collapsible v-model:open="tocIsOpen">
-        <CollapsibleTrigger as-child>
+      <UiCollapsible v-model:open="tocIsOpen">
+        <UiCollapsibleTrigger as-child>
           <Button variant="outline">{{ t('layouts.tocButton') }}</Button>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
+        </UiCollapsibleTrigger>
+        <UiCollapsibleContent>
           <div class="border-s ps-4">
             <DocsTOC class="mt-4" no-title :toc="props.toc" />
           </div>
-        </CollapsibleContent>
-      </Collapsible>
+        </UiCollapsibleContent>
+      </UiCollapsible>
     </div>
   </div>
 </template>

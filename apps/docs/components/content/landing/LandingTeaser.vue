@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import { Button } from '@karagoz/shared'
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { NuxtLink } from '#components'
 
 defineProps<{
@@ -20,14 +13,14 @@ const localePath = useLocalePath()
 </script>
 
 <template>
-  <Card class="grid" :class="{ 'opacity-50': !buttonLink }">
-    <CardHeader>
-      <CardTitle class="text-center">{{ headline }}</CardTitle>
-    </CardHeader>
-    <CardContent class="text-center">
+  <UiCard class="grid" :class="{ 'opacity-50': !buttonLink }">
+    <UiCardHeader>
+      <UiCardTitle class="text-center">{{ headline }}</UiCardTitle>
+    </UiCardHeader>
+    <UiCardContent class="text-center">
       <slot></slot>
-    </CardContent>
-    <CardFooter class="self-end">
+    </UiCardContent>
+    <UiCardFooter class="self-end">
       <Button
         v-if="buttonLink"
         :as="NuxtLink"
@@ -39,6 +32,6 @@ const localePath = useLocalePath()
       <Button v-else disabled class="w-full">
         {{ buttonText }}
       </Button>
-    </CardFooter>
-  </Card>
+    </UiCardFooter>
+  </UiCard>
 </template>

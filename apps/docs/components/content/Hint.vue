@@ -30,15 +30,15 @@ const IconComponent = computed(
 
 <template>
   <div class="hint">
-    <Alert class="not-prose" :variant="variant">
+    <UiAlert class="not-prose" :variant="variant">
       <IconComponent v-if="IconComponent && !hideIcon" class="size-4" />
-      <AlertTitle v-if="!hideTitle">{{
+      <UiAlertTitle v-if="!hideTitle">{{
         title ?? t('component.hint.defaultTitle')
-      }}</AlertTitle>
-      <AlertDescription>
+      }}</UiAlertTitle>
+      <UiAlertDescription>
         <slot></slot>
-      </AlertDescription>
-    </Alert>
+      </UiAlertDescription>
+    </UiAlert>
   </div>
 </template>
 
