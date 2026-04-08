@@ -1,6 +1,13 @@
 import fs from 'fs'
 import path from 'path'
 
+const uiDirs = fs
+  .readdirSync(path.resolve(__dirname, 'components/ui'))
+  .filter((name) =>
+    fs.statSync(path.resolve(__dirname, 'components/ui', name)).isDirectory(),
+  )
+  .map((name) => ({ path: `~/components/ui/${name}`, pathPrefix: false }))
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   app: {
@@ -18,7 +25,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-29',
 
   components: [
-    { path: '~/components/ui', pathPrefix: false },
+    ...uiDirs,
     '~/components',
   ],
 
