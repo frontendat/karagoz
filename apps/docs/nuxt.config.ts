@@ -96,12 +96,16 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
+    cloudflare: {
+      deployConfig: true,
+      nodeCompat: true
+    },
     minify: false,
     prerender: {
       crawlLinks: false,
       routes: [],
     },
-    preset: 'cloudflare_pages',
+    preset: 'cloudflare_module',
     routeRules: {
       '/:pathMatch(.*)*': { ssr: true }, // Ensures SSR works for all routes
     },
