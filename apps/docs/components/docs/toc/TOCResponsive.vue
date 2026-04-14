@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { Button, ScrollArea } from '@karagoz/shared'
 
-const route = useRouter().currentRoute
 const { t } = useI18n()
 const queryLocalisedCollection = useLocalisedCollection()
+const contentPath = useContentPath()
 const { data: page } = await useAsyncData(
-  route.value.path,
+  contentPath.value,
   () =>
     queryLocalisedCollection((builder) =>
-      builder.path(route.value.path).first(),
+      builder.path(contentPath.value).first(),
     ),
-  { watch: [() => route.value.path] },
+  { watch: [contentPath] },
 )
 const toc = computed(() => page.value?.body?.toc)
 const tocIsOpen = ref(false)

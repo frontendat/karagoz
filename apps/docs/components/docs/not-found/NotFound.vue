@@ -2,17 +2,19 @@
 import { fallbackTitleKey } from '~/utils/fallbackTitleKey'
 
 const { t } = useI18n()
-const route = useRouter().currentRoute
-const pathParts = computed(() => route.value.path.split('/'))
+const route = useRoute()
+const pathParts = computed(() => route.path.split('/'))
 
 const titleKey = computed(() => fallbackTitleKey(pathParts.value))
 
 const queryLocalisedCollectionNavigation = useLocalisedCollectionNavigation()
+const contentPath = useContentPath()
 
 const { data: result } = await useAsyncData(() =>
   queryLocalisedCollectionNavigation((builder) =>
-    builder.where('path', 'LIKE', `${route.value.path}%`),
+    builder.where('path', 'LIKE', `${contentPath.value}%`),
   ),
+  { watch: [contentPath] },
 )
 
 const list = computed(() => {

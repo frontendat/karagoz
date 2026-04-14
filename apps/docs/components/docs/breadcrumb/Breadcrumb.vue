@@ -7,16 +7,19 @@ import {
   BreadcrumbSeparator,
 } from '~/components/ui/breadcrumb'
 
-const { t } = useI18n()
-const route = useRouter().currentRoute
+const { t, locale } = useI18n()
 const queryLocalisedCollection = useLocalisedCollection()
+const contentPath = useContentPath()
 
 const fetchBreadcrumb = () => {
+  // Build step paths from the locale-prefixed content path, then skip the
+  // bare locale root (e.g. /en) – it's not a meaningful breadcrumb segment.
+  const localeRoot = `/${locale.value}`
   return Promise.all(
-    route.value.path
+    contentPath.value
       .split('/')
       .map((_, idx, parts) => parts.slice(0, idx + 1).join('/'))
-      .filter((stepPath) => stepPath)
+      .filter((stepPath) => stepPath && stepPath !== localeRoot)
       .map((stepPath) =>
         queryLocalisedCollection((builder) =>
           builder
@@ -38,7 +41,7 @@ const fetchBreadcrumb = () => {
 }
 
 const { data: breadcrumb } = await useAsyncData(fetchBreadcrumb, {
-  watch: [() => route.value.path],
+  watch: [contentPath],
 })
 </script>
 

@@ -1,19 +1,38 @@
 <script setup lang="ts">
 import { fallbackTitleKey } from '~/utils/fallbackTitleKey'
 
-const { t } = useI18n()
-const route = useRouter().currentRoute
+const { t, locale } = useI18n()
 const queryLocalisedCollection = useLocalisedCollection()
 const queryLocalisedCollectionNavigation = useLocalisedCollectionNavigation()
+const contentPath = useContentPath()
 
-const pathParts = computed(() => route.value.path.split('/').slice(0, 3))
+// Strip the locale prefix so the 2-level hierarchy (/section/page) is
+// computed the same way regardless of whether the URL has a locale prefix.
+const localePrefix = computed(() => `/${locale.value}`)
+const localPath = computed(() => {
+  const p = contentPath.value
+  if (p.startsWith(`${localePrefix.value}/`)) return p.slice(localePrefix.value.length)
+  if (p === localePrefix.value) return '/'
+  return p
+})
+
+// Re-add the locale prefix for the actual DB queries.
+const toContentPath = (localSegmentPath: string) => {
+  const pre = localePrefix.value
+  if (!localSegmentPath || localSegmentPath === '/') return pre
+  if (localSegmentPath.startsWith(`${pre}/`) || localSegmentPath === pre)
+    return localSegmentPath
+  return `${pre}${localSegmentPath}`
+}
+
+const pathParts = computed(() => localPath.value.split('/').slice(0, 3))
 const topPath = computed(() =>
   2 <= pathParts.value.length
-    ? pathParts.value.slice(0, 2).join('/')
+    ? toContentPath(pathParts.value.slice(0, 2).join('/') || '/')
     : undefined,
 )
 const bottomPath = computed(() =>
-  3 === pathParts.value.length ? pathParts.value.join('/') : undefined,
+  3 === pathParts.value.length ? toContentPath(pathParts.value.join('/')) : undefined,
 )
 
 const { data: topNav } = await useAsyncData(

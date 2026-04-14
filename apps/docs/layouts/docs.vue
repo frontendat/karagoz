@@ -3,15 +3,15 @@ import { ScrollArea } from '@karagoz/shared'
 
 import DefaultLayout from '~/layouts/default.vue'
 
-const route = useRouter().currentRoute
 const queryLocalisedCollection = useLocalisedCollection()
+const contentPath = useContentPath()
 const { data: page } = await useAsyncData(
-  route.value.path,
+  contentPath.value,
   () =>
     queryLocalisedCollection((builder) =>
-      builder.path(route.value.path).first(),
+      builder.path(contentPath.value).first(),
     ),
-  { watch: [() => route.value.path] },
+  { watch: [contentPath] },
 )
 
 const hideToc = computed(() => !page.value || page.value.hideToc)
