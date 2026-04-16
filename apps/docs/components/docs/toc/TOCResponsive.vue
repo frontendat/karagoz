@@ -5,12 +5,14 @@ const { t } = useI18n()
 const queryLocalisedCollection = useLocalisedCollection()
 const contentPath = useContentPath()
 const { data: page } = await useAsyncData(
-  contentPath.value,
-  () =>
-    queryLocalisedCollection((builder) =>
-      builder.path(contentPath.value).first(),
-    ),
-  { watch: [contentPath] },
+  () => contentPath.value,
+  () => queryLocalisedCollection((builder) => builder.path(contentPath.value).first()),
+  {
+    getCachedData(key, nuxtApp) {
+      const cached = nuxtApp.payload.data[key]
+      return cached?.body ? cached : undefined
+    },
+  },
 )
 const toc = computed(() => page.value?.body?.toc)
 const tocIsOpen = ref(false)
