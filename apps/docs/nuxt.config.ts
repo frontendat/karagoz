@@ -88,11 +88,11 @@ export default defineNuxtConfig({
   },
 
   modules: [
+    '@nuxthub/core',
     '@nuxt/content',
     '@nuxtjs/i18n',
     '@nuxtjs/tailwindcss',
     'shadcn-nuxt',
-    '@nuxthub/core',
   ],
 
   nitro: {
