@@ -5,9 +5,10 @@ const { t } = useI18n()
 const queryLocalisedCollection = useLocalisedCollection()
 const contentPath = useContentPath()
 const { data: page } = await useAsyncData(
-  () => contentPath.value,
+  contentPath.value,
   () => queryLocalisedCollection((builder) => builder.path(contentPath.value).first()),
   {
+    watch: [contentPath],
     getCachedData(key, nuxtApp) {
       const cached = nuxtApp.payload.data[key]
       return cached?.body ? cached : undefined

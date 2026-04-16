@@ -7,7 +7,7 @@ const queryLocalisedCollection = useLocalisedCollection()
 const contentPath = useContentPath()
 
 const { data: page } = await useAsyncData(
-  () => contentPath.value,
+  contentPath.value,
   () => queryLocalisedCollection((builder) => builder.path(contentPath.value).first()),
   {
     getCachedData(key, nuxtApp) {

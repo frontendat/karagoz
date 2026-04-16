@@ -36,17 +36,18 @@ const bottomPath = computed(() =>
 )
 
 const { data: topNav } = await useAsyncData(
-  () => `sidebar-top-${topPath.value}`,
+  `sidebar-top-${topPath.value}`,
   () =>
     topPath.value
       ? queryLocalisedCollectionNavigation((builder) =>
           builder.where('path', 'LIKE', `${topPath.value}%`),
         )
       : Promise.resolve(null),
+  { watch: [topPath] },
 )
 
 const { data: bottomNav } = await useAsyncData(
-  () => `sidebar-bottom-${bottomPath.value}`,
+  `sidebar-bottom-${bottomPath.value}`,
   () =>
     bottomPath.value
       ? queryLocalisedCollectionNavigation((builder) =>
@@ -55,6 +56,7 @@ const { data: bottomNav } = await useAsyncData(
             .where('id', 'NOT LIKE', '%index.md'),
         )
       : Promise.resolve(null),
+  { watch: [bottomPath] },
 )
 
 const getTitle = async (path?: string) => {
@@ -72,13 +74,15 @@ const getTitle = async (path?: string) => {
 }
 
 const { data: topTitle } = useAsyncData(
-  () => `sidebar-top-title-${topPath.value}`,
+  `sidebar-top-title-${topPath.value}`,
   () => getTitle(topPath.value),
+  { watch: [topPath] },
 )
 
 const { data: bottomTitle } = useAsyncData(
-  () => `sidebar-bottom-title-${bottomPath.value}`,
+  `sidebar-bottom-title-${bottomPath.value}`,
   () => getTitle(bottomPath.value),
+  { watch: [bottomPath] },
 )
 </script>
 
