@@ -43,7 +43,9 @@ const { data: topNav } = await useAsyncData(
           builder.where('path', 'LIKE', `${topPath.value}%`),
         )
       : Promise.resolve(null),
-  { watch: [topPath] },
+  {
+    watch: [topPath],
+  },
 )
 
 const { data: bottomNav } = await useAsyncData(
@@ -56,7 +58,9 @@ const { data: bottomNav } = await useAsyncData(
             .where('id', 'NOT LIKE', '%index.md'),
         )
       : Promise.resolve(null),
-  { watch: [bottomPath] },
+  {
+    watch: [bottomPath],
+  },
 )
 
 const getTitle = async (path?: string) => {
@@ -76,13 +80,17 @@ const getTitle = async (path?: string) => {
 const { data: topTitle } = useAsyncData(
   `sidebar-top-title-${topPath.value}`,
   () => getTitle(topPath.value),
-  { watch: [topPath] },
+  {
+    watch: [topPath],
+  },
 )
 
 const { data: bottomTitle } = useAsyncData(
   `sidebar-bottom-title-${bottomPath.value}`,
   () => getTitle(bottomPath.value),
-  { watch: [bottomPath] },
+  {
+    watch: [bottomPath],
+  },
 )
 </script>
 

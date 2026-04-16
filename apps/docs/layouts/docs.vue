@@ -7,14 +7,11 @@ const queryLocalisedCollection = useLocalisedCollection()
 const contentPath = useContentPath()
 const { data: page } = await useAsyncData(
   contentPath.value,
-  () => queryLocalisedCollection((builder) => builder.path(contentPath.value).first()),
-  {
-    watch: [contentPath],
-    getCachedData(key, nuxtApp) {
-      const cached = nuxtApp.payload.data[key]
-      return cached?.body ? cached : undefined
-    },
-  },
+  () =>
+    queryLocalisedCollection((builder) =>
+      builder.path(contentPath.value).first(),
+    ),
+  { watch: [contentPath] },
 )
 
 const hideToc = computed(() => !page.value || page.value.hideToc)

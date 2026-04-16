@@ -107,7 +107,7 @@ export default defineNuxtConfig({
     },
     preset: 'cloudflare_module',
     routeRules: {
-      '/**': { ssr: true }, // Ensures SSR works for all routes
+      '/:pathMatch(.*)*': { ssr: true }, // Ensures SSR works for all routes
     },
     scanDirs: ['server'],
   },
