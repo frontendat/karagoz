@@ -102,13 +102,10 @@ export default defineNuxtConfig({
     },
     minify: false,
     prerender: {
-      crawlLinks: false,
-      routes: [],
+      crawlLinks: true,
+      routes: ['/'],
     },
     preset: 'cloudflare_module',
-    routeRules: {
-      '/:pathMatch(.*)*': { ssr: true }, // Ensures SSR works for all routes
-    },
     scanDirs: ['server'],
   },
 

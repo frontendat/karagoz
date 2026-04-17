@@ -28,7 +28,7 @@ export const useLocalisedCollection = () => {
       .catch((error) => {
         console.log('Unable to perform query.')
         console.error(error)
-        return fallback || ({} as R) // to avoid `void` return
+        return (fallback ?? null) as R
       })
   }
 }
