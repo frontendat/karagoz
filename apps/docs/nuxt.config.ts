@@ -25,6 +25,11 @@ export default defineNuxtConfig({
         },
       },
     },
+    // better-sqlite3 (native bindings) can't run in Cloudflare Workers.
+    // Use the D1 binding that NuxtHub provisions for hub.database in production.
+    database: import.meta.dev
+      ? undefined
+      : { type: 'd1' as const, bindingName: 'DB' },
   },
 
   devtools: { enabled: import.meta.dev },
