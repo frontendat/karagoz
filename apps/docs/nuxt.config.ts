@@ -17,6 +17,13 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-29',
 
+  components: [
+    { path: '~/components/ui', pathPrefix: false },
+    '~/components',
+  ],
+
+  css: ['~/assets/css/tailwind.css'],
+
   content: {
     build: {
       markdown: {
@@ -90,10 +97,14 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
     '@nuxtjs/i18n',
-    '@nuxtjs/tailwindcss',
-    'shadcn-nuxt',
     '@nuxthub/core',
   ],
+
+  postcss: {
+    plugins: {
+      '@tailwindcss/postcss': {},
+    },
+  },
 
   nitro: {
     cloudflare: {
@@ -118,15 +129,5 @@ export default defineNuxtConfig({
     },
   },
 
-  shadcn: {
-    prefix: '',
-    componentDir: './components/ui',
-  },
-
   ssr: true,
-
-  tailwindcss: {
-    cssPath: ['~/assets/css/tailwind.css', { injectPosition: 'first' }],
-    configPath: 'tailwind.config',
-  },
 })

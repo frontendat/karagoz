@@ -6,22 +6,22 @@ import DefaultLayout from '~/layouts/default.vue'
 const route = useRouter().currentRoute
 const queryLocalisedCollection = useLocalisedCollection()
 const { data: page } = await useAsyncData(
-  route.value.path,
+  () => route.value.path,
   () =>
     queryLocalisedCollection((builder) =>
       builder.path(route.value.path).first(),
     ),
-  { watch: [() => route.value.path] },
 )
 
 const hideToc = computed(() => !page.value || page.value.hideToc)
+const toc = computed(() => page.value?.body?.toc)
 </script>
 
 <template>
   <DefaultLayout>
-    <div class="border-b">
+    <div class="border-b border-border">
       <div
-        class="container flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"
+        class="flex-1 items-start max-w-350 mx-auto px-8 md:grid md:grid-cols-[220px_minmax(0,1fr)] md:gap-6 lg:grid-cols-[240px_minmax(0,1fr)] lg:gap-10"
       >
         <aside
           class="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block overflow-hidden"
@@ -39,7 +39,7 @@ const hideToc = computed(() => !page.value || page.value.hideToc)
               <slot></slot>
             </div>
           </div>
-          <DocsTOCResponsive v-if="!hideToc" class="toc order-1 xl:order-2" />
+          <DocsTOCResponsive v-if="!hideToc" :toc="toc" class="toc order-1 xl:order-2" />
         </main>
       </div>
     </div>
@@ -47,7 +47,9 @@ const hideToc = computed(() => !page.value || page.value.hideToc)
 </template>
 
 <style scoped>
-@screen xl {
+@reference "tailwindcss";
+
+@media (width >= theme(--breakpoint-xl)) {
   main:has(.toc) {
     @apply gap-10;
     grid-template-columns: 1fr 300px;

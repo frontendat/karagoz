@@ -9,7 +9,8 @@
   "version": "0.2.1",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "src/lib.css"
   ],
   "main": "./dist/karagoz-sandbox.umd.cjs",
   "module": "./dist/karagoz-sandbox.js",
@@ -28,7 +29,8 @@
     "./dist/karagoz-sandbox.css": {
       "import": "./dist/karagoz-sandbox.css",
       "require": "./dist/karagoz-sandbox.css"
-    }
+    },
+    "./style.css": "./src/lib.css"
   },
   "scripts": {
     "dev": "pnpm --filter @karagoz/sandbox --parallel /^watch:/",

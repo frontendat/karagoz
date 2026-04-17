@@ -8,9 +8,6 @@
   },
   "version": "0.2.1",
   "type": "module",
-  "files": [
-    "dist"
-  ],
   "main": "./dist/karagoz-shared.umd.cjs",
   "module": "./dist/karagoz-shared.js",
   "types": "./dist/types.d.ts",
@@ -29,8 +26,12 @@
       "import": "./dist/karagoz-shared.css",
       "require": "./dist/karagoz-shared.css"
     },
-    "./dist/config/*": "./dist/config/*"
+    "./style.css": "./src/lib.css"
   },
+  "files": [
+    "dist",
+    "src/lib.css"
+  ],
   "scripts": {
     "dev": "pnpm --filter @karagoz/shared --parallel /^watch:/",
     "dev-hmr": "vite",

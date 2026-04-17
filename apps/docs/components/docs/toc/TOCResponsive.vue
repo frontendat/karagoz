@@ -1,41 +1,35 @@
 <script setup lang="ts">
 import { Button, ScrollArea } from '@karagoz/shared'
 
-const route = useRouter().currentRoute
 const { t } = useI18n()
-const queryLocalisedCollection = useLocalisedCollection()
-const { data: page } = await useAsyncData(
-  route.value.path,
-  () =>
-    queryLocalisedCollection((builder) =>
-      builder.path(route.value.path).first(),
-    ),
-  { watch: [() => route.value.path] },
-)
-const toc = computed(() => page.value?.body?.toc)
+
+const props = defineProps<{
+  toc: { links?: unknown[] } | null | undefined
+}>()
+
 const tocIsOpen = ref(false)
 </script>
 
 <template>
-  <div v-if="toc?.links?.length" class="text-sm">
+  <div v-if="props.toc?.links?.length" class="text-sm">
     <div class="hidden sticky top-24 xl:block">
       <div class="h-[calc(100vh-7rem)] overflow-hidden w-full z-30">
         <ScrollArea type="auto" class="h-full">
-          <DocsTOC :toc="toc" />
+          <DocsTOC :toc="props.toc" />
         </ScrollArea>
       </div>
     </div>
     <div class="block xl:hidden">
-      <Collapsible v-model:open="tocIsOpen">
-        <CollapsibleTrigger as-child>
+      <UiCollapsible v-model:open="tocIsOpen">
+        <UiCollapsibleTrigger as-child>
           <Button variant="outline">{{ t('layouts.tocButton') }}</Button>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <div class="border-s ps-4">
-            <DocsTOC class="mt-4" no-title :toc="toc" />
+        </UiCollapsibleTrigger>
+        <UiCollapsibleContent>
+          <div class="border-border border-s ps-4">
+            <DocsTOC class="mt-4" no-title :toc="props.toc" />
           </div>
-        </CollapsibleContent>
-      </Collapsible>
+        </UiCollapsibleContent>
+      </UiCollapsible>
     </div>
   </div>
 </template>

@@ -9,12 +9,12 @@ const availableLocales = computed(() => {
 <template>
   <div class="bg-pink-200 gap-4 hidden md:flex">
     <a
-      v-for="locale in availableLocales"
-      :key="locale.code"
+      v-for="localeOption in availableLocales"
+      :key="localeOption.code"
       href="#"
-      @click.prevent.stop="setLocale(locale.code)"
+      @click.prevent.stop="setLocale(localeOption.code)"
     >
-      {{ locale.name }}
+      {{ localeOption.name }}
     </a>
   </div>
 </template>
