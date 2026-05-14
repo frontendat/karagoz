@@ -14,7 +14,7 @@
   "hidePageHeader": true,
   "includeHierarchySummary": false,
   "includeVersion": false,
-  "out": "../../../apps/docs/content/en/sandbox/4.api-reference",
+  "out": "./.generated-docs",
   "pageTitleTemplates": {
     "member": "{name}"
   },

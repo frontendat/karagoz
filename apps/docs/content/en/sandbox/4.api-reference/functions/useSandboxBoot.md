@@ -25,7 +25,7 @@ boot: Promise<WebContainer>;
 ### isBooting
 
 ```ts
-isBooting: Ref<boolean>;
+isBooting: ComputedRef<boolean>;
 ```
 
 ## Defined in

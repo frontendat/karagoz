@@ -1,5 +1,5 @@
 import { type BootOptions, WebContainer } from '@webcontainer/api'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 /**
  * A simple composable for convenience to boot a web container and return the promise along with the status.
@@ -15,6 +15,6 @@ export const useSandboxBoot = (options?: BootOptions) => {
 
   return {
     boot,
-    isBooting,
+    isBooting: computed(() => isBooting.value),
   }
 }
