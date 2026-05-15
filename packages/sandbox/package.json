@@ -45,7 +45,7 @@
     "docs": "pnpm docs:typescript && sleep 1 && pnpm docs:components && pnpm docs:copy",
     "docs:components": "vue-docgen -c docs/docgen.config.cjs",
     "docs:typescript": "typedoc --options docs/typedoc.json && rm ./docs/.generated-docs/README.md",
-    "docs:copy": "cp -r ./docs/.generated-docs/ ../../apps/docs/content/en/sandbox/4.api-reference"
+    "docs:copy": "cp -r ./docs/.generated-docs/ ../../apps/docs/content/en/sandbox/4.api-reference/"
   },
   "peerDependencies": {
     "@codemirror/language": "^6.10.8",
