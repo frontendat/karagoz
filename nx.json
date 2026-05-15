@@ -23,7 +23,7 @@
     },
     "docs": {
       "dependsOn": ["build"],
-      "outputs": ["{workspaceRoot}/apps/docs/content/en/sandbox/4.api-reference"],
+      "outputs": ["{projectRoot}/docs/.generated-docs"],
       "cache": true
     },
     "dev": {

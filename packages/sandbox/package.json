@@ -33,6 +33,7 @@
     "./style.css": "./src/lib.css"
   },
   "scripts": {
+    "nx": "nx",
     "dev": "pnpm --filter @karagoz/sandbox --parallel /^watch:/",
     "dev-hmr": "vite",
     "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
@@ -41,9 +42,10 @@
     "watch:vite": "vite build --watch",
     "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
     "lint": "eslint \"src/**/*.{ts,vue}\"",
-    "docs": "pnpm docs:typescript && pnpm docs:components",
+    "docs": "pnpm docs:typescript && sleep 1 && pnpm docs:components && pnpm docs:copy",
     "docs:components": "vue-docgen -c docs/docgen.config.cjs",
-    "docs:typescript": "typedoc --options docs/typedoc.json && rm ../../apps/docs/content/en/sandbox/4.api-reference/README.md"
+    "docs:typescript": "typedoc --options docs/typedoc.json && rm ./docs/.generated-docs/README.md",
+    "docs:copy": "cp -a ./docs/.generated-docs/. ../../apps/docs/content/en/sandbox/4.api-reference/"
   },
   "peerDependencies": {
     "@codemirror/language": "^6.10.8",

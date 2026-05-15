@@ -77,7 +77,7 @@ const { data: bottomTitle } = useAsyncData(
     <template v-if="bottomNav?.length">
       <DocsSideBarLevel
         :key="pathParts.join('/')"
-        class="border-t mt-4 pt-4"
+        class="border-border border-t mt-4 pt-4"
         :init-level="2"
         :items="bottomNav ?? []"
         :title="bottomTitle"

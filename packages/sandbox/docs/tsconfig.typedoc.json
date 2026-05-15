@@ -1,5 +1,12 @@
 {
   "extends": "../tsconfig.json",
-  "exclude": [],
-  "include": ["../src/typedoc-entry.ts"]
+  "exclude": [
+    "../src/components",
+    "../src/index.ts",
+    "../src/main.ts"
+  ],
+  "include": ["../src/**/*.ts"],
+  "compilerOptions": {
+    "rootDir": ".."
+  }
 }
