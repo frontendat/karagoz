@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ContentNavigationItem } from '@nuxt/content'
 import { fallbackTitleKey } from '~/utils/fallbackTitleKey'
 
 const { t } = useI18n()
@@ -7,21 +8,40 @@ const pathParts = computed(() => route.value.path.split('/'))
 
 const titleKey = computed(() => fallbackTitleKey(pathParts.value))
 
+// Query at section depth (path[:3]) rather than the full route path.
+// This keeps intermediate directory nodes that have an explicit index.md
+// (e.g. /sandbox/api-reference) present in the navigation tree even when
+// the LIKE filter is narrowed to a deeper sub-path. Without this, those
+// nodes are excluded from the SQLite result set and Nuxt Content drops them
+// from the tree, making the old fixed-depth [0] traversal skip a level.
+const sectionPath = computed(() => pathParts.value.slice(0, 3).join('/'))
+
 const queryLocalisedCollectionNavigation = useLocalisedCollectionNavigation()
 
-const { data: result } = await useAsyncData(() =>
-  queryLocalisedCollectionNavigation((builder) =>
-    builder.where('path', 'LIKE', `${route.value.path}%`),
-  ),
+const { data: result } = await useAsyncData(
+  () => `not-found-nav-${sectionPath.value}`,
+  () =>
+    queryLocalisedCollectionNavigation((builder) =>
+      builder.where('path', 'LIKE', `${sectionPath.value}%`),
+    ),
 )
 
-const list = computed(() => {
-  let current = result.value
-  for (let i = 0; i < pathParts.value.length - 1; i++) {
-    current = current?.[0]?.children
+const findChildren = (
+  items: ContentNavigationItem[] | null | undefined,
+  targetPath: string,
+): ContentNavigationItem[] | undefined => {
+  if (!Array.isArray(items)) return undefined
+  for (const item of items) {
+    if (item.path === targetPath) return item.children
+    if (item.children && targetPath.startsWith(item.path + '/')) {
+      const found = findChildren(item.children, targetPath)
+      if (found !== undefined) return found
+    }
   }
-  return current
-})
+  return undefined
+}
+
+const list = computed(() => findChildren(result.value, route.value.path))
 </script>
 
 <template>
