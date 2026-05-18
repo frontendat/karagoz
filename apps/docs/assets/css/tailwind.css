@@ -9,6 +9,14 @@
 @plugin "@tailwindcss/typography";
 @plugin "tailwindcss-animate";
 
+@layer base {
+  *,
+  ::before,
+  ::after {
+      border-color: hsl(var(--border));
+  }
+}
+
 @layer components {
   .prose {
     --tw-prose-invert-pre-bg: #1f2937;
@@ -16,9 +24,6 @@
 }
 
 @layer utilities {
-  .border-border {
-      border-color: hsl(var(--border));
-  }
   .external::after {
     content: ' ↗';
   }

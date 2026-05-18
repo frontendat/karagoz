@@ -27,7 +27,7 @@ const onRunClick = async () => {
 </script>
 
 <template>
-  <div class="border border-border my-12 not-prose" :class="heightClass">
+  <div class="border my-12 not-prose" :class="heightClass">
     <ClientOnly v-if="isRunning">
       <slot></slot>
     </ClientOnly>
