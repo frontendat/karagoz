@@ -34,6 +34,11 @@ defineProps<{
    * Which side the tooltip should be shown on.
    */
   side?: TooltipContentProps['side']
+  /**
+   * Whether to disabled tooltip content portal. 
+   * Must be set to `true` for full-screen and `false` for non-full-screen, otherwise tooltips break.
+   */
+  tooltipContentPortalDisabled?: boolean
 }>()
 
 defineEmits<{
@@ -70,7 +75,7 @@ defineEmits<{
       </TooltipTrigger>
       <TooltipContent
         class="text-xs"
-        :portal="{ disabled: true }"
+        :portal="{ disabled: tooltipContentPortalDisabled }"
         :side="side ?? 'right'"
         :side-offset="5"
       >

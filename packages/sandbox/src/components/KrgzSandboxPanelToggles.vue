@@ -88,6 +88,7 @@ const isAvailable = computed(
           v-if="availablePanels.includes('code')"
           :label="t('krgz.sandbox.toggle.code')"
           :pressed="shownPanels.includes('code')"
+          :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
           @press="$emit('toggle', 'code')"
         >
           <FileCode class="size-5" />
@@ -99,6 +100,7 @@ const isAvailable = computed(
           v-if="!hideFullScreenToggle"
           as-button
           :label="t('krgz.sandbox.toggle.fullscreen')"
+          :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
           @press="fullscreen.toggle"
         >
           <Minimize v-if="fullscreen.isFullscreen.value" class="size-5" />
@@ -109,6 +111,7 @@ const isAvailable = computed(
           v-if="!hideSolveButton"
           as-button
           :label="t('krgz.sandbox.toggle.solve')"
+          :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
           @press="$emit('solve')"
         >
           <Lightbulb class="size-5" />
@@ -118,6 +121,7 @@ const isAvailable = computed(
           v-if="!hideThemeToggle"
           as-button
           :label="t('krgz.sandbox.toggle.theme')"
+          :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
           @press="toggleDark()"
         >
           <Sun v-if="isDark" class="size-5" />
@@ -129,6 +133,7 @@ const isAvailable = computed(
           v-if="availablePanels.includes('result')"
           :label="t('krgz.sandbox.toggle.result')"
           :pressed="shownPanels.includes('result')"
+          :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
           @press="$emit('toggle', 'result')"
         >
           <Eye class="size-5" />
@@ -147,6 +152,7 @@ const isAvailable = computed(
           v-if="availablePanels.includes('terminal')"
           :label="t('krgz.sandbox.toggle.terminal')"
           :pressed="shownPanels.includes('terminal')"
+          :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
           @press="$emit('toggle', 'terminal')"
         >
           <TerminalSquare class="size-5" />
@@ -157,6 +163,7 @@ const isAvailable = computed(
           v-if="availablePanels.includes('processes')"
           :label="t('krgz.sandbox.toggle.processes')"
           :pressed="shownPanels.includes('processes')"
+          :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
           @press="$emit('toggle', 'processes')"
         >
           <Play class="size-5" />
