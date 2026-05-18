@@ -25,7 +25,7 @@ const tocIsOpen = ref(false)
           <Button variant="outline">{{ t('layouts.tocButton') }}</Button>
         </UiCollapsibleTrigger>
         <UiCollapsibleContent>
-          <div class="border-border border-s ps-4">
+          <div class="border-s ps-4">
             <DocsTOC class="mt-4" no-title :toc="props.toc" />
           </div>
         </UiCollapsibleContent>

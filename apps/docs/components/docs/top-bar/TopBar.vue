@@ -14,7 +14,7 @@ const isDev = import.meta.dev
 
 <template>
   <header
-    class="sticky z-40 top-0 bg-background/80 backdrop-blur-lg border-b border-border"
+    class="sticky z-40 top-0 bg-background/80 backdrop-blur-lg border-b"
   >
     <div class="container flex h-14 items-center max-w-384 mx-auto px-8">
       <NuxtLink class="flex gap-2 items-center me-6" to="/">
@@ -38,7 +38,7 @@ const isDev = import.meta.dev
                 <li class="row-span-5">
                   <UiNavigationMenuLink as-child>
                     <NuxtLink
-                      class="flex h-full w-full select-none flex-col justify-end rounded-md bg-linear-to-b from-muted/50 to-muted p-4 no-underline outline-none focus:shadow-md"
+                      class="flex h-full w-full select-none flex-col justify-end rounded-md bg-muted p-4 no-underline outline-none focus:shadow-md"
                       :to="localePath({ path: '/sandbox' })"
                     >
                       <div class="mb-2 mt-4 text-lg font-medium">

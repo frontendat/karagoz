@@ -81,7 +81,7 @@ const isAvailable = computed(
   >
     <aside
       v-if="isAvailable.code || isAvailable.result"
-      class="border-e border-border flex flex-col h-full"
+      class="border-e flex flex-col h-full"
     >
       <nav v-if="isAvailable.code" class="grid gap-2 p-2">
         <KrgzPanelToggle
@@ -93,7 +93,7 @@ const isAvailable = computed(
           <FileCode class="size-5" />
         </KrgzPanelToggle>
 
-        <div class="border-t border-border"></div>
+        <div class="border-t"></div>
 
         <KrgzPanelToggle
           v-if="!hideFullScreenToggle"
@@ -140,7 +140,7 @@ const isAvailable = computed(
     </div>
     <aside
       v-if="isAvailable.processes || isAvailable.terminal"
-      class="border-s border-border flex flex-col h-full"
+      class="border-s flex flex-col h-full"
     >
       <nav v-if="isAvailable.terminal" class="grid gap-2 p-2">
         <KrgzPanelToggle

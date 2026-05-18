@@ -7,6 +7,15 @@
 @source "../../../../packages/puppeteer/src";
 
 @plugin "@tailwindcss/typography";
+@plugin "tailwindcss-animate";
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+      border-color: hsl(var(--border));
+  }
+}
 
 @layer components {
   .prose {
@@ -15,9 +24,6 @@
 }
 
 @layer utilities {
-  .border-border {
-      border-color: hsl(var(--border));
-  }
   .external::after {
     content: ' ↗';
   }
