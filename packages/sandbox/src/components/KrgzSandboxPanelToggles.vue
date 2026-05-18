@@ -11,7 +11,7 @@ import {
   Sun,
   TerminalSquare,
 } from 'lucide-vue-next'
-import { computed, provide, useTemplateRef } from 'vue'
+import { computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { Panel, panels } from '../types'
@@ -62,8 +62,6 @@ defineEmits<{
 const { t } = useI18n()
 const $el = useTemplateRef<HTMLElement>('$el')
 const fullscreen = useFullscreen($el)
-
-provide('krgzSandboxEl', $el)
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
