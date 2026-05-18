@@ -8,6 +8,7 @@ import {
   TooltipTrigger,
 } from '@karagoz/shared'
 import { TooltipContentProps } from 'radix-vue'
+import { computed, inject, ref, Ref } from 'vue'
 
 /**
  * Renders a panel toggle.
@@ -16,6 +17,11 @@ import { TooltipContentProps } from 'radix-vue'
  * in the default layout component `KrgzSandbox`.
  */
 defineOptions({})
+
+const sandboxEl = inject<Ref<HTMLElement | null>>('krgzSandboxEl', ref(null))
+const portalProps = computed(() =>
+  sandboxEl.value ? { to: sandboxEl.value } : { disabled: true },
+)
 
 defineProps<{
   /**
@@ -70,7 +76,7 @@ defineEmits<{
       </TooltipTrigger>
       <TooltipContent
         class="text-xs"
-        :portal="{ disabled: true }"
+        :portal="portalProps"
         :side="side ?? 'right'"
         :side-offset="5"
       >
