@@ -1,5 +1,8 @@
 @import "@karagoz/shared/dist/karagoz-shared.css";
 @import "@karagoz/sandbox/dist/karagoz-sandbox.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
 @import "tailwindcss";
 
 @source "../../../../packages/shared/src";
