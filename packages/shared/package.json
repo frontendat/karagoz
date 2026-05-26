@@ -40,7 +40,7 @@
     "preview": "vite preview",
     "watch:vite": "vite build --watch",
     "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
-    "lint": "eslint \"src/**/*.{ts,vue}\""
+    "lint": "oxlint src"
   },
   "peerDependencies": {
     "vue": "^3.5.21"

@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // empty'); case \"$file\" in *.ts|*.vue) pnpm eslint --fix \"$file\" 2>/dev/null ;; esac; true"
+            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // empty'); case \"$file\" in *.ts|*.tsx|*.js|*.mjs|*.vue) oxfmt \"$file\" 2>/dev/null; oxlint --fix \"$file\" 2>/dev/null ;; esac; true"
           }
         ]
       }

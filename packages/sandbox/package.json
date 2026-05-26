@@ -41,7 +41,7 @@
     "preview": "vite preview",
     "watch:vite": "vite build --watch",
     "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
-    "lint": "eslint \"src/**/*.{ts,vue}\"",
+    "lint": "oxlint src",
     "docs": "pnpm docs:typescript && sleep 1 && pnpm docs:components && pnpm docs:copy",
     "docs:components": "vue-docgen -c docs/docgen.config.cjs",
     "docs:typescript": "typedoc --options docs/typedoc.json && rm ./docs/.generated-docs/README.md",

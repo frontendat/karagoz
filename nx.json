@@ -18,7 +18,7 @@
       "cache": true
     },
     "lint": {
-      "inputs": ["default", "{workspaceRoot}/eslint.config.mjs"],
+      "inputs": ["default", "{workspaceRoot}/oxlint.json"],
       "cache": true
     },
     "docs": {
@@ -51,7 +51,7 @@
     ],
     "sharedGlobals": [
       "{workspaceRoot}/tsconfig.json",
-      "{workspaceRoot}/eslint.config.mjs"
+      "{workspaceRoot}/oxlint.json"
     ]
   }
 }
