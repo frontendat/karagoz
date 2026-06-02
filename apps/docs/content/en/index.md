@@ -43,7 +43,7 @@ the lead characters of the traditional Turkish shadow play, popularized during t
 most nation states of the Ottoman Empire.
 
 <figure>
-    <img src="img/karagoz-and-hacivat.png" alt="Karagöz and Hacivat - Source: Wikipedia" class="max-w-66" />
+    <img src="img/karagoz-and-hacivat.png" alt="Karagöz and Hacivat - Source: Wikipedia" />
     <figcaption>Karagöz and Hacivat - Source: Wikipedia</figcaption>
 </figure>
 
