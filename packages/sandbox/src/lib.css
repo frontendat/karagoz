@@ -1,4 +1,8 @@
 @layer components {
+  .krgz-sandbox :is(*, *::after, *::before) {
+    border-color: hsl(var(--border));
+  }
+
   /* For modern browsers */
   .krgz-tabs::-webkit-scrollbar {
     width: 0;

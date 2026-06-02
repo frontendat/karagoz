@@ -171,7 +171,7 @@ const isRowDividerShown = computed(() => {
   >
     <Binary class="size-12" />
   </LoadingIndicator>
-  <div v-else class="@container/sandbox h-full">
+  <div v-else class="krgz-sandbox @container/sandbox h-full">
     <div ref="panelControl" class="h-full" :class="multiPanelCss">
       <KrgzSandboxPanelToggles
         :available-panels="availablePanels"
