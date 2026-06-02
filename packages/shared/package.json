@@ -1,12 +1,16 @@
 {
   "name": "@karagoz/shared",
+  "version": "0.2.1",
   "private": false,
   "homepage": "https://karagoz.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/frontendat/karagoz.git"
   },
-  "version": "0.2.1",
+  "files": [
+    "dist",
+    "src/lib.css"
+  ],
   "type": "module",
   "main": "./dist/karagoz-shared.umd.cjs",
   "module": "./dist/karagoz-shared.js",
@@ -28,10 +32,9 @@
     },
     "./style.css": "./src/lib.css"
   },
-  "files": [
-    "dist",
-    "src/lib.css"
-  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "dev": "pnpm --filter @karagoz/shared --parallel /^watch:/",
     "dev-hmr": "vite",
@@ -40,12 +43,12 @@
     "preview": "vite preview",
     "watch:vite": "vite build --watch",
     "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
-    "lint": "oxlint src"
+    "lint": "oxlint src",
+    "lint:fix": "oxlint --fix src",
+    "fmt": "oxfmt src",
+    "fmt:check": "oxfmt --check src"
   },
   "peerDependencies": {
     "vue": "^3.5.21"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

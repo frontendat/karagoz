@@ -1,17 +1,17 @@
 {
   "name": "@karagoz/sandbox",
+  "version": "0.2.1",
   "private": false,
   "homepage": "https://karagoz.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/frontendat/karagoz.git"
   },
-  "version": "0.2.1",
-  "type": "module",
   "files": [
     "dist",
     "src/lib.css"
   ],
+  "type": "module",
   "main": "./dist/karagoz-sandbox.umd.cjs",
   "module": "./dist/karagoz-sandbox.js",
   "types": "./dist/types.d.ts",
@@ -32,6 +32,9 @@
     },
     "./style.css": "./src/lib.css"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "nx": "nx",
     "dev": "pnpm --filter @karagoz/sandbox --parallel /^watch:/",
@@ -42,10 +45,16 @@
     "watch:vite": "vite build --watch",
     "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
     "lint": "oxlint src",
+    "lint:fix": "oxlint --fix src",
+    "fmt": "oxfmt src",
+    "fmt:check": "oxfmt --check src",
     "docs": "pnpm docs:typescript && sleep 1 && pnpm docs:components && pnpm docs:copy",
     "docs:components": "vue-docgen -c docs/docgen.config.cjs",
     "docs:typescript": "typedoc --options docs/typedoc.json && rm ./docs/.generated-docs/README.md",
     "docs:copy": "cp -a ./docs/.generated-docs/. ../../apps/docs/content/en/sandbox/4.api-reference/"
+  },
+  "dependencies": {
+    "@karagoz/shared": "workspace:^"
   },
   "peerDependencies": {
     "@codemirror/language": "^6.10.8",
@@ -62,11 +71,5 @@
     "radix-vue": "^1.9.7",
     "vue": "^3.5.21",
     "vue-codemirror": "^6.1.1"
-  },
-  "dependencies": {
-    "@karagoz/shared": "workspace:^"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }

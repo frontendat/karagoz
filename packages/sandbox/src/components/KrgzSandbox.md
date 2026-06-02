@@ -3,7 +3,7 @@
 ```vue
 <script setup lang="ts">
 const { boot, isBooting } = useSandboxBoot()
-  
+
 // ... bootstrapping and mounting files
 </script>
 
@@ -16,16 +16,16 @@ const { boot, isBooting } = useSandboxBoot()
 
 ```vue
 <script setup lang="ts">
-  const { boot, isBooting } = useSandboxBoot()
+const { boot, isBooting } = useSandboxBoot()
 
-  // ... bootstrapping and mounting files
+// ... bootstrapping and mounting files
 </script>
 
 <template>
-  <KrgzSandbox 
+  <KrgzSandbox
     :booting="isBooting"
-    hide-explorer 
-    hide-solve-button 
+    hide-explorer
+    hide-solve-button
     hide-theme-toggle
     :available-panels="['code', 'processes', 'result', 'terminal']"
     :shown-panels="['code', 'processes', 'result', 'terminal']"
@@ -37,9 +37,9 @@ const { boot, isBooting } = useSandboxBoot()
 
 ```vue
 <script setup lang="ts">
-  const { boot, isBooting } = useSandboxBoot()
+const { boot, isBooting } = useSandboxBoot()
 
-  // ... bootstrapping and mounting files
+// ... bootstrapping and mounting files
 </script>
 
 <template>

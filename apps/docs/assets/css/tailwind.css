@@ -1,6 +1,6 @@
-@import "@karagoz/shared/dist/karagoz-shared.css";
-@import "@karagoz/sandbox/dist/karagoz-sandbox.css";
-@import "tailwindcss";
+@import '@karagoz/shared/dist/karagoz-shared.css';
+@import '@karagoz/sandbox/dist/karagoz-sandbox.css';
+@import 'tailwindcss';
 
 @source "../../../../packages/shared/src";
 @source "../../../../packages/sandbox/src";
@@ -45,7 +45,7 @@
   *,
   ::before,
   ::after {
-      border-color: hsl(var(--border));
+    border-color: hsl(var(--border));
   }
 }
 

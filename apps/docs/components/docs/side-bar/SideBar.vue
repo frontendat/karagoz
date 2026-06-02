@@ -45,7 +45,7 @@ const getTitle = async (path?: string) => {
   )
   return [
     typeof content?.navigation === 'object'
-      ? content?.navigation?.sidebarTitle ?? content?.navigation?.title
+      ? (content?.navigation?.sidebarTitle ?? content?.navigation?.title)
       : undefined,
     content?.title,
     t(fallbackTitleKey(path), '...'),

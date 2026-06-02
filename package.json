@@ -1,9 +1,8 @@
 {
   "private": true,
   "description": "Karagöz Learning Tools",
-  "license": "MIT",
   "homepage": "https://karagoz.dev",
-  "packageManager": "pnpm@8.6.6",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/frontendat/karagoz.git"
@@ -14,8 +13,8 @@
     "build:affected": "nx affected -t build",
     "lint": "nx run-many -t lint",
     "lint:affected": "nx affected -t lint",
-    "format": "oxfmt .",
-    "format:check": "oxfmt --check .",
+    "fmt": "nx run-many -t fmt:check",
+    "fmt:affected": "nx affected -t fmt:check",
     "changeset": "changeset"
   },
   "dependencies": {
@@ -61,5 +60,6 @@
     "vue-docgen-api": "^4.79.2",
     "vue-docgen-cli": "^4.79.0",
     "vue-tsc": "^2.0.6"
-  }
+  },
+  "packageManager": "pnpm@8.6.6"
 }

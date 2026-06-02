@@ -9,12 +9,7 @@
     "import/first": "error",
     "import/newline-after-import": "error",
     "import/no-duplicates": "error",
-    "no-unused-vars": "warn",
-    "vue/multi-word-component-names": "off"
+    "no-unused-vars": "warn"
   },
-  "ignorePatterns": [
-    "**/dist/**",
-    "**/.nuxt/**",
-    "**/.output/**"
-  ]
+  "ignorePatterns": ["**/dist/**", "**/.nuxt/**", "**/.output/**"]
 }

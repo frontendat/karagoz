@@ -17,10 +17,7 @@ export default defineNuxtConfig({
 
   compatibilityDate: '2025-01-29',
 
-  components: [
-    { path: '~/components/ui', pathPrefix: false },
-    '~/components',
-  ],
+  components: [{ path: '~/components/ui', pathPrefix: false }, '~/components'],
 
   css: ['~/assets/css/tailwind.css'],
 
@@ -94,11 +91,7 @@ export default defineNuxtConfig({
     vueI18n: './i18n.config.ts', // if you are using custom path, default
   },
 
-  modules: [
-    '@nuxt/content',
-    '@nuxtjs/i18n',
-    '@nuxthub/core',
-  ],
+  modules: ['@nuxt/content', '@nuxtjs/i18n', '@nuxthub/core'],
 
   postcss: {
     plugins: {
@@ -109,7 +102,7 @@ export default defineNuxtConfig({
   nitro: {
     cloudflare: {
       deployConfig: true,
-      nodeCompat: true
+      nodeCompat: true,
     },
     minify: false,
     prerender: {

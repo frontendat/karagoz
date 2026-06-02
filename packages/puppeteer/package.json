@@ -1,16 +1,16 @@
 {
   "name": "@karagoz/puppeteer",
+  "version": "0.2.1",
   "private": true,
   "homepage": "https://karagoz.dev",
   "repository": {
     "type": "git",
     "url": "https://github.com/frontendat/karagoz.git"
   },
-  "version": "0.2.1",
-  "type": "module",
   "files": [
     "dist"
   ],
+  "type": "module",
   "main": "./dist/karagoz-puppeteer.umd.cjs",
   "module": "./dist/karagoz-puppeteer.js",
   "types": "./dist/types.d.ts",
@@ -38,7 +38,14 @@
     "preview": "vite preview",
     "watch:vite": "vite build --watch",
     "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
-    "lint": "oxlint src"
+    "lint": "oxlint src",
+    "lint:fix": "oxlint --fix src",
+    "fmt": "oxfmt src",
+    "fmt:check": "oxfmt --check src"
+  },
+  "dependencies": {
+    "@karagoz/sandbox": "workspace:^",
+    "@karagoz/shared": "workspace:^"
   },
   "peerDependencies": {
     "@codemirror/language": "^6.10.8",
@@ -52,9 +59,5 @@
     "tailwindcss": "^4",
     "vue-codemirror": "^6.1.1",
     "vue-markdown-render": "^2.2.1"
-  },
-  "dependencies": {
-    "@karagoz/sandbox": "workspace:^",
-    "@karagoz/shared": "workspace:^"
   }
 }
