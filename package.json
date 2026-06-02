@@ -55,7 +55,7 @@
     "typedoc": "^0.27.6",
     "typedoc-plugin-markdown": "^4.3.3",
     "typescript": "^5.2.2",
-    "vite": "^7.1.11",
+    "vite": "^7.3.2",
     "vite-plugin-dts": "^3.8.3",
     "vue-docgen-api": "^4.79.2",
     "vue-docgen-cli": "^4.79.0",
