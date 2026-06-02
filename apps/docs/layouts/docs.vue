@@ -39,7 +39,11 @@ const toc = computed(() => page.value?.body?.toc)
               <slot></slot>
             </div>
           </div>
-          <DocsTOCResponsive v-if="!hideToc" :toc="toc" class="toc order-1 xl:order-2" />
+          <DocsTOCResponsive
+            v-if="!hideToc"
+            :toc="toc"
+            class="toc order-1 xl:order-2"
+          />
         </main>
       </div>
     </div>

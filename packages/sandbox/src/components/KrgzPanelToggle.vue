@@ -35,7 +35,7 @@ defineProps<{
    */
   side?: TooltipContentProps['side']
   /**
-   * Whether to disabled tooltip content portal. 
+   * Whether to disabled tooltip content portal.
    * Must be set to `true` for full-screen and `false` for non-full-screen, otherwise tooltips break.
    */
   tooltipContentPortalDisabled?: boolean

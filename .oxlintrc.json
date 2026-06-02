@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["import", "typescript", "vue"],
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "import/first": "error",
+    "import/newline-after-import": "error",
+    "import/no-duplicates": "error",
+    "no-unused-vars": "warn"
+  },
+  "ignorePatterns": ["**/dist/**", "**/.nuxt/**", "**/.output/**"]
+}

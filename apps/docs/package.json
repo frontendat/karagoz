@@ -13,7 +13,10 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "lint": "eslint \"./**/*.{ts,vue}\"",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "fmt": "oxfmt .",
+    "fmt:check": "oxfmt --check .",
     "debug": "pnpm postinstall && nuxt build && nuxthub preview",
     "deploy": "nuxthub deploy"
   },

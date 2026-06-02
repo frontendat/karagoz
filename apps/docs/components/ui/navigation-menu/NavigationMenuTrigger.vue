@@ -9,7 +9,9 @@ import {
 import { computed, type HTMLAttributes } from 'vue'
 import { navigationMenuTriggerStyle } from '.'
 
-const props = defineProps<NavigationMenuTriggerProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<
+  NavigationMenuTriggerProps & { class?: HTMLAttributes['class'] }
+>()
 
 const delegatedProps = computed(() => {
   const { class: _, ...delegated } = props

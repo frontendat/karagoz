@@ -1,11 +1,11 @@
 {
   "name": "example-app",
   "type": "module",
+  "scripts": {
+    "start": "nodemon --watch './' -e js,html,css server.js"
+  },
   "dependencies": {
     "express": "latest",
     "nodemon": "latest"
-  },
-  "scripts": {
-    "start": "nodemon --watch './' -e js,html,css server.js"
   }
 }

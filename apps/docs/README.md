@@ -6,7 +6,7 @@ To view the documentation, please head to [karagoz.dev](https://karagoz.dev).
 
 ## WebContainer Specific Configuration
 
-To be able to work with WebContainer locally, crossOriginIsolated must enabled in the browser. 
+To be able to work with WebContainer locally, crossOriginIsolated must enabled in the browser.
 For that to happen, the following is needed:
 
 Generate a certificate:
@@ -25,15 +25,15 @@ export default defineNuxtConfig({
   devServer: {
     https: import.meta.dev
       ? {
-        key: fs.readFileSync(
-          path.resolve(__dirname, 'localhost.key'),
-          'utf-8',
-        ),
-        cert: fs.readFileSync(
-          path.resolve(__dirname, 'localhost.crt'),
-          'utf-8',
-        ),
-      }
+          key: fs.readFileSync(
+            path.resolve(__dirname, 'localhost.key'),
+            'utf-8',
+          ),
+          cert: fs.readFileSync(
+            path.resolve(__dirname, 'localhost.crt'),
+            'utf-8',
+          ),
+        }
       : {},
   },
 })
