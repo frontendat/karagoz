@@ -100,9 +100,6 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    output: {
-      dir: 'dist',
-    },
     cloudflare: {
       deployConfig: true,
       nodeCompat: true,

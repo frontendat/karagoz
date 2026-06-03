@@ -8,7 +8,7 @@
   },
   "type": "module",
   "scripts": {
-    "build": "NODE_OPTIONS=--max-old-space-size=4096 nuxt build",
+    "build": "NODE_OPTIONS=--max-old-space-size=4096 nuxt build && mkdir -p dist && cp -r .output/. dist/",
     "dev": "NODE_OPTIONS=--max-old-space-size=4096 nuxt dev",
     "generate": "NODE_OPTIONS=--max-old-space-size=4096 nuxt generate",
     "preview": "NODE_OPTIONS=--max-old-space-size=4096 nuxt preview",
