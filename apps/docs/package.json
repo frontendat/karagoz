@@ -17,7 +17,7 @@
     "lint:fix": "oxlint --fix .",
     "fmt": "oxfmt .",
     "fmt:check": "oxfmt --check .",
-    "debug": "NODE_OPTIONS=--max-old-space-size=4096 pnpm postinstall && NODE_OPTIONS=--max-old-space-size=4096 nuxt build && nuxthub preview",
+    "debug": "pnpm postinstall && nuxt build && nuxthub preview",
     "deploy": "NODE_OPTIONS=--max-old-space-size=4096 nuxthub deploy"
   },
   "dependencies": {
