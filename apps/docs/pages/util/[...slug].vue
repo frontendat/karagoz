@@ -13,7 +13,7 @@ const { data: page, status } = await useAsyncData(route.path, () => {
 
 <template>
   <ContentRenderer v-if="page" :value="page" />
-  <div v-else-if="status === 'success'" class="container">
+  <div v-else-if="status === 'success'" class="container mx-auto">
     <div class="mx-auto py-6 lg:py-8 prose dark:prose-invert">
       <DocsNotFound />
     </div>

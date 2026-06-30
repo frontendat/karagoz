@@ -4,7 +4,7 @@ import DefaultLayout from '~/layouts/default.vue'
 
 <template>
   <DefaultLayout>
-    <main class="container">
+    <main class="container mx-auto">
       <div class="mx-auto py-6 lg:py-8 prose dark:prose-invert">
         <slot></slot>
       </div>
