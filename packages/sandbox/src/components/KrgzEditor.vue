@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { LanguageDescription } from '@codemirror/language'
 import { languages } from '@codemirror/language-data'
-import { Extension } from '@codemirror/state'
+import { EditorState, Extension } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { computedAsync, useDark, useDebounceFn } from '@vueuse/core'
 import { computed, ref, shallowRef, watch } from 'vue'
@@ -88,7 +88,13 @@ const extensions = computed(() =>
 
 // Codemirror EditorView instance ref
 const view = shallowRef<EditorView>()
-const handleReady = ({ view: editorView }: { view: EditorView }) => {
+const handleReady = ({
+  view: editorView,
+}: {
+  view: EditorView
+  state: EditorState
+  container: HTMLDivElement
+}) => {
   view.value = editorView
 }
 </script>
