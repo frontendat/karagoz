@@ -7,7 +7,7 @@ const year = new Date().getFullYear()
 <template>
   <footer class="py-6 md:px-8 md:py-0">
     <div
-      class="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row"
+      class="container flex flex-col items-center justify-center gap-4 mx-auto md:h-24 md:flex-row"
     >
       <div class="text-center text-sm leading-loose text-muted-foreground">
         <i18n-t keypath="layouts.default.footer.licenseText" tag="span">

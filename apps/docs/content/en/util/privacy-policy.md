@@ -6,7 +6,6 @@ Our website is committed to respecting your privacy and aims to provide a transp
 
 * **First-Party Cookies:** We do not set any first-party cookies on your device.
 * **Third-Party Cookies:** Our site integrates technologies that may utilize cookies:
-  * **Vercel Web Analytics:** Used to ensure uninterrupted operation of this site.
   * **WebContainer API:** This technology may require cookies to enable certain functionalities, such as Service 
     Workers. Depending on your browser settings, you might need to permit cookies from the following domains:
     * developer.stackblitz.com
