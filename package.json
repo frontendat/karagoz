@@ -23,6 +23,7 @@
     "@codemirror/language-data": "^6.5.1",
     "@codemirror/state": "^6.5.2",
     "@codemirror/theme-one-dark": "^6.1.2",
+    "@codemirror/view": "^6.0.0",
     "@vueuse/core": "^13.0.0",
     "@webcontainer/api": "^1.5.1",
     "@xterm/addon-fit": "^0.10.0",
@@ -61,7 +62,7 @@
     "vue-docgen-cli": "^4.79.0",
     "vue-tsc": "^2.0.6"
   },
-  "packageManager": "pnpm@8.6.6",
+  "packageManager": "pnpm@10.34.4+sha512.8768be55200ae3f2226b6527fcca2687e14bc4e5f12d7721a0f25da3df47915177058648db4177baf348120fa0ba2752d8d8d93f6beaf1fe64ae18da8de961af",
   "pnpm": {
     "overrides": {
       "simple-git": ">=3.32.3",

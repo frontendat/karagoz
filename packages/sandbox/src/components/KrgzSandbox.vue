@@ -90,10 +90,10 @@ defineEmits<{
 }>()
 
 const availablePanels = defineModel<Panel[]>('availablePanels', {
-  default: ['code', 'processes', 'result', 'terminal'],
+  default: () => ['code', 'processes', 'result', 'terminal'] as Panel[],
 })
 const shownPanels = defineModel<Panel[]>('shownPanels', {
-  default: ['code', 'result'],
+  default: () => ['code', 'result'] as Panel[],
 })
 
 const { t } = useI18n()

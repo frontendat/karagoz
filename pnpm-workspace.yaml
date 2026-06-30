@@ -1,3 +1,22 @@
 packages:
   - ./apps/*
   - ./packages/*
+
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - better-sqlite3
+  - esbuild
+  - nx
+  - sharp
+  - vue-demi
+  - workerd
+
+blockExoticSubdeps: true
+
+minimumReleaseAge: 1440
+
+minimumReleaseAgeExclude:
+  - '@cloudflare/*'
+  - '@oxlint/*'
+  - '@tailwindcss/*'
+  - oxlint

@@ -2,8 +2,8 @@
 import { LanguageDescription } from '@codemirror/language'
 import { languages } from '@codemirror/language-data'
 import { EditorState, Extension } from '@codemirror/state'
+import { EditorView } from '@codemirror/view'
 import { computedAsync, useDark, useDebounceFn } from '@vueuse/core'
-import { EditorView } from 'codemirror'
 import { computed, ref, shallowRef, watch } from 'vue'
 import { Codemirror } from 'vue-codemirror'
 
@@ -88,12 +88,14 @@ const extensions = computed(() =>
 
 // Codemirror EditorView instance ref
 const view = shallowRef<EditorView>()
-const handleReady = (payload: {
+const handleReady = ({
+  view: editorView,
+}: {
   view: EditorView
   state: EditorState
   container: HTMLDivElement
 }) => {
-  view.value = payload.view
+  view.value = editorView
 }
 </script>
 
