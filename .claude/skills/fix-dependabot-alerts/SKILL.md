@@ -90,6 +90,8 @@ If multiple CVEs affect the same package, ensure the patched version addresses a
 
 ## Step 6: Commit the Changes
 
+If the `main` branch is checked out, check out a new branch based on `main` with the prefix `claude-dependabot/` followed by a descriptive name for the change.
+
 After verification passes, commit with a descriptive message:
 ```
 Fix Dependabot security vulnerability in <package-name>
