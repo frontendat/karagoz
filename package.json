@@ -61,5 +61,10 @@
     "vue-docgen-cli": "^4.79.0",
     "vue-tsc": "^2.0.6"
   },
-  "packageManager": "pnpm@8.6.6"
+  "packageManager": "pnpm@8.6.6",
+  "pnpm": {
+    "overrides": {
+      "simple-git": ">=3.32.3"
+    }
+  }
 }
