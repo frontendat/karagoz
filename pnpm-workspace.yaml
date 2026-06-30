@@ -12,4 +12,10 @@ onlyBuiltDependencies:
 
 blockExoticSubdeps: true
 
-minimumReleaseAge: 10080
+minimumReleaseAge: 1440
+
+minimumReleaseAgeExclude:
+  - '@cloudflare/*'
+  - '@oxlint/*'
+  - '@tailwindcss/*'
+  - oxlint
