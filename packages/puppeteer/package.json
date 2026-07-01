@@ -58,6 +58,6 @@
     "codemirror": "^6.0.1",
     "tailwindcss": "^4",
     "vue-codemirror": "^6.1.1",
-    "vue-markdown-render": "^2.2.1"
+    "vue-markdown-render": "^2.3.1"
   }
 }

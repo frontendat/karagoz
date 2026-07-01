@@ -19,7 +19,7 @@ export default defineConfig({
         defineModel: true,
       },
     }),
-    dts({ insertTypesEntry: true, rollupTypes: true }),
+    dts({ bundleTypes: true }),
   ],
   resolve: {
     alias: {
