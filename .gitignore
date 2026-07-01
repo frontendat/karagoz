@@ -46,3 +46,5 @@ Thumbs.db
 .nx/workspace-data
 # Node compile cache
 node-compile-cache
+
+apps/docs/.data
