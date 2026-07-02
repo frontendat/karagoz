@@ -61,7 +61,7 @@ export const highlightField = StateField.define<DecorationSet>({
 
 const highlightTheme = EditorView.baseTheme({
   '.krgz-cm-highlight-line': {
-    backgroundColor: 'hsl(var(--accent) / 40%)',
+    backgroundColor: 'var(--krgz-cm-line-highlight-color)',
   },
 })
 

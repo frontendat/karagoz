@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import '@karagoz/shared/dist/karagoz-shared.css'
 
+import { Button } from '@karagoz/shared'
 import { FileSystemTree } from '@webcontainer/api'
 import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -114,6 +115,7 @@ const { boot, isBooting } = useSandboxBoot()
 provideWebContainer(boot)
 
 const sandbox = useSandbox()
+const buttonsDisabled = ref(true)
 
 onMounted(async () => {
   // Ensure injected promise has been resolved
@@ -123,6 +125,7 @@ onMounted(async () => {
   await sandbox.bootstrap()
   sandbox.editorTabs.open('./public/script.js')
   sandbox.editorTabs.open('./public/index.html')
+  buttonsDisabled.value = false
 })
 
 const onSolveClick = async () => {
@@ -144,11 +147,57 @@ const onSolveClick = async () => {
 </script>
 
 <template>
-  <KrgzSandbox
-    :booting="isBooting"
-    multi-panel-from="3xl"
-    @solve="onSolveClick()"
-  />
+  <div class="mt-8 mx-8">
+    <Button
+      :disabled="buttonsDisabled"
+      size="xs"
+      variant="secondary"
+      @click="sandbox.editorViews.highlightLines(6)"
+      >Highlight line 6</Button
+    >
+    <Button
+      :disabled="buttonsDisabled"
+      size="xs"
+      variant="secondary"
+      @click="sandbox.editorViews.highlightLines([11, 13])"
+      >Highlight lines 11-13</Button
+    >
+    <Button
+      :disabled="buttonsDisabled"
+      size="xs"
+      variant="secondary"
+      @click="sandbox.editorViews.highlightLines([5, 7], './public/style.css')"
+      >Highlight style.css lines 5-7</Button
+    >
+    <Button
+      :disabled="buttonsDisabled"
+      size="xs"
+      variant="secondary"
+      @click="sandbox.editorViews.scrollToLine(11)"
+      >Scroll to line 11</Button
+    >
+    <Button
+      :disabled="buttonsDisabled"
+      size="xs"
+      variant="secondary"
+      @click="sandbox.editorViews.clearHighlightedLines()"
+      >Clear current tab's highlights</Button
+    >
+    <Button
+      :disabled="buttonsDisabled"
+      size="xs"
+      variant="secondary"
+      @click="sandbox.editorViews.clearAllHighlightedLines()"
+      >Clear all highlights</Button
+    >
+  </div>
+  <div class="border-4 border-dashed flex-1 m-8">
+    <KrgzSandbox
+      :booting="isBooting"
+      multi-panel-from="3xl"
+      @solve="onSolveClick()"
+    />
+  </div>
 </template>
 
 <style>
@@ -158,6 +207,8 @@ body {
 }
 
 #app {
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 </style>

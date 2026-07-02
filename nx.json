@@ -26,7 +26,6 @@
       "cache": true
     },
     "docs": {
-      "dependsOn": ["build"],
       "outputs": ["{projectRoot}/docs/.generated-docs"],
       "cache": true
     },
