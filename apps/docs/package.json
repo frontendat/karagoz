@@ -8,7 +8,7 @@
   },
   "type": "module",
   "scripts": {
-    "build": "NODE_OPTIONS=--max-old-space-size=3584 nuxt build",
+    "build": "pnpm --filter @karagoz/sandbox run docs && NODE_OPTIONS=--max-old-space-size=3584 nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
