@@ -1,38 +1,60 @@
+import { EditorSelection } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { until } from '@vueuse/core'
 import { nextTick, shallowReactive } from 'vue'
 
+import { HighlightLines } from '../types'
 import {
   addHighlightRange,
   clearHighlightRanges,
 } from '../utils/codemirrorHighlight.ts'
 import { useSandboxEditorTabs } from './useSandboxEditorTabs.ts'
-import { HighlightLines } from '../types'
 
 /**
  * Registry of live CodeMirror `EditorView` instances, keyed by file path, plus methods to
- * highlight and scroll to lines in those editors. An editor tab can be mounted (and thus
- * registered here) without being the currently focused tab, since `KrgzEditorTabs` keeps all open
- * editors alive and toggles their visibility.
+ * highlight and go to lines in those editors. An editor tab can be mounted (and thus registered
+ * here) without being the currently focused tab, since `KrgzEditorTabs` keeps all open editors
+ * alive and toggles their visibility.
  */
 export const useSandboxEditorViews = (
   editorTabs: ReturnType<typeof useSandboxEditorTabs>,
 ) => {
   const views: Map<string, EditorView> = shallowReactive(new Map())
+  // Highlighted ranges requested per path, kept around after a tab closes so they can be
+  // re-applied if the same file is opened again.
+  const highlighted = new Map<string, HighlightLines[]>()
+
+  const lineRange = (
+    doc: EditorView['state']['doc'],
+    lines: HighlightLines,
+  ) => {
+    const [start, end] = Array.isArray(lines) ? lines : [lines, lines]
+    const clamp = (line: number) => Math.min(Math.max(line, 1), doc.lines)
+    return {
+      from: doc.line(clamp(start)).from,
+      to: doc.line(clamp(end)).to,
+    }
+  }
 
   /**
    * Register a file path's `EditorView` instance. Called internally by `KrgzEditor` once
-   * CodeMirror is ready.
+   * CodeMirror is ready. Re-applies any highlights previously requested for this path.
    * @param path
    * @param view
    */
   const registerView = (path: string, view: EditorView) => {
     views.set(path, view)
+    for (const lines of highlighted.get(path) ?? []) {
+      view.dispatch({
+        effects: addHighlightRange.of(lineRange(view.state.doc, lines)),
+      })
+    }
   }
 
   /**
    * Unregister a file path's `EditorView` instance. Called internally by `KrgzEditor` when the
-   * editor tab is closed.
+   * editor tab is closed. Previously highlighted lines are retained and restored if the file is
+   * opened again.
    * @param path
    */
   const unregisterView = (path: string) => {
@@ -54,28 +76,18 @@ export const useSandboxEditorViews = (
     return views.get(path)
   }
 
-  const lineRange = (
-    doc: EditorView['state']['doc'],
-    lines: HighlightLines,
-  ) => {
-    const [start, end] = Array.isArray(lines) ? lines : [lines, lines]
-    const clamp = (line: number) => Math.min(Math.max(line, 1), doc.lines)
-    return {
-      from: doc.line(clamp(start)).from,
-      to: doc.line(clamp(end)).to,
-    }
-  }
-
   /**
    * Highlight one or more lines in an editor. Repeated calls are additive, so multiple disjoint
    * ranges can be highlighted at the same time. If `path` refers to a file that isn't open yet,
-   * it is opened and focused first.
+   * it is opened and focused first. Highlights are retained and restored if the file is closed
+   * and reopened.
    * @param lines a single line number, or a `[from, to]` inclusive range.
    * @param path file path of the editor to highlight in. Defaults to the currently focused tab.
    */
   const highlightLines = async (lines: HighlightLines, path?: string) => {
     const targetPath = resolveTargetPath(path)
     if (!targetPath) return
+    highlighted.set(targetPath, [...(highlighted.get(targetPath) ?? []), lines])
     const view = await getReadyView(targetPath)
     if (!view) return
     view.dispatch({
@@ -84,34 +96,42 @@ export const useSandboxEditorViews = (
   }
 
   /**
-   * Scroll a line into view, centering it vertically. If `path` refers to a file that isn't open
-   * yet, it is opened and focused first.
-   * @param line line number to scroll into view.
-   * @param path file path of the editor to scroll. Defaults to the currently focused tab.
+   * Go to a line: scroll it into view (centered vertically), place the cursor on it and focus
+   * the editor. If `path` refers to a file that isn't open yet, it is opened and focused first.
+   * @param line line number to go to.
+   * @param path file path of the editor to go to. Defaults to the currently focused tab.
    */
-  const scrollToLine = async (line: number, path?: string) => {
+  const goToLine = async (line: number, path?: string) => {
     const targetPath = resolveTargetPath(path)
     if (!targetPath) return
     const view = await getReadyView(targetPath)
     if (!view) return
     const { from } = lineRange(view.state.doc, line)
-    view.dispatch({ effects: EditorView.scrollIntoView(from, { y: 'center' }) })
+    view.dispatch({
+      selection: EditorSelection.cursor(from),
+      effects: EditorView.scrollIntoView(from, { y: 'center' }),
+    })
+    view.focus()
   }
 
   /**
-   * Clear all highlighted lines in one editor. No-op if `path` isn't currently open.
+   * Clear all highlighted lines in one editor, including ones retained for when it's reopened.
+   * No-op if `path` isn't currently open.
    * @param path file path of the editor to clear. Defaults to the currently focused tab.
    */
   const clearHighlightedLines = (path?: string) => {
     const targetPath = path ?? editorTabs.current.value?.id
-    const view = targetPath ? views.get(targetPath) : undefined
-    view?.dispatch({ effects: clearHighlightRanges.of(null) })
+    if (!targetPath) return
+    highlighted.delete(targetPath)
+    views.get(targetPath)?.dispatch({ effects: clearHighlightRanges.of(null) })
   }
 
   /**
-   * Clear highlighted lines across every open editor, not just one path.
+   * Clear highlighted lines across every open editor, not just one path, including ones retained
+   * for when a tab is reopened.
    */
   const clearAllHighlightedLines = () => {
+    highlighted.clear()
     for (const view of views.values()) {
       view.dispatch({ effects: clearHighlightRanges.of(null) })
     }
@@ -121,7 +141,7 @@ export const useSandboxEditorViews = (
     registerView,
     unregisterView,
     highlightLines,
-    scrollToLine,
+    goToLine,
     clearHighlightedLines,
     clearAllHighlightedLines,
   }

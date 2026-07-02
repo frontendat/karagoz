@@ -208,7 +208,7 @@ function useSandboxInternal() {
      */
     editorTabs,
     /**
-     * Highlight and scroll to lines in the editor. See `highlightLines`, `scrollToLine`,
+     * Highlight and go to lines in the editor. See `highlightLines`, `goToLine`,
      * `clearHighlightedLines` and `clearAllHighlightedLines`.
      */
     editorViews,

@@ -63,8 +63,22 @@ onBeforeUnmount(() => sandbox.container.value?.teardown())
         :disabled="buttonsDisabled"
         size="xs"
         variant="secondary"
-        @click="sandbox.editorViews.scrollToLine(11)"
-        >Scroll to line 11</Button
+        @click="sandbox.editorViews.goToLine(11)"
+        >Go to line 11</Button
+      >
+      <Button
+        :disabled="buttonsDisabled"
+        size="xs"
+        variant="secondary"
+        @click="sandbox.editorTabs.close('./server.js')"
+        >Close server.js</Button
+      >
+      <Button
+        :disabled="buttonsDisabled"
+        size="xs"
+        variant="secondary"
+        @click="sandbox.editorTabs.open('./server.js')"
+        >Reopen server.js</Button
       >
       <Button
         :disabled="buttonsDisabled"

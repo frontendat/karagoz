@@ -26,6 +26,10 @@ export default defineConfig({
     },
   },
   build: {
+    // Ship readable output: this is a library that consuming apps bundle (and minify) themselves.
+    // Shipping pre-minified code risks short-name collisions (e.g. `kv`) with names independently
+    // minified elsewhere in a consumer's own build.
+    minify: false,
     lib: {
       // src/indext.ts is where we have exported the component(s)
       entry: resolve(__dirname, 'src/index.ts'),
