@@ -4,11 +4,12 @@ import { languages } from '@codemirror/language-data'
 import { EditorState, Extension } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { computedAsync, useDark, useDebounceFn } from '@vueuse/core'
-import { computed, ref, shallowRef, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import { Codemirror } from 'vue-codemirror'
 
 import { useSandbox } from '../composables'
 import { codemirrorDefaultTheme } from '../utils/codemirror.ts'
+import { highlightExtension } from '../utils/codemirrorHighlight.ts'
 
 /**
  * Renders CodeMirror to edit the currently focused file in the editor tabs.
@@ -83,7 +84,9 @@ const theme = computed(
 )
 
 const extensions = computed(() =>
-  [langPack.value, ...theme.value].filter((ext): ext is Extension => !!ext),
+  [langPack.value, ...theme.value, ...highlightExtension].filter(
+    (ext): ext is Extension => !!ext,
+  ),
 )
 
 // Codemirror EditorView instance ref
@@ -96,7 +99,12 @@ const handleReady = ({
   container: HTMLDivElement
 }) => {
   view.value = editorView
+  if (props.path) sandbox.editorViews.registerView(props.path, editorView)
 }
+
+onBeforeUnmount(() => {
+  if (props.path) sandbox.editorViews.unregisterView(props.path)
+})
 </script>
 
 <template>

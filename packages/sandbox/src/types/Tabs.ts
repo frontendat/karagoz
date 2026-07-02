@@ -23,6 +23,11 @@ export type Tab<T = undefined> = {
 }
 
 /**
+ * A single line number, or a `[from, to]` inclusive range of line numbers.
+ */
+export type HighlightLines = number | [number, number]
+
+/**
  * Context information for an editor tab.
  */
 export type EditorTabContext = {

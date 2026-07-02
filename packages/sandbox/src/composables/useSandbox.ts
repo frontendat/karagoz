@@ -6,6 +6,7 @@ import type { SandboxOptions } from '../types/Sandbox.ts'
 import { strToCmd } from '../utils/strToCmd.ts'
 import { injectWebContainer } from '../utils/WebContainer.ts'
 import { useSandboxEditorTabs } from './useSandboxEditorTabs.ts'
+import { useSandboxEditorViews } from './useSandboxEditorViews.ts'
 import { useSandboxExplorer } from './useSandboxExplorer.ts'
 import { useSandboxProcessTabs } from './useSandboxProcessTabs.ts'
 
@@ -90,6 +91,7 @@ function useSandboxInternal() {
 
   const explorer = useSandboxExplorer(options)
   const editorTabs = useSandboxEditorTabs(options)
+  const editorViews = useSandboxEditorViews(editorTabs)
   const processTabs = useSandboxProcessTabs(options)
 
   /**
@@ -205,6 +207,11 @@ function useSandboxInternal() {
      * Editor tabs manager. Responsible for opening, focusing and closing editor tabs.
      */
     editorTabs,
+    /**
+     * Highlight and scroll to lines in the editor. See `highlightLines`, `scrollToLine`,
+     * `clearHighlightedLines` and `clearAllHighlightedLines`.
+     */
+    editorViews,
     /**
      * Provides matchers for different purposes.
      * The matchers use [ignore](https://www.npmjs.com/package/ignore) to determine whether a give path matches one
