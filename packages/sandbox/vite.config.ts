@@ -41,6 +41,7 @@ export default defineConfig({
         '@codemirror/language-data',
         '@codemirror/state',
         '@codemirror/theme-one-dark',
+        '@codemirror/view',
         '@webcontainer/api',
         'codemirror',
         'vue',
