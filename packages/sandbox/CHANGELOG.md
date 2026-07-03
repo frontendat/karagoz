@@ -1,5 +1,16 @@
 # @karagoz/sandbox
 
+## 0.3.0
+
+### Minor Changes
+
+- Sweeping dependency updates, bug fixes and new features under editorViews.
+
+### Patch Changes
+
+- Updated dependencies
+  - @karagoz/shared@0.3.0
+
 ## 0.2.1
 
 ### Patch Changes
