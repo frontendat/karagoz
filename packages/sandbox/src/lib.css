@@ -1,3 +1,18 @@
+@theme inline {
+  --krgz-cm-line-highlight-color-light: var(--color-yellow-100);
+  --krgz-cm-line-highlight-color-dark: var(--color-olive-900);
+}
+
+@layer base {
+  :root {
+    --krgz-cm-line-highlight-color: var(--krgz-cm-line-highlight-color-light);
+  }
+
+  .dark {
+    --krgz-cm-line-highlight-color: var(--krgz-cm-line-highlight-color-dark);
+  }
+}
+
 @layer components {
   .krgz-sandbox :is(*, *::after, *::before) {
     border-color: hsl(var(--border));
