@@ -3,6 +3,7 @@ import { type IFSWatcher, reloadPreview } from '@webcontainer/api'
 import { computed, reactive, readonly, ref } from 'vue'
 
 import type { SandboxOptions } from '../types/Sandbox.ts'
+import { handleWebContainerError } from '../utils/handleWebContainerError.ts'
 import { strToCmd } from '../utils/strToCmd.ts'
 import { injectWebContainer } from '../utils/WebContainer.ts'
 import { useSandboxEditorTabs } from './useSandboxEditorTabs.ts'
@@ -172,33 +173,7 @@ function useSandboxInternal() {
         window.addEventListener('hashchange', () => {
           window.parent.postMessage({ type: 'navigation', href: window.location.href}, '*');
         });
-        (function () {
-          const serialize = (arg) => {
-            if (typeof arg === 'string') return arg;
-            if (arg instanceof Error) return arg.stack || arg.message;
-            try {
-              return JSON.stringify(arg);
-            } catch (e) {
-              return String(arg);
-            }
-          };
-          ['log', 'info', 'warn', 'error', 'debug'].forEach((level) => {
-            const original = console[level];
-            console[level] = function (...args) {
-              try {
-                window.parent.postMessage({
-                  type: 'console',
-                  level,
-                  args: args.map(serialize),
-                }, '*');
-              } catch (e) {}
-              original.apply(console, args);
-            };
-          });
-          window.addEventListener('error', (event) => {
-            window.parent.postMessage({ type: 'console', level: 'error', args: [event.message] }, '*');
-          });
-        })();
+        ${handleWebContainerError}
       `)
       // Open terminal first to avoid waiting for other processes.
       await options.process.starters?.terminal?.()
