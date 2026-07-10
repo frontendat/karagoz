@@ -1,5 +1,16 @@
 # @karagoz/sandbox
 
+## 0.4.0
+
+### Minor Changes
+
+- Added sandbox console subpanel
+
+### Patch Changes
+
+- Updated dependencies
+  - @karagoz/shared@0.4.0
+
 ## 0.3.0
 
 ### Minor Changes

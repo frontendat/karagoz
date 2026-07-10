@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { Button, LoadingIndicator } from '@karagoz/shared'
-import { Eye, RotateCw } from 'lucide-vue-next'
+import {
+  Button,
+  LoadingIndicator,
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@karagoz/shared'
+import { Eye, Logs, RotateCw } from 'lucide-vue-next'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useSandbox } from '../composables'
+import type { ConsoleLogEntry } from '../types'
+import KrgzPreviewConsole from './KrgzPreviewConsole.vue'
 import KrgzTabIcon from './KrgzTabIcon.vue'
 
 /**
@@ -27,6 +35,16 @@ const currentUrlDisplay = computed(
     ) ?? '',
 )
 
+const consoleLogs = ref<ConsoleLogEntry[]>([])
+
+const onConsoleToggleClick = () => {
+  if (sandbox.preview.consoleShown.value) {
+    sandbox.preview.hideConsole()
+  } else {
+    sandbox.preview.showConsole()
+  }
+}
+
 const onPreviewReady = () => (previewReady.value = true)
 
 const onMessage = (message: MessageEvent) => {
@@ -34,11 +52,26 @@ const onMessage = (message: MessageEvent) => {
   // Set current preview frame URL to be displayed in the address bar.
   if (message.data?.type === 'navigation' && message.data?.href) {
     currentUrl.value = message.data.href
+    // The `initial` flag is only set for the message sent as the very first thing a freshly loaded
+    // page does, before any of that page's own code (and therefore console calls) can run. Clearing
+    // here (rather than on the iframe's `load` event) avoids a race where synchronous console calls
+    // made while the page loads would be logged before `load` fires and then wiped out by it.
+    if (message.data?.initial) {
+      consoleLogs.value = []
+    }
+  }
+  // Collect log messages to be displayed in the console panel.
+  if (message.data?.type === 'console') {
+    consoleLogs.value = [
+      ...consoleLogs.value,
+      { args: message.data.args ?? [], level: message.data.level ?? 'log' },
+    ]
   }
 }
 
 const onReloadClick = () => {
   if (previewFrame.value && currentUrl.value) {
+    consoleLogs.value = []
     previewFrame.value.src = 'about:blank'
     previewFrame.value.src = currentUrl.value
   }
@@ -58,37 +91,65 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="h-full relative w-full">
-    <div class="flex flex-col h-full">
-      <div
-        v-if="!sandbox.preview.suppressAddressBar.value"
-        class="bg-muted flex"
+    <ResizablePanelGroup
+      auto-save-id="krgz-preview"
+      class="h-full"
+      direction="vertical"
+    >
+      <ResizablePanel
+        :default-size="sandbox.preview.consoleShown.value ? 70 : 100"
       >
-        <div
-          class="flex-grow self-center overflow-ellipsis overflow-hidden p-2 text-xs whitespace-nowrap"
-        >
-          <a
-            class="text-muted-foreground no-underline"
-            :href="currentUrl"
-            dir="ltr"
-            target="_blank"
+        <div class="flex flex-col h-full">
+          <div
+            v-if="!sandbox.preview.suppressAddressBar.value"
+            class="bg-muted flex"
           >
-            {{ currentUrlDisplay }}
-          </a>
+            <div
+              class="flex-grow self-center overflow-ellipsis overflow-hidden p-2 text-xs whitespace-nowrap"
+            >
+              <a
+                class="text-muted-foreground no-underline"
+                :href="currentUrl"
+                dir="ltr"
+                target="_blank"
+              >
+                {{ currentUrlDisplay }}
+              </a>
+            </div>
+            <Button size="sm" variant="ghost" @click="onReloadClick">
+              <KrgzTabIcon
+                class="size-3"
+                :icon="RotateCw"
+                :tooltip="t('krgz.sandbox.panel.preview.reload')"
+              />
+            </Button>
+            <Button
+              v-if="!sandbox.preview.suppressConsole.value"
+              size="sm"
+              variant="ghost"
+              @click="onConsoleToggleClick"
+            >
+              <KrgzTabIcon
+                class="size-3"
+                :icon="Logs"
+                :tooltip="t('krgz.sandbox.panel.preview.console')"
+              />
+            </Button>
+          </div>
+          <iframe
+            ref="previewFrame"
+            :src="sandbox.preview.url.value"
+            class="flex-grow w-full"
+          ></iframe>
         </div>
-        <Button size="sm" variant="ghost" @click="onReloadClick">
-          <KrgzTabIcon
-            class="size-3"
-            :icon="RotateCw"
-            :tooltip="t('krgz.sandbox.panel.preview.reload')"
-          />
-        </Button>
-      </div>
-      <iframe
-        ref="previewFrame"
-        :src="sandbox.preview.url.value"
-        class="flex-grow w-full"
-      ></iframe>
-    </div>
+      </ResizablePanel>
+      <template v-if="sandbox.preview.consoleShown.value">
+        <ResizableHandle />
+        <ResizablePanel :default-size="30">
+          <KrgzPreviewConsole :logs="consoleLogs" @clear="consoleLogs = []" />
+        </ResizablePanel>
+      </template>
+    </ResizablePanelGroup>
     <LoadingIndicator
       v-if="!previewReady"
       class="absolute inset-0"
