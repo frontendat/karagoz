@@ -172,21 +172,26 @@ function useSandboxInternal() {
           window.parent.postMessage({ type: 'navigation', href: window.location.href}, '*');
         });
         (function () {
+          const serialize = (arg) => {
+            if (typeof arg === 'string') return arg;
+            if (arg instanceof Error) return arg.stack || arg.message;
+            try {
+              return JSON.stringify(arg);
+            } catch (e) {
+              return String(arg);
+            }
+          };
           ['log', 'info', 'warn', 'error', 'debug'].forEach((level) => {
             const original = console[level];
-            console[level] = (...args) => {
-              original(...args);
-              window.parent.postMessage({
-                type: 'console',
-                level,
-                args: args.map((arg) => {
-                  try {
-                    return typeof arg === 'string' ? arg : JSON.stringify(arg);
-                  } catch (e) {
-                    return String(arg);
-                  }
-                }),
-              }, '*');
+            console[level] = function (...args) {
+              try {
+                window.parent.postMessage({
+                  type: 'console',
+                  level,
+                  args: args.map(serialize),
+                }, '*');
+              } catch (e) {}
+              original.apply(console, args);
             };
           });
           window.addEventListener('error', (event) => {

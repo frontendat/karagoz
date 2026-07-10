@@ -103,6 +103,13 @@ onBeforeUnmount(() => {
                 {{ currentUrlDisplay }}
               </a>
             </div>
+            <Button size="sm" variant="ghost" @click="onReloadClick">
+              <KrgzTabIcon
+                class="size-3"
+                :icon="RotateCw"
+                :tooltip="t('krgz.sandbox.panel.preview.reload')"
+              />
+            </Button>
             <Button
               size="sm"
               variant="ghost"
@@ -112,13 +119,6 @@ onBeforeUnmount(() => {
                 class="size-3"
                 :icon="Logs"
                 :tooltip="t('krgz.sandbox.panel.preview.console')"
-              />
-            </Button>
-            <Button size="sm" variant="ghost" @click="onReloadClick">
-              <KrgzTabIcon
-                class="size-3"
-                :icon="RotateCw"
-                :tooltip="t('krgz.sandbox.panel.preview.reload')"
               />
             </Button>
           </div>

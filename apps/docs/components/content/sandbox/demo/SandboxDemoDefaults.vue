@@ -76,9 +76,13 @@ const indexHtml = `
  */
 const scriptJs = `
 function doSomething() {
+console.log('Fetching message...')
 fetch('/api/message')
 .then((response) => response.text())
-.then((data) => (document.querySelector('.response').innerHTML = data))
+.then((data) => {
+  console.log('Received message:', data)
+  document.querySelector('.response').innerHTML = data
+})
 }
 `
 
