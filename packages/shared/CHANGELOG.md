@@ -1,5 +1,11 @@
 # @karagoz/shared
 
+## 0.4.0
+
+### Minor Changes
+
+- Added sandbox console subpanel
+
 ## 0.3.0
 
 ### Minor Changes
