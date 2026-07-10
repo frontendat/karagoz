@@ -167,7 +167,7 @@ function useSandboxInternal() {
       // to be shown in the address bar of the preview panel, and forwards console output to the parent
       // window to be shown in the console panel.
       await container.value?.setPreviewScript(`
-        window.parent.postMessage({ type: 'navigation', href: window.location.href}, '*');
+        window.parent.postMessage({ type: 'navigation', href: window.location.href, initial: true}, '*');
         window.addEventListener('hashchange', () => {
           window.parent.postMessage({ type: 'navigation', href: window.location.href}, '*');
         });

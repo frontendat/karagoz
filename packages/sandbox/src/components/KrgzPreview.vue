@@ -38,17 +38,20 @@ const currentUrlDisplay = computed(
 const showConsole = ref(false)
 const consoleLogs = ref<ConsoleLogEntry[]>([])
 
-const onPreviewReady = () => {
-  previewReady.value = true
-  // A real page load (as opposed to a hash change) supersedes previously logged messages.
-  consoleLogs.value = []
-}
+const onPreviewReady = () => (previewReady.value = true)
 
 const onMessage = (message: MessageEvent) => {
   if (message.origin !== sandbox.preview.url.value) return
   // Set current preview frame URL to be displayed in the address bar.
   if (message.data?.type === 'navigation' && message.data?.href) {
     currentUrl.value = message.data.href
+    // The `initial` flag is only set for the message sent as the very first thing a freshly loaded
+    // page does, before any of that page's own code (and therefore console calls) can run. Clearing
+    // here (rather than on the iframe's `load` event) avoids a race where synchronous console calls
+    // made while the page loads would be logged before `load` fires and then wiped out by it.
+    if (message.data?.initial) {
+      consoleLogs.value = []
+    }
   }
   // Collect log messages to be displayed in the console panel.
   if (message.data?.type === 'console') {
@@ -61,6 +64,7 @@ const onMessage = (message: MessageEvent) => {
 
 const onReloadClick = () => {
   if (previewFrame.value && currentUrl.value) {
+    consoleLogs.value = []
     previewFrame.value.src = 'about:blank'
     previewFrame.value.src = currentUrl.value
   }
