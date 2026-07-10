@@ -35,8 +35,15 @@ const currentUrlDisplay = computed(
     ) ?? '',
 )
 
-const showConsole = ref(false)
 const consoleLogs = ref<ConsoleLogEntry[]>([])
+
+const onConsoleToggleClick = () => {
+  if (sandbox.preview.consoleShown.value) {
+    sandbox.preview.hideConsole()
+  } else {
+    sandbox.preview.showConsole()
+  }
+}
 
 const onPreviewReady = () => (previewReady.value = true)
 
@@ -89,7 +96,9 @@ onBeforeUnmount(() => {
       class="h-full"
       direction="vertical"
     >
-      <ResizablePanel :default-size="showConsole ? 70 : 100">
+      <ResizablePanel
+        :default-size="sandbox.preview.consoleShown.value ? 70 : 100"
+      >
         <div class="flex flex-col h-full">
           <div
             v-if="!sandbox.preview.suppressAddressBar.value"
@@ -115,9 +124,10 @@ onBeforeUnmount(() => {
               />
             </Button>
             <Button
+              v-if="!sandbox.preview.suppressConsole.value"
               size="sm"
               variant="ghost"
-              @click="showConsole = !showConsole"
+              @click="onConsoleToggleClick"
             >
               <KrgzTabIcon
                 class="size-3"
@@ -133,7 +143,7 @@ onBeforeUnmount(() => {
           ></iframe>
         </div>
       </ResizablePanel>
-      <template v-if="showConsole">
+      <template v-if="sandbox.preview.consoleShown.value">
         <ResizableHandle />
         <ResizablePanel :default-size="30">
           <KrgzPreviewConsole :logs="consoleLogs" @clear="consoleLogs = []" />

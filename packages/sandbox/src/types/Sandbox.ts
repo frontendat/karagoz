@@ -59,6 +59,11 @@ export type SandboxOptions = {
      * When true, the address bar in the preview panel will not be shown.
      */
     suppressAddressBar?: boolean
+    /**
+     * When true, the console toggle button in the preview panel will not be shown. The console panel can still
+     * be controlled programmatically through `useSandbox().preview.showConsole()` and `.hideConsole()`.
+     */
+    suppressConsole?: boolean
   }
   /**
    * Preview / terminal related options.

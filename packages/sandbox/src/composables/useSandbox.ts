@@ -19,6 +19,7 @@ function useSandboxInternal() {
   }, null)
   const previewFrame = ref<HTMLIFrameElement>()
   const previewUrl = ref<string>()
+  const previewConsoleShown = ref(false)
   const watchers = ref<{
     reinstall?: IFSWatcher
   }>({})
@@ -249,9 +250,17 @@ function useSandboxInternal() {
     options: readonly(options),
     preview: {
       /**
+       * Computed ref containing a boolean flag. Whether the console panel is currently shown.
+       */
+      consoleShown: computed(() => previewConsoleShown.value),
+      /**
        * A reference to the preview iframe element.
        */
       frame: previewFrame,
+      /**
+       * Hide the console panel.
+       */
+      hideConsole: () => (previewConsoleShown.value = false),
       /**
        * Reload the preview.
        */
@@ -261,9 +270,18 @@ function useSandboxInternal() {
         }
       },
       /**
+       * Show the console panel.
+       */
+      showConsole: () => (previewConsoleShown.value = true),
+      /**
        * Computed ref containing a boolean flag. When true, the address bar in the preview panel will not be shown.
        */
       suppressAddressBar: computed(() => options.preview.suppressAddressBar),
+      /**
+       * Computed ref containing a boolean flag. When true, the console toggle button in the preview panel will
+       * not be shown.
+       */
+      suppressConsole: computed(() => options.preview.suppressConsole),
       /**
        * The preview URL.
        */
