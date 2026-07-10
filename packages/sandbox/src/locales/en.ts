@@ -20,6 +20,8 @@ export const en = {
           readonly: 'Readonly file',
         },
         preview: {
+          clearConsole: 'Clear console',
+          console: 'Console',
           reload: 'Refresh',
         },
         terminals: {

@@ -164,12 +164,35 @@ function useSandboxInternal() {
     processTabs.close(options.process.commands.install)
     if (!watchers.value.reinstall) {
       // This code gets injected into every preview and helps emit the current URL to the parent window
-      // to be shown in the address bar of the preview panel.
+      // to be shown in the address bar of the preview panel, and forwards console output to the parent
+      // window to be shown in the console panel.
       await container.value?.setPreviewScript(`
         window.parent.postMessage({ type: 'navigation', href: window.location.href}, '*');
         window.addEventListener('hashchange', () => {
           window.parent.postMessage({ type: 'navigation', href: window.location.href}, '*');
-        })
+        });
+        (function () {
+          ['log', 'info', 'warn', 'error', 'debug'].forEach((level) => {
+            const original = console[level];
+            console[level] = (...args) => {
+              original(...args);
+              window.parent.postMessage({
+                type: 'console',
+                level,
+                args: args.map((arg) => {
+                  try {
+                    return typeof arg === 'string' ? arg : JSON.stringify(arg);
+                  } catch (e) {
+                    return String(arg);
+                  }
+                }),
+              }, '*');
+            };
+          });
+          window.addEventListener('error', (event) => {
+            window.parent.postMessage({ type: 'console', level: 'error', args: [event.message] }, '*');
+          });
+        })();
       `)
       // Open terminal first to avoid waiting for other processes.
       await options.process.starters?.terminal?.()

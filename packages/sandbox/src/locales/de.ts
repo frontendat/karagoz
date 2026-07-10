@@ -22,6 +22,8 @@ export const de: MessageSchema = {
           readonly: 'Schreibgeschützte Datei',
         },
         preview: {
+          clearConsole: 'Konsole leeren',
+          console: 'Konsole',
           reload: 'Neuladen',
         },
         terminals: {

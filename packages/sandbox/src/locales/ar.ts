@@ -22,6 +22,8 @@ export const ar: MessageSchema = {
           readonly: 'ملف للقراءة فقط',
         },
         preview: {
+          clearConsole: 'مسح وحدة التحكم',
+          console: 'وحدة التحكم',
           reload: 'تحديث',
         },
         terminals: {

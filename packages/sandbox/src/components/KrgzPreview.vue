@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { Button, LoadingIndicator } from '@karagoz/shared'
-import { Eye, RotateCw } from 'lucide-vue-next'
+import {
+  Button,
+  LoadingIndicator,
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@karagoz/shared'
+import { Eye, Logs, RotateCw } from 'lucide-vue-next'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useSandbox } from '../composables'
+import type { ConsoleLogEntry } from '../types'
+import KrgzPreviewConsole from './KrgzPreviewConsole.vue'
 import KrgzTabIcon from './KrgzTabIcon.vue'
 
 /**
@@ -27,13 +35,27 @@ const currentUrlDisplay = computed(
     ) ?? '',
 )
 
-const onPreviewReady = () => (previewReady.value = true)
+const showConsole = ref(false)
+const consoleLogs = ref<ConsoleLogEntry[]>([])
+
+const onPreviewReady = () => {
+  previewReady.value = true
+  // A real page load (as opposed to a hash change) supersedes previously logged messages.
+  consoleLogs.value = []
+}
 
 const onMessage = (message: MessageEvent) => {
   if (message.origin !== sandbox.preview.url.value) return
   // Set current preview frame URL to be displayed in the address bar.
   if (message.data?.type === 'navigation' && message.data?.href) {
     currentUrl.value = message.data.href
+  }
+  // Collect log messages to be displayed in the console panel.
+  if (message.data?.type === 'console') {
+    consoleLogs.value = [
+      ...consoleLogs.value,
+      { args: message.data.args ?? [], level: message.data.level ?? 'log' },
+    ]
   }
 }
 
@@ -58,37 +80,62 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="h-full relative w-full">
-    <div class="flex flex-col h-full">
-      <div
-        v-if="!sandbox.preview.suppressAddressBar.value"
-        class="bg-muted flex"
-      >
-        <div
-          class="flex-grow self-center overflow-ellipsis overflow-hidden p-2 text-xs whitespace-nowrap"
-        >
-          <a
-            class="text-muted-foreground no-underline"
-            :href="currentUrl"
-            dir="ltr"
-            target="_blank"
+    <ResizablePanelGroup
+      auto-save-id="krgz-preview"
+      class="h-full"
+      direction="vertical"
+    >
+      <ResizablePanel :default-size="showConsole ? 70 : 100">
+        <div class="flex flex-col h-full">
+          <div
+            v-if="!sandbox.preview.suppressAddressBar.value"
+            class="bg-muted flex"
           >
-            {{ currentUrlDisplay }}
-          </a>
+            <div
+              class="flex-grow self-center overflow-ellipsis overflow-hidden p-2 text-xs whitespace-nowrap"
+            >
+              <a
+                class="text-muted-foreground no-underline"
+                :href="currentUrl"
+                dir="ltr"
+                target="_blank"
+              >
+                {{ currentUrlDisplay }}
+              </a>
+            </div>
+            <Button
+              size="sm"
+              variant="ghost"
+              @click="showConsole = !showConsole"
+            >
+              <KrgzTabIcon
+                class="size-3"
+                :icon="Logs"
+                :tooltip="t('krgz.sandbox.panel.preview.console')"
+              />
+            </Button>
+            <Button size="sm" variant="ghost" @click="onReloadClick">
+              <KrgzTabIcon
+                class="size-3"
+                :icon="RotateCw"
+                :tooltip="t('krgz.sandbox.panel.preview.reload')"
+              />
+            </Button>
+          </div>
+          <iframe
+            ref="previewFrame"
+            :src="sandbox.preview.url.value"
+            class="flex-grow w-full"
+          ></iframe>
         </div>
-        <Button size="sm" variant="ghost" @click="onReloadClick">
-          <KrgzTabIcon
-            class="size-3"
-            :icon="RotateCw"
-            :tooltip="t('krgz.sandbox.panel.preview.reload')"
-          />
-        </Button>
-      </div>
-      <iframe
-        ref="previewFrame"
-        :src="sandbox.preview.url.value"
-        class="flex-grow w-full"
-      ></iframe>
-    </div>
+      </ResizablePanel>
+      <template v-if="showConsole">
+        <ResizableHandle />
+        <ResizablePanel :default-size="30">
+          <KrgzPreviewConsole :logs="consoleLogs" @clear="consoleLogs = []" />
+        </ResizablePanel>
+      </template>
+    </ResizablePanelGroup>
     <LoadingIndicator
       v-if="!previewReady"
       class="absolute inset-0"
