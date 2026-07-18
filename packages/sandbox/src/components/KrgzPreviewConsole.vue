@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Button } from '@karagoz/shared'
-import { Trash2 } from 'lucide-vue-next'
+import { Minus, Trash2 } from 'lucide-vue-next'
 import { nextTick, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -25,6 +25,10 @@ defineEmits<{
    * Emitted when the clear button is clicked.
    */
   (e: 'clear'): void
+  /**
+   * Emitted when the close button is clicked.
+   */
+  (e: 'close'): void
 }>()
 
 const { t } = useI18n()
@@ -58,6 +62,13 @@ watch(
           class="size-3"
           :icon="Trash2"
           :tooltip="t('krgz.sandbox.panel.preview.clearConsole')"
+        />
+      </Button>
+      <Button size="sm" variant="ghost" @click="$emit('close')">
+        <KrgzTabIcon
+          class="size-3"
+          :icon="Minus"
+          :tooltip="t('krgz.sandbox.general.close')"
         />
       </Button>
     </div>

@@ -146,7 +146,11 @@ onBeforeUnmount(() => {
       <template v-if="sandbox.preview.consoleShown.value">
         <ResizableHandle />
         <ResizablePanel :default-size="30">
-          <KrgzPreviewConsole :logs="consoleLogs" @clear="consoleLogs = []" />
+          <KrgzPreviewConsole
+            :logs="consoleLogs"
+            @clear="consoleLogs = []"
+            @close="sandbox.preview.hideConsole()"
+          />
         </ResizablePanel>
       </template>
     </ResizablePanelGroup>
