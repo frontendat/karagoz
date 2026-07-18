@@ -32,3 +32,17 @@ The sandbox UI is thin — all logic lives in composables under `packages/sandbo
 ## Deployment
 
 Cloudflare Pages via NuxthHub. Deploy with `nx run @karagoz/docs:deploy`.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues (frontendat/karagoz), via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default canonical labels (needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Multi-context — root `CONTEXT-MAP.md` pointing to per-package/app `CONTEXT.md` files. See `docs/agents/domain.md`.
