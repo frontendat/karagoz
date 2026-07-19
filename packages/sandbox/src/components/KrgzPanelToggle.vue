@@ -90,11 +90,20 @@ const variantStyles = {
 } as const
 
 const style = computed(() => variantStyles[props.variant])
+
+/**
+ * The toggle role renders a visible text label next to the icon for the `tab` and `bottom-bar`
+ * variants (see the `label` prop doc). The tooltip would just repeat that label, so it's disabled
+ * whenever the label is already visible.
+ */
+const tooltipDisabled = computed(
+  () => !props.asButton && props.variant !== 'rail',
+)
 </script>
 
 <template>
   <TooltipProvider>
-    <Tooltip :delay-duration="0">
+    <Tooltip :delay-duration="0" :disabled="tooltipDisabled">
       <TooltipTrigger>
         <Button
           v-if="asButton"
