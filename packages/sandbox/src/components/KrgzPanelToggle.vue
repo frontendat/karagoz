@@ -7,7 +7,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@karagoz/shared'
-import { TooltipContentProps } from 'radix-vue'
 import { computed } from 'vue'
 
 /**
@@ -33,10 +32,6 @@ const props = withDefaults(
      * next to the icon for the `tab` and `bottom-bar` variants (toggle role only).
      */
     label: string
-    /**
-     * Which side the tooltip should be shown on.
-     */
-    side?: TooltipContentProps['side']
     /**
      * Whether to disabled tooltip content portal.
      * Must be set to `true` for full-screen and `false` for non-full-screen, otherwise tooltips break.
@@ -130,7 +125,7 @@ const tooltipDisabled = computed(
       <TooltipContent
         class="text-xs"
         :portal="{ disabled: tooltipContentPortalDisabled }"
-        :side="side ?? 'right'"
+        side="bottom"
         :side-offset="5"
       >
         {{ label }}
