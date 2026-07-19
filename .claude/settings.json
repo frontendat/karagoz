@@ -25,5 +25,46 @@
   },
   "enabledPlugins": {
     "mattpocock-skills@mattpocock": true
+  },
+  "sandbox": {
+    "enabled": true,
+    "filesystem": {
+      "allowWrite": [
+        "~/Library/pnpm/store",
+        "~/Library/Caches/ms-playwright",
+        "~/.cache/ms-playwright"
+      ]
+    },
+    "network": {
+      "allowedDomains": [
+        "localhost",
+        "127.0.0.1",
+        "registry.npmjs.org",
+        "*.github.com",
+        "github.com",
+        "raw.githubusercontent.com",
+        "codeload.github.com",
+        "objects.githubusercontent.com",
+        "*.webcontainer-api.io",
+        "*.webcontainer.io",
+        "*.webcontainers.io",
+        "developer.stackblitz.com",
+        "*.stackblitz.io",
+        "*.staticblitz.com",
+        "w-corp-staticblitz.com"
+      ]
+    },
+    "credentials": {
+      "files": [
+        { "path": "~/.aws/credentials", "mode": "deny" },
+        { "path": "~/.ssh", "mode": "deny" },
+        { "path": "~/.npmrc", "mode": "deny" }
+      ],
+      "envVars": [
+        { "name": "NPM_TOKEN", "mode": "deny" },
+        { "name": "GITHUB_TOKEN", "mode": "deny" },
+        { "name": "GH_TOKEN", "mode": "deny" }
+      ]
+    }
   }
 }
