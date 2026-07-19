@@ -97,29 +97,29 @@ const shownPanels = defineModel<Panel[]>('shownPanels', {
 })
 
 /**
- * Row 2 panels: at least one must always be shown, and both may be shown side by side.
+ * Main panels: at least one must always be shown, and both may be shown side by side.
  */
-const ROW_2_PANELS: Panel[] = ['code', 'result']
+const MAIN_PANELS: Panel[] = ['code', 'result']
 /**
- * Row 4 panels: mutually exclusive, zero or one shown at a time.
+ * Drawer panels: mutually exclusive, zero or one shown at a time.
  */
-const ROW_4_PANELS: Panel[] = ['processes', 'terminal']
+const DRAWER_PANELS: Panel[] = ['processes', 'terminal']
 
 /**
- * Resolves conflicting initial `shownPanels`: if both row 4 panels are present, the one that
- * appears last in the array wins; if neither row 2 panel is present, force-show `code`.
+ * Resolves conflicting initial `shownPanels`: if both drawer panels are present, the one that
+ * appears last in the array wins; if neither main panel is present, force-show `code`.
  */
 const resolveInitialShownPanels = () => {
   const initial = shownPanels.value
-  if (ROW_4_PANELS.every((panel) => initial.includes(panel))) {
+  if (DRAWER_PANELS.every((panel) => initial.includes(panel))) {
     const winner = [...initial]
       .reverse()
-      .find((panel) => ROW_4_PANELS.includes(panel))
+      .find((panel) => DRAWER_PANELS.includes(panel))
     shownPanels.value = shownPanels.value.filter(
-      (panel) => !ROW_4_PANELS.includes(panel) || panel === winner,
+      (panel) => !DRAWER_PANELS.includes(panel) || panel === winner,
     )
   }
-  if (!ROW_2_PANELS.some((panel) => shownPanels.value.includes(panel))) {
+  if (!MAIN_PANELS.some((panel) => shownPanels.value.includes(panel))) {
     shownPanels.value = [...shownPanels.value, 'code']
   }
 }
@@ -177,27 +177,31 @@ const togglePanel = (panel: Panel) => {
     return
   }
 
-  if (ROW_2_PANELS.includes(panel)) {
-    const otherRow2Shown = ROW_2_PANELS.some(
+  if (MAIN_PANELS.includes(panel)) {
+    const otherMainPanelShown = MAIN_PANELS.some(
       (p) => p !== panel && shownPanels.value.includes(p),
     )
-    // Clicking the toggle for the only currently-shown row 2 panel is a no-op.
-    if (shownPanels.value.includes(panel) && !otherRow2Shown) return
+    // Clicking the toggle for the only currently-shown main panel is a no-op.
+    if (shownPanels.value.includes(panel) && !otherMainPanelShown) return
     shownPanels.value = shownPanels.value.includes(panel)
       ? shownPanels.value.filter((p) => p !== panel)
       : [...shownPanels.value, panel]
     return
   }
 
-  // Row 4 panels are mutually exclusive: activating one drops the other.
-  const withoutRow4 = shownPanels.value.filter((p) => !ROW_4_PANELS.includes(p))
+  // Drawer panels are mutually exclusive: activating one drops the other.
+  const withoutDrawerPanels = shownPanels.value.filter(
+    (p) => !DRAWER_PANELS.includes(p),
+  )
   shownPanels.value = shownPanels.value.includes(panel)
-    ? withoutRow4
-    : [...withoutRow4, panel]
+    ? withoutDrawerPanels
+    : [...withoutDrawerPanels, panel]
 }
 
-const collapseRow4 = () => {
-  shownPanels.value = shownPanels.value.filter((p) => !ROW_4_PANELS.includes(p))
+const collapseDrawer = () => {
+  shownPanels.value = shownPanels.value.filter(
+    (p) => !DRAWER_PANELS.includes(p),
+  )
 }
 
 const isShown = computed(
@@ -224,12 +228,12 @@ const isShown = computed(
         :hide-solve-button="hideSolveButton"
         :hide-theme-toggle="hideThemeToggle"
         :shown-panels="actualShownPanels"
-        @collapse-row4="collapseRow4"
+        @collapse-drawer="collapseDrawer"
         @solve="$emit('solve')"
         @toggle="togglePanel($event)"
       >
         <ResizablePanelGroup
-          auto-save-id="krgz-sandbox-row2"
+          auto-save-id="krgz-sandbox-main-panels"
           class="h-full"
           direction="horizontal"
         >

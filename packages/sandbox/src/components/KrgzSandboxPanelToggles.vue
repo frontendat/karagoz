@@ -21,10 +21,10 @@ import KrgzPanelToggle from './KrgzPanelToggle.vue'
 /**
  * Layout component.
  *
- * Renders the row 1 toolbar (Code/Result toggles + Solve/Fullscreen/Theme buttons) above the
- * default slot (row 2 content), and, whenever a Processes/Terminal panel is available, the row 3
- * toolbar (Processes/Terminal toggles + close icon) above the `row4` slot (row 4 content, only
- * rendered while a row 4 panel is shown).
+ * Renders the main toolbar (Code/Result toggles + Solve/Fullscreen/Theme buttons) above the
+ * default slot (main panels content), and, whenever a Processes/Terminal panel is available, the
+ * drawer toolbar (Processes/Terminal toggles + close icon) above the `drawer` slot (drawer
+ * content, only rendered while a drawer panel is shown).
  */
 defineOptions({})
 
@@ -53,9 +53,9 @@ const props = defineProps<{
 
 defineEmits<{
   /**
-   * Emitted when the row 3 close icon is clicked.
+   * Emitted when the drawer toolbar's close icon is clicked.
    */
-  (e: 'collapseRow4'): void
+  (e: 'collapseDrawer'): void
   /**
    * Emitted when the solve button is clicked.
    */
@@ -94,6 +94,7 @@ const isShown = computed(
     class="flex flex-col h-full w-full krgz-sandbox-grid"
     :class="{ 'is-fullscreen': fullscreen.isFullscreen.value }"
   >
+    <!-- Main toolbar: Code/Result toggles + Solve/Fullscreen/Theme buttons -->
     <div
       v-if="isAvailable.code || isAvailable.result"
       class="border-b flex gap-2 items-center justify-between p-2"
@@ -156,10 +157,12 @@ const isShown = computed(
       </div>
     </div>
 
+    <!-- Main panels: default slot content (Code/Result) -->
     <div class="flex-1 min-h-0">
       <slot></slot>
     </div>
 
+    <!-- Drawer toolbar: Processes/Terminal toggles + close icon -->
     <div
       v-if="isAvailable.processes || isAvailable.terminal"
       class="border-t flex gap-2 items-center justify-between p-2"
@@ -191,14 +194,15 @@ const isShown = computed(
         :label="t('krgz.sandbox.general.close')"
         :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
         variant="tab"
-        @press="$emit('collapseRow4')"
+        @press="$emit('collapseDrawer')"
       >
         <Minus class="size-4" />
       </KrgzPanelToggle>
     </div>
 
+    <!-- Drawer: `drawer` slot content (Processes or Terminal) -->
     <div v-if="isShown.processes || isShown.terminal" class="h-64 shrink-0">
-      <slot name="row4"></slot>
+      <slot name="drawer"></slot>
     </div>
   </section>
 </template>
