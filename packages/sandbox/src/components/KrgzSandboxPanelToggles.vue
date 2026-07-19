@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { useDark, useFullscreen, useToggle } from '@vueuse/core'
 import {
+  Cog,
   Eye,
   FileCode,
   Lightbulb,
   Maximize,
   Minimize,
+  Minus,
   MoonStar,
-  Play,
   Sun,
   TerminalSquare,
 } from 'lucide-vue-next'
@@ -20,7 +21,10 @@ import KrgzPanelToggle from './KrgzPanelToggle.vue'
 /**
  * Layout component.
  *
- * This component wraps the sandbox panels and renders the available panel toggles and additional functionality buttons.
+ * Renders the row 1 toolbar (Code/Result toggles + Solve/Fullscreen/Theme buttons) above the
+ * default slot (row 2 content), and, whenever a Processes/Terminal panel is available, the row 3
+ * toolbar (Processes/Terminal toggles + close icon) above the `row4` slot (row 4 content, only
+ * rendered while a row 4 panel is shown).
  */
 defineOptions({})
 
@@ -49,6 +53,10 @@ const props = defineProps<{
 
 defineEmits<{
   /**
+   * Emitted when the row 3 close icon is clicked.
+   */
+  (e: 'collapseRow4'): void
+  /**
    * Emitted when the solve button is clicked.
    */
   (e: 'solve'): void
@@ -71,122 +79,132 @@ const isAvailable = computed(
       panels.map((panel) => [panel, props.availablePanels.includes(panel)]),
     ) as Record<Panel, boolean>,
 )
+
+const isShown = computed(
+  () =>
+    Object.fromEntries(
+      panels.map((panel) => [panel, props.shownPanels.includes(panel)]),
+    ) as Record<Panel, boolean>,
+)
 </script>
 
 <template>
   <section
     ref="$el"
-    class="grid h-full w-full krgz-sandbox-grid"
+    class="flex flex-col h-full w-full krgz-sandbox-grid"
     :class="{ 'is-fullscreen': fullscreen.isFullscreen.value }"
   >
-    <aside
+    <div
       v-if="isAvailable.code || isAvailable.result"
-      class="border-e flex flex-col h-full"
+      class="border-b flex gap-2 items-center justify-between p-2"
     >
-      <nav v-if="isAvailable.code" class="grid gap-2 p-2">
+      <div class="flex gap-2">
         <KrgzPanelToggle
-          v-if="availablePanels.includes('code')"
+          v-if="isAvailable.code"
           :label="t('krgz.sandbox.toggle.code')"
-          :pressed="shownPanels.includes('code')"
+          :pressed="isShown.code"
           :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
+          variant="tab"
           @press="$emit('toggle', 'code')"
         >
-          <FileCode class="size-5" />
+          <FileCode class="size-4" />
         </KrgzPanelToggle>
-
-        <div class="border-t"></div>
-
         <KrgzPanelToggle
-          v-if="!hideFullScreenToggle"
-          as-button
-          :label="t('krgz.sandbox.toggle.fullscreen')"
+          v-if="isAvailable.result"
+          :label="t('krgz.sandbox.toggle.result')"
+          :pressed="isShown.result"
           :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
-          @press="fullscreen.toggle"
+          variant="tab"
+          @press="$emit('toggle', 'result')"
         >
-          <Minimize v-if="fullscreen.isFullscreen.value" class="size-5" />
-          <Maximize v-else class="size-5" />
+          <Eye class="size-4" />
         </KrgzPanelToggle>
-
+      </div>
+      <div class="flex gap-2">
         <KrgzPanelToggle
           v-if="!hideSolveButton"
           as-button
           :label="t('krgz.sandbox.toggle.solve')"
           :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
+          variant="tab"
           @press="$emit('solve')"
         >
-          <Lightbulb class="size-5" />
+          <Lightbulb class="size-4" />
         </KrgzPanelToggle>
-
+        <KrgzPanelToggle
+          v-if="!hideFullScreenToggle"
+          as-button
+          :label="t('krgz.sandbox.toggle.fullscreen')"
+          :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
+          variant="tab"
+          @press="fullscreen.toggle"
+        >
+          <Minimize v-if="fullscreen.isFullscreen.value" class="size-4" />
+          <Maximize v-else class="size-4" />
+        </KrgzPanelToggle>
         <KrgzPanelToggle
           v-if="!hideThemeToggle"
           as-button
           :label="t('krgz.sandbox.toggle.theme')"
           :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
+          variant="tab"
           @press="toggleDark()"
         >
-          <Sun v-if="isDark" class="size-5" />
-          <MoonStar v-else class="size-5" />
+          <Sun v-if="isDark" class="size-4" />
+          <MoonStar v-else class="size-4" />
         </KrgzPanelToggle>
-      </nav>
-      <nav v-if="isAvailable.result" class="mt-auto grid gap-2 p-2">
-        <KrgzPanelToggle
-          v-if="availablePanels.includes('result')"
-          :label="t('krgz.sandbox.toggle.result')"
-          :pressed="shownPanels.includes('result')"
-          :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
-          @press="$emit('toggle', 'result')"
-        >
-          <Eye class="size-5" />
-        </KrgzPanelToggle>
-      </nav>
-    </aside>
-    <div class="flex flex-col">
+      </div>
+    </div>
+
+    <div class="flex-1 min-h-0">
       <slot></slot>
     </div>
-    <aside
+
+    <div
       v-if="isAvailable.processes || isAvailable.terminal"
-      class="border-s flex flex-col h-full"
+      class="border-t flex gap-2 items-center justify-between p-2"
     >
-      <nav v-if="isAvailable.terminal" class="grid gap-2 p-2">
+      <div class="flex gap-2">
         <KrgzPanelToggle
-          v-if="availablePanels.includes('terminal')"
-          :label="t('krgz.sandbox.toggle.terminal')"
-          :pressed="shownPanels.includes('terminal')"
-          :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
-          @press="$emit('toggle', 'terminal')"
-        >
-          <TerminalSquare class="size-5" />
-        </KrgzPanelToggle>
-      </nav>
-      <nav v-if="isAvailable.processes" class="mt-auto grid gap-2 p-2">
-        <KrgzPanelToggle
-          v-if="availablePanels.includes('processes')"
+          v-if="isAvailable.processes"
           :label="t('krgz.sandbox.toggle.processes')"
-          :pressed="shownPanels.includes('processes')"
+          :pressed="isShown.processes"
           :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
+          variant="tab"
           @press="$emit('toggle', 'processes')"
         >
-          <Play class="size-5" />
+          <Cog class="size-4" />
         </KrgzPanelToggle>
-      </nav>
-    </aside>
+        <KrgzPanelToggle
+          v-if="isAvailable.terminal"
+          :label="t('krgz.sandbox.toggle.terminal')"
+          :pressed="isShown.terminal"
+          :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
+          variant="tab"
+          @press="$emit('toggle', 'terminal')"
+        >
+          <TerminalSquare class="size-4" />
+        </KrgzPanelToggle>
+      </div>
+      <KrgzPanelToggle
+        as-button
+        :label="t('krgz.sandbox.general.close')"
+        :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
+        variant="tab"
+        @press="$emit('collapseRow4')"
+      >
+        <Minus class="size-4" />
+      </KrgzPanelToggle>
+    </div>
+
+    <div v-if="isShown.processes || isShown.terminal" class="h-64 shrink-0">
+      <slot name="row4"></slot>
+    </div>
   </section>
 </template>
 
 <style>
 .krgz-sandbox-grid.is-fullscreen {
   background-color: hsl(var(--background));
-}
-
-.krgz-sandbox-grid:has(> aside:first-child) {
-  grid-template-columns: 60px minmax(calc(100% - 60px), 1fr);
-}
-
-.krgz-sandbox-grid:has(> aside:last-child) {
-  grid-template-columns: minmax(calc(100% - 60px), 1fr) 60px;
-}
-
-.krgz-sandbox-grid:has(> aside:first-child):has(> aside:last-child) {
-  grid-template-columns: 60px minmax(calc(100% - 120px), 1fr) 60px;
 }
 </style>

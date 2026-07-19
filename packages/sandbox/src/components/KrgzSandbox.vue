@@ -96,6 +96,35 @@ const shownPanels = defineModel<Panel[]>('shownPanels', {
   default: () => ['code', 'result'] as Panel[],
 })
 
+/**
+ * Row 2 panels: at least one must always be shown, and both may be shown side by side.
+ */
+const ROW_2_PANELS: Panel[] = ['code', 'result']
+/**
+ * Row 4 panels: mutually exclusive, zero or one shown at a time.
+ */
+const ROW_4_PANELS: Panel[] = ['processes', 'terminal']
+
+/**
+ * Resolves conflicting initial `shownPanels`: if both row 4 panels are present, the one that
+ * appears last in the array wins; if neither row 2 panel is present, force-show `code`.
+ */
+const resolveInitialShownPanels = () => {
+  const initial = shownPanels.value
+  if (ROW_4_PANELS.every((panel) => initial.includes(panel))) {
+    const winner = [...initial]
+      .reverse()
+      .find((panel) => ROW_4_PANELS.includes(panel))
+    shownPanels.value = shownPanels.value.filter(
+      (panel) => !ROW_4_PANELS.includes(panel) || panel === winner,
+    )
+  }
+  if (!ROW_2_PANELS.some((panel) => shownPanels.value.includes(panel))) {
+    shownPanels.value = [...shownPanels.value, 'code']
+  }
+}
+resolveInitialShownPanels()
+
 const { t } = useI18n()
 const panelControl = useTemplateRef<HTMLDivElement>('panelControl')
 const multiPanel = ref(true)
@@ -143,11 +172,32 @@ const actualShownPanels = computed(() =>
 )
 
 const togglePanel = (panel: Panel) => {
-  const filtered = shownPanels.value.filter((p) => p !== panel)
-  shownPanels.value =
-    shownPanels.value.includes(panel) && multiPanel.value
-      ? filtered
-      : [panel, ...filtered]
+  if (!multiPanel.value) {
+    shownPanels.value = [panel, ...shownPanels.value.filter((p) => p !== panel)]
+    return
+  }
+
+  if (ROW_2_PANELS.includes(panel)) {
+    const otherRow2Shown = ROW_2_PANELS.some(
+      (p) => p !== panel && shownPanels.value.includes(p),
+    )
+    // Clicking the toggle for the only currently-shown row 2 panel is a no-op.
+    if (shownPanels.value.includes(panel) && !otherRow2Shown) return
+    shownPanels.value = shownPanels.value.includes(panel)
+      ? shownPanels.value.filter((p) => p !== panel)
+      : [...shownPanels.value, panel]
+    return
+  }
+
+  // Row 4 panels are mutually exclusive: activating one drops the other.
+  const withoutRow4 = shownPanels.value.filter((p) => !ROW_4_PANELS.includes(p))
+  shownPanels.value = shownPanels.value.includes(panel)
+    ? withoutRow4
+    : [...withoutRow4, panel]
+}
+
+const collapseRow4 = () => {
+  shownPanels.value = shownPanels.value.filter((p) => !ROW_4_PANELS.includes(p))
 }
 
 const isShown = computed(
@@ -156,11 +206,6 @@ const isShown = computed(
       panels.map((panel) => [panel, actualShownPanels.value.includes(panel)]),
     ) as Record<Panel, boolean>,
 )
-
-const isRowDividerShown = computed(() => {
-  const f = isShown.value
-  return (f.code || f.terminal) && (f.processes || f.result)
-})
 </script>
 
 <template>
@@ -179,82 +224,58 @@ const isRowDividerShown = computed(() => {
         :hide-solve-button="hideSolveButton"
         :hide-theme-toggle="hideThemeToggle"
         :shown-panels="actualShownPanels"
+        @collapse-row4="collapseRow4"
         @solve="$emit('solve')"
         @toggle="togglePanel($event)"
       >
         <ResizablePanelGroup
-          auto-save-id="krgz-sandbox"
-          direction="vertical"
-          class="max-w"
+          auto-save-id="krgz-sandbox-row2"
+          class="h-full"
+          direction="horizontal"
         >
-          <ResizablePanel
-            v-if="isShown.code || isShown.terminal"
-            :default-size="50"
-          >
-            <ResizablePanelGroup
-              auto-save-id="krgz-sandbox-input-row"
-              direction="horizontal"
-            >
-              <template v-if="isShown.code">
-                <ResizablePanel :default-size="50">
-                  <ResizablePanelGroup
-                    auto-save-id="krgz-sandbox-editor"
-                    direction="horizontal"
-                  >
-                    <template v-if="!hideExplorer">
-                      <ResizablePanel :default-size="30">
-                        <!-- @slot slot to render file explorer -->
-                        <slot name="explorer">
-                          <ScrollArea class="h-full overflow-auto">
-                            <KrgzExplorer />
-                          </ScrollArea>
-                        </slot>
-                      </ResizablePanel>
-                      <ResizableHandle />
-                    </template>
-                    <ResizablePanel :default-size="70">
-                      <!-- @slot slot to render file editor tabs and code editor -->
-                      <slot name="editor">
-                        <KrgzEditorTabs />
-                      </slot>
-                    </ResizablePanel>
-                  </ResizablePanelGroup>
+          <template v-if="isShown.code">
+            <ResizablePanel :default-size="50">
+              <ResizablePanelGroup
+                auto-save-id="krgz-sandbox-editor"
+                direction="horizontal"
+              >
+                <template v-if="!hideExplorer">
+                  <ResizablePanel :default-size="30">
+                    <!-- @slot slot to render file explorer -->
+                    <slot name="explorer">
+                      <ScrollArea class="h-full overflow-auto">
+                        <KrgzExplorer />
+                      </ScrollArea>
+                    </slot>
+                  </ResizablePanel>
+                  <ResizableHandle />
+                </template>
+                <ResizablePanel :default-size="70">
+                  <!-- @slot slot to render file editor tabs and code editor -->
+                  <slot name="editor">
+                    <KrgzEditorTabs />
+                  </slot>
                 </ResizablePanel>
-              </template>
-              <ResizableHandle v-if="isShown.code && isShown.terminal" />
-              <ResizablePanel v-if="isShown.terminal" :default-size="50">
-                <!-- @slot slot to render open terminal tabs -->
-                <slot name="terminal">
-                  <KrgzProcessTabs mode="terminal" />
-                </slot>
-              </ResizablePanel>
-            </ResizablePanelGroup>
-          </ResizablePanel>
-          <ResizableHandle v-if="isRowDividerShown" />
-          <ResizablePanel
-            v-if="isShown.processes || isShown.result"
-            :default-size="50"
-          >
-            <ResizablePanelGroup
-              auto-save-id="krgz-sandbox-ouptut-row"
-              direction="horizontal"
-            >
-              <ResizablePanel v-if="isShown.result" :default-size="50">
-                <!-- @slot slot to render result preview iframe -->
-                <slot name="preview">
-                  <KrgzPreview />
-                </slot>
-              </ResizablePanel>
-              <ResizableHandle v-if="isShown.processes && isShown.result" />
-              <ResizablePanel v-if="isShown.processes" :default-size="50">
-                <!-- @slot slot to render running process tabs -->
-                <slot name="processes">
-                  <KrgzProcessTabs mode="process" />
-                </slot>
-              </ResizablePanel>
-            </ResizablePanelGroup>
+              </ResizablePanelGroup>
+            </ResizablePanel>
+          </template>
+          <ResizableHandle v-if="isShown.code && isShown.result" />
+          <ResizablePanel v-if="isShown.result" :default-size="50">
+            <!-- @slot slot to render result preview iframe -->
+            <slot name="preview">
+              <KrgzPreview />
+            </slot>
           </ResizablePanel>
         </ResizablePanelGroup>
+
+        <template #row4>
+          <slot v-if="isShown.terminal" name="terminal">
+            <KrgzProcessTabs mode="terminal" />
+          </slot>
+          <slot v-else-if="isShown.processes" name="processes">
+            <KrgzProcessTabs mode="process" />
+          </slot>
+        </template>
       </KrgzSandboxPanelToggles>
     </div>
   </div>
