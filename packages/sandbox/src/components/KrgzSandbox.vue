@@ -276,17 +276,20 @@ const isShown = computed(
                 auto-save-id="krgz-sandbox-editor"
                 direction="horizontal"
               >
-                <template v-if="!hideExplorer && explorer.shown.value">
-                  <ResizablePanel :default-size="30">
-                    <!-- @slot slot to render file explorer -->
-                    <slot name="explorer">
-                      <ScrollArea class="h-full overflow-auto">
-                        <KrgzExplorer />
-                      </ScrollArea>
-                    </slot>
-                  </ResizablePanel>
-                  <ResizableHandle />
-                </template>
+                <ResizablePanel
+                  v-show="!hideExplorer && explorer.shown.value"
+                  :default-size="30"
+                >
+                  <!-- @slot slot to render file explorer -->
+                  <slot name="explorer">
+                    <ScrollArea class="h-full overflow-auto">
+                      <KrgzExplorer />
+                    </ScrollArea>
+                  </slot>
+                </ResizablePanel>
+                <ResizableHandle
+                  v-show="!hideExplorer && explorer.shown.value"
+                />
                 <ResizablePanel :default-size="70">
                   <!-- @slot slot to render file editor tabs and code editor -->
                   <slot name="editor">
