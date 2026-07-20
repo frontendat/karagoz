@@ -99,21 +99,10 @@ const drawerToolbarEl = useTemplateRef<HTMLDivElement>('drawerToolbarEl')
 const drawerPanel = useTemplateRef('drawerPanel')
 
 /**
- * Initial size (%) of the drawer panel while expanded.
- */
-const DRAWER_DEFAULT_SIZE = 30
-
-/**
  * Percentage size for the drawer panel while collapsed, measured from the toolbar's actual
  * height so the collapsed panel hugs it exactly instead of leaving an empty gap below it.
  */
 const drawerCollapsedSize = ref(10)
-
-// A tall toolbar in a short group can push `collapsedSize` close to its 50% cap; keep the
-// derived min-size at or below `DRAWER_DEFAULT_SIZE` so the two constraints never conflict.
-const drawerMinSize = computed(() =>
-  Math.min(DRAWER_DEFAULT_SIZE, Math.max(20, drawerCollapsedSize.value + 10)),
-)
 
 const updateDrawerCollapsedSize = () => {
   const groupHeight = drawerGroupEl.value?.clientHeight
