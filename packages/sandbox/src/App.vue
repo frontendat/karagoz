@@ -192,23 +192,23 @@ const onSolveClick = async () => {
     >
   </div>
   <div class="border-4 border-dashed flex-1 m-8">
-    <KrgzSandbox
-      :booting="isBooting"
-      multi-panel-from="3xl"
-      @solve="onSolveClick()"
-    />
+    <div class="h-160">
+      <KrgzSandbox
+        :booting="isBooting"
+        multi-panel-from="3xl"
+        @solve="onSolveClick()"
+      />
+    </div>
   </div>
 </template>
 
 <style>
 body {
-  height: 100dvh;
   margin: 0;
 }
 
 #app {
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 </style>
