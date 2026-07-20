@@ -4,6 +4,7 @@ export const en = {
     sandbox: {
       general: {
         close: 'Close',
+        open: 'Open',
         restart: 'Restart',
         stop: 'Stop',
       },

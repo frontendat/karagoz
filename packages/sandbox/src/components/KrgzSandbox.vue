@@ -105,6 +105,9 @@ const MAIN_PANELS: Panel[] = ['code', 'result']
  */
 const DRAWER_PANELS: Panel[] = ['processes', 'terminal']
 
+const dropDrawerPanels = (shown: Panel[]) =>
+  shown.filter((p) => !DRAWER_PANELS.includes(p))
+
 /**
  * Resolves conflicting initial `shownPanels`: if both drawer panels are present, the one that
  * appears last in the array wins; if neither main panel is present, force-show `code`.
@@ -124,6 +127,15 @@ const resolveInitialShownPanels = () => {
   }
 }
 resolveInitialShownPanels()
+
+/**
+ * Last drawer panel that was shown, so the close icon can reopen it once the drawer is
+ * collapsed.
+ */
+const lastDrawerPanel = ref<Panel>(
+  DRAWER_PANELS.find((panel) => shownPanels.value.includes(panel)) ??
+    'processes',
+)
 
 const { t } = useI18n()
 const panelControl = useTemplateRef<HTMLDivElement>('panelControl')
@@ -190,18 +202,27 @@ const togglePanel = (panel: Panel) => {
   }
 
   // Drawer panels are mutually exclusive: activating one drops the other.
-  const withoutDrawerPanels = shownPanels.value.filter(
-    (p) => !DRAWER_PANELS.includes(p),
-  )
-  shownPanels.value = shownPanels.value.includes(panel)
+  const withoutDrawerPanels = dropDrawerPanels(shownPanels.value)
+  const isCurrentlyShown = shownPanels.value.includes(panel)
+  shownPanels.value = isCurrentlyShown
     ? withoutDrawerPanels
     : [...withoutDrawerPanels, panel]
+  if (!isCurrentlyShown) lastDrawerPanel.value = panel
 }
 
-const collapseDrawer = () => {
-  shownPanels.value = shownPanels.value.filter(
-    (p) => !DRAWER_PANELS.includes(p),
+/**
+ * Toggles the drawer: collapses it if a drawer panel is shown, otherwise reopens the last
+ * shown drawer panel.
+ */
+const toggleDrawer = () => {
+  const isDrawerShown = DRAWER_PANELS.some((p) =>
+    shownPanels.value.includes(p),
   )
+  if (isDrawerShown) {
+    shownPanels.value = dropDrawerPanels(shownPanels.value)
+    return
+  }
+  togglePanel(lastDrawerPanel.value)
 }
 
 const isShown = computed(
@@ -228,7 +249,7 @@ const isShown = computed(
         :hide-solve-button="hideSolveButton"
         :hide-theme-toggle="hideThemeToggle"
         :shown-panels="actualShownPanels"
-        @collapse-drawer="collapseDrawer"
+        @toggle-drawer="toggleDrawer"
         @solve="$emit('solve')"
         @toggle="togglePanel($event)"
       >
@@ -272,7 +293,7 @@ const isShown = computed(
           </ResizablePanel>
         </ResizablePanelGroup>
 
-        <template #row4>
+        <template #drawer>
           <slot v-if="isShown.terminal" name="terminal">
             <KrgzProcessTabs mode="terminal" />
           </slot>

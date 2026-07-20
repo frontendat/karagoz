@@ -53,9 +53,9 @@ const props = defineProps<{
 
 defineEmits<{
   /**
-   * Emitted when the drawer toolbar's close icon is clicked.
+   * Emitted when the drawer toolbar's close/open icon is clicked.
    */
-  (e: 'collapseDrawer'): void
+  (e: 'toggleDrawer'): void
   /**
    * Emitted when the solve button is clicked.
    */
@@ -73,19 +73,13 @@ const fullscreen = useFullscreen($el)
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
-const isAvailable = computed(
-  () =>
-    Object.fromEntries(
-      panels.map((panel) => [panel, props.availablePanels.includes(panel)]),
-    ) as Record<Panel, boolean>,
-)
+const toPanelRecord = (shown: Panel[]) =>
+  Object.fromEntries(
+    panels.map((panel) => [panel, shown.includes(panel)]),
+  ) as Record<Panel, boolean>
 
-const isShown = computed(
-  () =>
-    Object.fromEntries(
-      panels.map((panel) => [panel, props.shownPanels.includes(panel)]),
-    ) as Record<Panel, boolean>,
-)
+const isAvailable = computed(() => toPanelRecord(props.availablePanels))
+const isShown = computed(() => toPanelRecord(props.shownPanels))
 </script>
 
 <template>
@@ -191,10 +185,14 @@ const isShown = computed(
       </div>
       <KrgzPanelToggle
         as-button
-        :label="t('krgz.sandbox.general.close')"
+        :label="
+          isShown.processes || isShown.terminal
+            ? t('krgz.sandbox.general.close')
+            : t('krgz.sandbox.general.open')
+        "
         :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
         variant="tab"
-        @press="$emit('collapseDrawer')"
+        @press="$emit('toggleDrawer')"
       >
         <Minus class="size-4" />
       </KrgzPanelToggle>

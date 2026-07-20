@@ -6,6 +6,7 @@ export const ar: MessageSchema = {
     sandbox: {
       general: {
         close: 'إغلاق',
+        open: 'فتح',
         restart: 'إعادة تشغيل',
         stop: 'إيقاف',
       },

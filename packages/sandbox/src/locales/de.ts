@@ -6,6 +6,7 @@ export const de: MessageSchema = {
     sandbox: {
       general: {
         close: 'Schließen',
+        open: 'Öffnen',
         restart: 'Neustart',
         stop: 'Stoppen',
       },
