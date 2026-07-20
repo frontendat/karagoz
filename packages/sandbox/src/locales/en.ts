@@ -32,6 +32,7 @@ export const en = {
       },
       toggle: {
         code: 'Code',
+        explorer: 'Toggle file explorer',
         fullscreen: 'Full screen',
         processes: 'Processes',
         result: 'Result',

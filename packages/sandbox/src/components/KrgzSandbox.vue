@@ -8,9 +8,10 @@ import {
 } from '@karagoz/shared'
 import { useResizeObserver } from '@vueuse/core'
 import { Binary } from 'lucide-vue-next'
-import { computed, ref, useTemplateRef } from 'vue'
+import { computed, ref, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { useSandbox } from '../composables'
 import { type Panel, panels } from '../types'
 import KrgzEditorTabs from './KrgzEditorTabs.vue'
 import KrgzExplorer from './KrgzExplorer.vue'
@@ -138,8 +139,21 @@ const lastDrawerPanel = ref<Panel>(
 )
 
 const { t } = useI18n()
+const { editorTabs, explorer } = useSandbox()
 const panelControl = useTemplateRef<HTMLDivElement>('panelControl')
 const multiPanel = ref(true)
+
+/**
+ * When the last editor tab is closed, the editor area falls back to an empty state. Automatically
+ * re-show the file explorer at that point so the user isn't left with two empty panels, unless
+ * `hideExplorer` forces it off entirely.
+ */
+watch(
+  () => editorTabs.tabs.value.length,
+  (length) => {
+    if (length === 0 && !props.hideExplorer) explorer.show()
+  },
+)
 
 const multiPanelCss = computed(() => {
   // DO NOT use string concatenation as that would break the resulting CSS.
@@ -262,7 +276,7 @@ const isShown = computed(
                 auto-save-id="krgz-sandbox-editor"
                 direction="horizontal"
               >
-                <template v-if="!hideExplorer">
+                <template v-if="!hideExplorer && explorer.shown.value">
                   <ResizablePanel :default-size="30">
                     <!-- @slot slot to render file explorer -->
                     <slot name="explorer">
@@ -276,7 +290,7 @@ const isShown = computed(
                 <ResizablePanel :default-size="70">
                   <!-- @slot slot to render file editor tabs and code editor -->
                   <slot name="editor">
-                    <KrgzEditorTabs />
+                    <KrgzEditorTabs :hide-explorer-toggle="hideExplorer" />
                   </slot>
                 </ResizablePanel>
               </ResizablePanelGroup>

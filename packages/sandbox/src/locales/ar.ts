@@ -34,6 +34,7 @@ export const ar: MessageSchema = {
       },
       toggle: {
         code: 'النص البرمجي',
+        explorer: 'إظهار/إخفاء مستكشف الملفات',
         fullscreen: 'مل٫ الشاشة',
         processes: 'العمليات',
         result: 'النتيجة',
