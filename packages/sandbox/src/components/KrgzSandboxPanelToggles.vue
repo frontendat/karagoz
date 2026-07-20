@@ -127,10 +127,14 @@ useResizeObserver(drawerToolbarEl, updateDrawerCollapsedSize)
 
 // The drawer panel's own collapse state is the source of truth for its size; mirror the
 // externally-controlled open/closed state onto it imperatively.
-watch(isDrawerShown, (shown) => {
-  if (shown) drawerPanel.value?.expand()
-  else drawerPanel.value?.collapse()
-})
+watch(
+  isDrawerShown,
+  (shown) => {
+    if (shown) drawerPanel.value?.expand()
+    else drawerPanel.value?.collapse()
+  },
+  { immediate: true },
+)
 
 // A freshly (re)mounted panel starts neither collapsed nor expanded by our doing, so if it mounts
 // already meant to be shown (initial render, or `availablePanels` toggling processes/terminal
@@ -223,13 +227,13 @@ watch(drawerPanel, (panel) => {
         <ResizablePanel :default-size="70" :min-size="20">
           <slot></slot>
         </ResizablePanel>
-        <ResizableHandle v-if="isDrawerShown" with-handle />
+        <ResizableHandle v-if="isDrawerShown" />
         <ResizablePanel
           ref="drawerPanel"
           :collapsed-size="drawerCollapsedSize"
           collapsible
-          :default-size="DRAWER_DEFAULT_SIZE"
-          :min-size="drawerMinSize"
+          :default-size="30"
+          :min-size="Math.max(20, drawerCollapsedSize + 10)"
         >
           <div class="flex flex-col h-full">
             <!-- Drawer toolbar: Processes/Terminal toggles + close icon -->

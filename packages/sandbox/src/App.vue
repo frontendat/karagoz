@@ -195,6 +195,7 @@ const onSolveClick = async () => {
     <div class="h-160">
       <KrgzSandbox
         :booting="isBooting"
+        :shown-panels="['code', 'result', 'processes']"
         multi-panel-from="3xl"
         @solve="onSolveClick()"
       />
