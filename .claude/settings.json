@@ -26,8 +26,13 @@
   "enabledPlugins": {
     "mattpocock-skills@mattpocock": true
   },
+  "permissions": {
+    "allow": ["Bash(sandboxed)"],
+    "excludedCommmands": ["docker *"]
+  },
   "sandbox": {
     "enabled": true,
+    "autoAllowBashIfSandboxed": true,
     "filesystem": {
       "allowWrite": [
         "~/Library/pnpm/store",
@@ -52,13 +57,17 @@
         "*.stackblitz.io",
         "*.staticblitz.com",
         "w-corp-staticblitz.com"
-      ]
+      ],
+      "allowLocalPortBinding": true
     },
     "credentials": {
       "files": [
         { "path": "~/.aws/credentials", "mode": "deny" },
         { "path": "~/.ssh", "mode": "deny" },
-        { "path": "~/.npmrc", "mode": "deny" }
+        { "path": "~/.npmrc", "mode": "deny" },
+        { "path": "**/.env*", "mode": "deny" },
+        { "path": "**/.credentials*", "mode": "deny" },
+        { "path": "**/.secrets*", "mode": "deny" }
       ],
       "envVars": [
         { "name": "NPM_TOKEN", "mode": "deny" },
