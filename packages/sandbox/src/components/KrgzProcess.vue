@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import '@xterm/xterm/css/xterm.css'
 
-import { useDark } from '@vueuse/core'
+import { useDark, useResizeObserver } from '@vueuse/core'
 import type { FitAddon } from '@xterm/addon-fit'
 import type { Terminal } from '@xterm/xterm'
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 
 import { useSandbox } from '../composables'
 import { ProcessTabContext, Tab } from '../types'
@@ -81,21 +81,17 @@ onMounted(async () => {
     if (context.value?.suppressInput) return
     context.value?.processInputHandler?.(data)
   })
-
-  window.addEventListener('resize', onWindowResize)
 })
 
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', onWindowResize)
-})
-
-const onWindowResize = (): void => {
+// Re-fit whenever the container is resized (window resize, resizable drawer drag, etc.) so the
+// terminal's viewport and scrollback stay in sync with its actual rendered size.
+useResizeObserver(terminalEl, () => {
   fitAddon.value?.fit()
   process.value?.resize({
     cols: terminal.value?.cols ?? 80,
     rows: terminal.value?.rows ?? 20,
   })
-}
+})
 </script>
 
 <template>
