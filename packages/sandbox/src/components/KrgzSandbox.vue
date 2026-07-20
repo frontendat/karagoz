@@ -215,9 +215,7 @@ const togglePanel = (panel: Panel) => {
  * shown drawer panel.
  */
 const toggleDrawer = () => {
-  const isDrawerShown = DRAWER_PANELS.some((p) =>
-    shownPanels.value.includes(p),
-  )
+  const isDrawerShown = DRAWER_PANELS.some((p) => shownPanels.value.includes(p))
   if (isDrawerShown) {
     shownPanels.value = dropDrawerPanels(shownPanels.value)
     return
