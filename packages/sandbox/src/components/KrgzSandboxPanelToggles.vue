@@ -22,7 +22,7 @@ import {
   Sun,
   TerminalSquare,
 } from 'lucide-vue-next'
-import { computed, ref, useTemplateRef, watch } from 'vue'
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { Panel, panels } from '../types'
@@ -116,9 +116,17 @@ useResizeObserver(drawerToolbarEl, updateDrawerCollapsedSize)
 
 // The drawer panel's own collapse state is the source of truth for its size; mirror the
 // externally-controlled open/closed state onto it imperatively.
+//
+// The underlying resizable-panel-group library restores (or, absent a saved layout, computes a
+// default) layout for the whole group asynchronously, in a watcher queued when the panel first
+// registers itself on mount. That watcher runs after this one, so an `expand()`/`collapse()` call
+// made synchronously here would get silently clobbered by whatever layout it lands on next tick.
+// Deferring these calls to `nextTick()` guarantees they run after that internal layout settles,
+// so our desired open/closed state always wins and gets persisted as the group's next save.
 watch(
   isDrawerShown,
-  (shown) => {
+  async (shown) => {
+    await nextTick()
     if (shown) drawerPanel.value?.expand()
     else drawerPanel.value?.collapse()
   },
@@ -128,8 +136,11 @@ watch(
 // A freshly (re)mounted panel starts neither collapsed nor expanded by our doing, so if it mounts
 // already meant to be shown (initial render, or `availablePanels` toggling processes/terminal
 // on later), the watcher above never fires (nothing changed) and it's left un-expanded.
-watch(drawerPanel, (panel) => {
-  if (panel && isDrawerShown.value) panel.expand()
+watch(drawerPanel, async (panel) => {
+  if (!panel) return
+  await nextTick()
+  if (isDrawerShown.value) panel.expand()
+  else panel.collapse()
 })
 </script>
 
