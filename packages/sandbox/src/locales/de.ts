@@ -36,6 +36,7 @@ export const de: MessageSchema = {
         code: 'Kode',
         explorer: 'Dateiexplorer umschalten',
         fullscreen: 'Vollbild',
+        more: 'Mehr',
         processes: 'Prozesse',
         result: 'Ergebnis',
         solve: 'Lösen',

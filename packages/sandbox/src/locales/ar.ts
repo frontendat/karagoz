@@ -36,6 +36,7 @@ export const ar: MessageSchema = {
         code: 'النص البرمجي',
         explorer: 'إظهار/إخفاء مستكشف الملفات',
         fullscreen: 'مل٫ الشاشة',
+        more: 'المزيد',
         processes: 'العمليات',
         result: 'النتيجة',
         solve: 'تنفيذ الحل',

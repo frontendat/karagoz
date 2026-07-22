@@ -4,12 +4,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@karagoz/shared'
-import {
-  useDark,
-  useFullscreen,
-  useResizeObserver,
-  useToggle,
-} from '@vueuse/core'
+import { useResizeObserver } from '@vueuse/core'
 import {
   Cog,
   Eye,
@@ -25,7 +20,8 @@ import {
 import { computed, ref, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { Panel, panels } from '../types'
+import { useSandboxToolbarChrome } from '../composables'
+import { type Panel, toPanelRecord } from '../types'
 import KrgzPanelToggle from './KrgzPanelToggle.vue'
 import { delay } from '../utils/delay.ts'
 
@@ -80,14 +76,7 @@ defineEmits<{
 
 const { t } = useI18n()
 const $el = useTemplateRef<HTMLElement>('$el')
-const fullscreen = useFullscreen($el)
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
-
-const toPanelRecord = (shown: Panel[]) =>
-  Object.fromEntries(
-    panels.map((panel) => [panel, shown.includes(panel)]),
-  ) as Record<Panel, boolean>
+const { fullscreen, isDark, toggleDark } = useSandboxToolbarChrome($el)
 
 const isAvailable = computed(() => toPanelRecord(props.availablePanels))
 const isShown = computed(() => toPanelRecord(props.shownPanels))

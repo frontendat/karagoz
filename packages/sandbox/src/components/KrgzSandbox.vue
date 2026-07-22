@@ -4,7 +4,6 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-  ScrollArea,
 } from '@karagoz/shared'
 import { useResizeObserver } from '@vueuse/core'
 import { Binary } from 'lucide-vue-next'
@@ -12,11 +11,11 @@ import { computed, ref, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useSandbox } from '../composables'
-import { type Panel, panels } from '../types'
-import KrgzEditorTabs from './KrgzEditorTabs.vue'
-import KrgzExplorer from './KrgzExplorer.vue'
+import { type Panel, toPanelRecord } from '../types'
 import KrgzPreview from './KrgzPreview.vue'
 import KrgzProcessTabs from './KrgzProcessTabs.vue'
+import KrgzSandboxCodePanel from './KrgzSandboxCodePanel.vue'
+import KrgzSandboxMobileToolbar from './KrgzSandboxMobileToolbar.vue'
 import KrgzSandboxPanelToggles from './KrgzSandboxPanelToggles.vue'
 
 /**
@@ -237,12 +236,7 @@ const toggleDrawer = () => {
   togglePanel(lastDrawerPanel.value)
 }
 
-const isShown = computed(
-  () =>
-    Object.fromEntries(
-      panels.map((panel) => [panel, actualShownPanels.value.includes(panel)]),
-    ) as Record<Panel, boolean>,
-)
+const isShown = computed(() => toPanelRecord(actualShownPanels.value))
 </script>
 
 <template>
@@ -256,6 +250,7 @@ const isShown = computed(
   <div v-else class="krgz-sandbox @container/sandbox h-full">
     <div ref="panelControl" class="h-full" :class="multiPanelCss">
       <KrgzSandboxPanelToggles
+        v-if="multiPanel"
         :available-panels="availablePanels"
         :hide-full-screen-toggle="hideFullScreenToggle"
         :hide-solve-button="hideSolveButton"
@@ -272,31 +267,14 @@ const isShown = computed(
         >
           <template v-if="isShown.code">
             <ResizablePanel :default-size="50">
-              <ResizablePanelGroup
-                auto-save-id="krgz-sandbox-editor"
-                direction="horizontal"
-              >
-                <ResizablePanel
-                  v-show="!hideExplorer && explorer.shown.value"
-                  :default-size="30"
-                >
-                  <!-- @slot slot to render file explorer -->
-                  <slot name="explorer">
-                    <ScrollArea class="h-full overflow-auto">
-                      <KrgzExplorer />
-                    </ScrollArea>
-                  </slot>
-                </ResizablePanel>
-                <ResizableHandle
-                  v-show="!hideExplorer && explorer.shown.value"
-                />
-                <ResizablePanel :default-size="70">
-                  <!-- @slot slot to render file editor tabs and code editor -->
-                  <slot name="editor">
-                    <KrgzEditorTabs :hide-explorer-toggle="hideExplorer" />
-                  </slot>
-                </ResizablePanel>
-              </ResizablePanelGroup>
+              <KrgzSandboxCodePanel :hide-explorer="hideExplorer">
+                <template v-if="$slots.explorer" #explorer>
+                  <slot name="explorer" />
+                </template>
+                <template v-if="$slots.editor" #editor>
+                  <slot name="editor" />
+                </template>
+              </KrgzSandboxCodePanel>
             </ResizablePanel>
           </template>
           <ResizableHandle v-if="isShown.code && isShown.result" />
@@ -317,6 +295,36 @@ const isShown = computed(
           </slot>
         </template>
       </KrgzSandboxPanelToggles>
+      <KrgzSandboxMobileToolbar
+        v-else
+        :available-panels="availablePanels"
+        :hide-full-screen-toggle="hideFullScreenToggle"
+        :hide-solve-button="hideSolveButton"
+        :hide-theme-toggle="hideThemeToggle"
+        :shown-panels="actualShownPanels"
+        @solve="$emit('solve')"
+        @toggle="togglePanel($event)"
+      >
+        <template v-if="isShown.code">
+          <KrgzSandboxCodePanel :hide-explorer="hideExplorer">
+            <template v-if="$slots.explorer" #explorer>
+              <slot name="explorer" />
+            </template>
+            <template v-if="$slots.editor" #editor>
+              <slot name="editor" />
+            </template>
+          </KrgzSandboxCodePanel>
+        </template>
+        <slot v-else-if="isShown.result" name="preview">
+          <KrgzPreview />
+        </slot>
+        <slot v-else-if="isShown.terminal" name="terminal">
+          <KrgzProcessTabs mode="terminal" />
+        </slot>
+        <slot v-else-if="isShown.processes" name="processes">
+          <KrgzProcessTabs mode="process" />
+        </slot>
+      </KrgzSandboxMobileToolbar>
     </div>
   </div>
 </template>

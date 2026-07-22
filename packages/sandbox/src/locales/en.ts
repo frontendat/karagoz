@@ -34,6 +34,7 @@ export const en = {
         code: 'Code',
         explorer: 'Toggle file explorer',
         fullscreen: 'Full screen',
+        more: 'More',
         processes: 'Processes',
         result: 'Result',
         solve: 'Solve',
