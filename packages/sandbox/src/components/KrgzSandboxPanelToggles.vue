@@ -27,6 +27,7 @@ import { useI18n } from 'vue-i18n'
 
 import { Panel, panels } from '../types'
 import KrgzPanelToggle from './KrgzPanelToggle.vue'
+import { delay } from '../utils/delay.ts'
 
 /**
  * Layout component.
@@ -118,7 +119,9 @@ useResizeObserver(drawerToolbarEl, updateDrawerCollapsedSize)
 // externally-controlled open/closed state onto it imperatively.
 watch(
   isDrawerShown,
-  (shown) => {
+  async (shown) => {
+    // Initial collapse does not work without a mini-delay
+    await delay(0)
     if (shown) drawerPanel.value?.expand()
     else drawerPanel.value?.collapse()
   },
@@ -208,11 +211,7 @@ watch(drawerPanel, (panel) => {
       ref="drawerGroupEl"
       class="flex-1 min-h-0"
     >
-      <ResizablePanelGroup
-        auto-save-id="krgz-sandbox-drawer"
-        class="h-full"
-        direction="vertical"
-      >
+      <ResizablePanelGroup class="h-full" direction="vertical">
         <ResizablePanel :default-size="70" :min-size="20">
           <slot></slot>
         </ResizablePanel>
