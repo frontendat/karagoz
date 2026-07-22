@@ -121,7 +121,7 @@ watch(
   isDrawerShown,
   async (shown) => {
     // Initial collapse does not work without a mini-delay
-    await delay(0)
+    await delay(1)
     if (shown) drawerPanel.value?.expand()
     else drawerPanel.value?.collapse()
   },
