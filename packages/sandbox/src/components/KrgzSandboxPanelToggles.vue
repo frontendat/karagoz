@@ -114,26 +114,23 @@ const updateDrawerCollapsedSize = () => {
 useResizeObserver(drawerGroupEl, updateDrawerCollapsedSize)
 useResizeObserver(drawerToolbarEl, updateDrawerCollapsedSize)
 
-// `shownPanels` (surfaced here as `isDrawerShown`) is the single source of truth for whether the
-// drawer is open; the underlying resizable-panel-group library's own auto-save/restore of layout
-// from localStorage, and its re-layout whenever the collapsed panel's constraints change (e.g. our
-// `drawerCollapsedSize` ResizeObserver), both fight for the same panel size and can silently leave
-// it open-but-empty or collapsed against our wishes. Rather than race those internal recomputes
-// with a one-off imperative call, `enforceDrawerState` re-asserts the desired expand/collapse state
-// every time the panel's actual size changes for any reason (wired via `@resize` below), so
-// `shownPanels` always wins regardless of what triggered the mismatch. `expand()`/`collapse()` are
-// no-ops when already in the desired state, so this can't loop.
-const enforceDrawerState = () => {
-  const panel = drawerPanel.value
-  if (!panel) return
-  if (isDrawerShown.value) panel.expand()
-  else panel.collapse()
-}
+// The drawer panel's own collapse state is the source of truth for its size; mirror the
+// externally-controlled open/closed state onto it imperatively.
+watch(
+  isDrawerShown,
+  (shown) => {
+    if (shown) drawerPanel.value?.expand()
+    else drawerPanel.value?.collapse()
+  },
+  { immediate: true },
+)
 
-// The `drawerPanel` template ref isn't bound yet when this runs, so initial enforcement happens
-// via the `drawerPanel` watch below instead; this one only needs to react to later prop changes.
-watch(isDrawerShown, enforceDrawerState)
-watch(drawerPanel, (panel) => panel && enforceDrawerState())
+// A freshly (re)mounted panel starts neither collapsed nor expanded by our doing, so if it mounts
+// already meant to be shown (initial render, or `availablePanels` toggling processes/terminal
+// on later), the watcher above never fires (nothing changed) and it's left un-expanded.
+watch(drawerPanel, (panel) => {
+  if (panel && isDrawerShown.value) panel.expand()
+})
 </script>
 
 <template>
@@ -226,7 +223,6 @@ watch(drawerPanel, (panel) => panel && enforceDrawerState())
           collapsible
           :default-size="30"
           :min-size="Math.max(20, drawerCollapsedSize + 10)"
-          @resize="enforceDrawerState"
         >
           <div class="flex flex-col h-full">
             <!-- Drawer toolbar: Processes/Terminal toggles + close icon -->
