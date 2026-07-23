@@ -98,6 +98,18 @@ const shownPanels = defineModel<Panel[]>('shownPanels', {
 })
 
 /**
+ * Ensure shownPanels never includes panels that aren't listed in availablePanels.
+ */
+watch(
+  availablePanels,
+  (panels) =>
+    (shownPanels.value = shownPanels.value.filter((panel) =>
+      panels.includes(panel),
+    )),
+  { immediate: true },
+)
+
+/**
  * Main panels: at least one must always be shown, and both may be shown side by side.
  */
 const MAIN_PANELS: Panel[] = ['code', 'result']
@@ -133,9 +145,8 @@ resolveInitialShownPanels()
  * Last drawer panel that was shown, so the close icon can reopen it once the drawer is
  * collapsed.
  */
-const lastDrawerPanel = ref<Panel>(
-  DRAWER_PANELS.find((panel) => shownPanels.value.includes(panel)) ??
-    'processes',
+const lastDrawerPanel = ref<Panel | undefined>(
+  DRAWER_PANELS.find((panel) => shownPanels.value.includes(panel)),
 )
 
 const { t } = useI18n()
@@ -197,9 +208,19 @@ const actualShownPanels = computed(() =>
   multiPanel.value ? shownPanels.value : shownPanels.value.slice(0, 1),
 )
 
+watch(shownPanels, (x) => console.log(x), { deep: true, immediate: true })
+
 const togglePanel = (panel: Panel) => {
   if (!multiPanel.value) {
-    shownPanels.value = [panel, ...shownPanels.value.filter((p) => p !== panel)]
+    shownPanels.value = [
+      panel,
+      ...shownPanels.value.filter(
+        (p) =>
+          p !== panel &&
+          (!DRAWER_PANELS.includes(panel) ||
+            !DRAWER_PANELS.filter((dp) => dp !== panel).includes(p)),
+      ),
+    ]
     return
   }
 
@@ -229,6 +250,7 @@ const togglePanel = (panel: Panel) => {
  * shown drawer panel.
  */
 const toggleDrawer = () => {
+  if (!lastDrawerPanel.value) return
   const isDrawerShown = DRAWER_PANELS.some((p) => shownPanels.value.includes(p))
   if (isDrawerShown) {
     shownPanels.value = dropDrawerPanels(shownPanels.value)
