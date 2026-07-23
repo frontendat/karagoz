@@ -208,8 +208,6 @@ const actualShownPanels = computed(() =>
   multiPanel.value ? shownPanels.value : shownPanels.value.slice(0, 1),
 )
 
-watch(shownPanels, (x) => console.log(x), { deep: true, immediate: true })
-
 const togglePanel = (panel: Panel) => {
   if (!multiPanel.value) {
     shownPanels.value = [
