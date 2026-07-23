@@ -123,7 +123,9 @@ const contentPortal = computed(() => ({
 
     <!-- Single currently-shown panel -->
     <div class="flex-1 min-h-0">
-      <slot></slot>
+      <KeepAlive>
+        <slot></slot>
+      </KeepAlive>
     </div>
 
     <!-- Bottom tab bar: switches which single panel is shown -->
@@ -149,16 +151,6 @@ const contentPortal = computed(() => ({
         <Eye class="size-4" />
       </KrgzPanelToggle>
       <KrgzPanelToggle
-        v-if="isAvailable.terminal"
-        :label="t('krgz.sandbox.toggle.terminal')"
-        :pressed="isShown.terminal"
-        :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
-        variant="bottom-bar"
-        @press="$emit('toggle', 'terminal')"
-      >
-        <TerminalSquare class="size-4" />
-      </KrgzPanelToggle>
-      <KrgzPanelToggle
         v-if="isAvailable.processes"
         :label="t('krgz.sandbox.toggle.processes')"
         :pressed="isShown.processes"
@@ -167,6 +159,16 @@ const contentPortal = computed(() => ({
         @press="$emit('toggle', 'processes')"
       >
         <Cog class="size-4" />
+      </KrgzPanelToggle>
+      <KrgzPanelToggle
+        v-if="isAvailable.terminal"
+        :label="t('krgz.sandbox.toggle.terminal')"
+        :pressed="isShown.terminal"
+        :tooltip-content-portal-disabled="fullscreen.isFullscreen.value"
+        variant="bottom-bar"
+        @press="$emit('toggle', 'terminal')"
+      >
+        <TerminalSquare class="size-4" />
       </KrgzPanelToggle>
     </div>
   </section>
