@@ -27,7 +27,19 @@
     "mattpocock-skills@mattpocock": true
   },
   "permissions": {
-    "allow": ["Bash(sandboxed)"],
+    "allow": [
+      "Bash(sandboxed)",
+      "Bash(npm view *)",
+      "Bash(pnpm ls *)",
+      "Bash(gh issue view *)",
+      "Bash(gh pr view *)",
+      "Bash(pnpm --filter * exec vue-tsc --noEmit*)",
+      "Bash(pnpm exec vue-tsc --noEmit*)",
+      "Bash(curl -s http://localhost:*)",
+      "Bash(curl -s http://127.0.0.1:*)",
+      "mcp__claude-design__list_files",
+      "mcp__claude-design__read_file"
+    ],
     "excludedCommmands": ["docker *"]
   },
   "sandbox": {
