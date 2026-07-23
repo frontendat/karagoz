@@ -22,8 +22,9 @@ import { computed, useTemplateRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useSandboxToolbarChrome } from '../composables'
-import { type Panel, toPanelRecord } from '../types'
+import { type Panel } from '../types'
 import KrgzPanelToggle from './KrgzPanelToggle.vue'
+import { toPanelRecord } from '../utils/toPanelRecord.ts'
 
 /**
  * Mobile (single-panel) layout component.

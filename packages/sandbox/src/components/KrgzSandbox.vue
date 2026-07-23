@@ -11,12 +11,13 @@ import { computed, ref, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useSandbox } from '../composables'
-import { type Panel, toPanelRecord } from '../types'
+import { type Panel } from '../types'
 import KrgzPreview from './KrgzPreview.vue'
 import KrgzProcessTabs from './KrgzProcessTabs.vue'
 import KrgzSandboxCodePanel from './KrgzSandboxCodePanel.vue'
 import KrgzSandboxMobileToolbar from './KrgzSandboxMobileToolbar.vue'
 import KrgzSandboxPanelToggles from './KrgzSandboxPanelToggles.vue'
+import { toPanelRecord } from '../utils/toPanelRecord.ts'
 
 /**
  * Main sandbox component.

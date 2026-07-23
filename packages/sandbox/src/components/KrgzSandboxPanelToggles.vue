@@ -21,9 +21,10 @@ import { computed, ref, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import { useSandboxToolbarChrome } from '../composables'
-import { type Panel, toPanelRecord } from '../types'
+import { type Panel } from '../types'
 import KrgzPanelToggle from './KrgzPanelToggle.vue'
 import { delay } from '../utils/delay.ts'
+import { toPanelRecord } from '../utils/toPanelRecord.ts'
 
 /**
  * Layout component.
