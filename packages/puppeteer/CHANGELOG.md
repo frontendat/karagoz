@@ -1,5 +1,17 @@
 # @karagoz/puppeteer
 
+## 0.5.0
+
+### Minor Changes
+
+- New sandbox layout for desktop and mobile.
+
+### Patch Changes
+
+- Updated dependencies
+  - @karagoz/sandbox@0.5.0
+  - @karagoz/shared@0.5.0
+
 ## 0.4.0
 
 ### Minor Changes
