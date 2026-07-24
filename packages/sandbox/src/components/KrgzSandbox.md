@@ -28,7 +28,7 @@ const { boot, isBooting } = useSandboxBoot()
     hide-solve-button
     hide-theme-toggle
     :available-panels="['code', 'processes', 'result', 'terminal']"
-    :shown-panels="['code', 'processes', 'result', 'terminal']"
+    :shown-panels="['code', 'processes', 'result']"
   />
 </template>
 ```

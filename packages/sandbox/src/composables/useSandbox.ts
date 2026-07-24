@@ -20,6 +20,7 @@ function useSandboxInternal() {
   const previewFrame = ref<HTMLIFrameElement>()
   const previewUrl = ref<string>()
   const previewConsoleShown = ref(false)
+  const explorerShown = ref(true)
   const watchers = ref<{
     reinstall?: IFSWatcher
   }>({})
@@ -246,7 +247,25 @@ function useSandboxInternal() {
      * The matchers use [ignore](https://www.npmjs.com/package/ignore) to determine whether a give path matches one
      * of the patterns specified in the sandbox options.
      */
-    explorer,
+    explorer: {
+      ...explorer,
+      /**
+       * Hide the file explorer panel.
+       */
+      hide: () => (explorerShown.value = false),
+      /**
+       * Computed ref containing a boolean flag. Whether the file explorer panel is currently shown.
+       */
+      shown: computed(() => explorerShown.value),
+      /**
+       * Show the file explorer panel.
+       */
+      show: () => (explorerShown.value = true),
+      /**
+       * Toggle the file explorer panel.
+       */
+      toggle: () => (explorerShown.value = !explorerShown.value),
+    },
     options: readonly(options),
     preview: {
       /**

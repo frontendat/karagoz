@@ -1,5 +1,11 @@
 # @karagoz/shared
 
+## 0.5.0
+
+### Minor Changes
+
+- New sandbox layout for desktop and mobile.
+
 ## 0.4.0
 
 ### Minor Changes

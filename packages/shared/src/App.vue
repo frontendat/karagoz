@@ -1,8 +1,21 @@
 <script setup lang="ts">
-import { Files, Terminal } from 'lucide-vue-next'
+import {
+  Files,
+  Lightbulb,
+  Minimize,
+  Sun,
+  MoreVertical,
+  Terminal,
+} from 'lucide-vue-next'
 
 import KaragozLogo from '@/components/KaragozLogo.vue'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import LoadingIndicator from '@/components/ui/loading-indicator/LoadingIndicator.vue'
 import {
   ResizableHandle,
@@ -31,6 +44,31 @@ import {
     <Button variant="link">Link</Button>
     <Button variant="outline">Outline</Button>
     <Button variant="secondary">Secondary</Button>
+
+    <h2 class="mb-4 mt-8">Dropdown Menu</h2>
+    <div class="pl-24">
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button aria-label="Menu" size="icon" variant="ghost">
+            <MoreVertical class="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" :portal="{ disabled: false }">
+          <DropdownMenuItem>
+            <Lightbulb class="size-4" />
+            Solve
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Sun class="size-4" />
+            Theme
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Minimize class="size-4" />
+            Fullscreen
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
 
     <h2 class="mb-4 mt-8">Loading Indicator</h2>
     <div class="h-[200px] w-[200px]">

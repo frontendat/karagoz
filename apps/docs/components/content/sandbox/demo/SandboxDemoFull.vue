@@ -45,7 +45,7 @@ const onSolveClick = async () => {
   <KrgzSandbox
     :booting="isBooting"
     multi-panel-from="xl"
-    :shown-panels="['code', 'processes', 'result', 'terminal']"
+    :shown-panels="['code', 'processes', 'result']"
     @solve="onSolveClick()"
   ></KrgzSandbox>
 </template>

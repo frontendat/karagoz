@@ -6,6 +6,7 @@ export const ar: MessageSchema = {
     sandbox: {
       general: {
         close: 'إغلاق',
+        open: 'فتح',
         restart: 'إعادة تشغيل',
         stop: 'إيقاف',
       },
@@ -33,7 +34,9 @@ export const ar: MessageSchema = {
       },
       toggle: {
         code: 'النص البرمجي',
+        explorer: 'إظهار/إخفاء مستكشف الملفات',
         fullscreen: 'مل٫ الشاشة',
+        more: 'المزيد',
         processes: 'العمليات',
         result: 'النتيجة',
         solve: 'تنفيذ الحل',

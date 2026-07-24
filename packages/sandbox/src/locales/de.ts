@@ -6,6 +6,7 @@ export const de: MessageSchema = {
     sandbox: {
       general: {
         close: 'Schließen',
+        open: 'Öffnen',
         restart: 'Neustart',
         stop: 'Stoppen',
       },
@@ -33,7 +34,9 @@ export const de: MessageSchema = {
       },
       toggle: {
         code: 'Kode',
+        explorer: 'Dateiexplorer umschalten',
         fullscreen: 'Vollbild',
+        more: 'Mehr',
         processes: 'Prozesse',
         result: 'Ergebnis',
         solve: 'Lösen',
