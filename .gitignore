@@ -48,3 +48,20 @@ Thumbs.db
 node-compile-cache
 
 apps/docs/.data
+
+# pnpm local store (created when sandbox HOME = project dir)
+.pnpm-store/
+
+# Shell dotfiles dropped by Docker sandbox (sandbox HOME = project dir)
+.bash_profile
+.bashrc
+.gitconfig
+.gitmodules
+.profile
+.ripgreprc
+.zprofile
+.zshrc
+
+# Claude Code local/runtime files
+.claude/settings.local.json
+.claude/launch.json
