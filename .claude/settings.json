@@ -30,26 +30,40 @@
     "allow": [
       "Bash(sandboxed)",
       "Bash(npm view *)",
-      "Bash(pnpm ls *)",
-      "Bash(gh issue view *)",
-      "Bash(gh pr view *)",
       "Bash(pnpm --filter * exec vue-tsc --noEmit*)",
       "Bash(pnpm exec vue-tsc --noEmit*)",
       "Bash(curl -s http://localhost:*)",
       "Bash(curl -s http://127.0.0.1:*)",
+      "Bash(pnpm list *)",
+      "Bash(pnpm why *)",
+      "Bash(nx show *)",
+      "Bash(nx graph *)",
+      "Bash(nx affected *)",
+      "Bash(nx run-many *)",
+      "Bash(pnpm --filter * run typecheck*)",
+      "Bash(pnpm --filter * run lint*)",
       "mcp__claude-design__list_files",
-      "mcp__claude-design__read_file"
+      "mcp__claude-design__read_file",
+      "mcp__claude-design__get_project",
+      "mcp__claude-design__list_projects",
+      "mcp__claude-design__get_conversation",
+      "mcp__claude-design__list_comments",
+      "mcp__claude-design__list_members",
+      "mcp__claude-design__list_design_systems"
     ],
-    "excludedCommmands": ["docker *"]
+    "excludedCommands": ["docker *"]
   },
   "sandbox": {
     "enabled": true,
     "autoAllowBashIfSandboxed": true,
     "filesystem": {
       "allowWrite": [
+        "~/.pnpm-store",
         "~/Library/pnpm/store",
         "~/Library/Caches/ms-playwright",
-        "~/.cache/ms-playwright"
+        "~/.cache/ms-playwright",
+        "~/.npm",
+        "~/.cache/nx"
       ]
     },
     "network": {
