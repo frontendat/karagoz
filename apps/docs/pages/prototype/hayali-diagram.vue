@@ -45,6 +45,8 @@ function onKeydown(e: KeyboardEvent) {
 onMounted(() => window.addEventListener('keydown', onKeydown))
 onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 
+const isDev = import.meta.dev
+
 // --- Variant C: tiny interactive diagram, data-driven so it reads as "a component of its own" ---
 const nodes = [
   { id: 'request', label: 'Request', desc: 'Client sends GET /users/42' },
@@ -179,7 +181,7 @@ const diagramImageUrl =
     </Card>
 
     <div
-      v-if="import.meta.dev"
+      v-if="isDev"
       class="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-3 rounded-full border bg-background px-4 py-2 shadow-lg"
     >
       <button
