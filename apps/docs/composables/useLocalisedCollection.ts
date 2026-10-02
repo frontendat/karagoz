@@ -4,6 +4,19 @@ type LocalisedCollectionHandler<R> = (
   builder: ReturnType<typeof queryCollection>,
 ) => Promise<R>
 
+/**
+ * Whether a content item was served from the default locale's collection
+ * while a different locale is active (i.e. the page has no translation).
+ */
+export const useIsLocaleFallback = () => {
+  const { defaultLocale, locale } = useI18n()
+
+  return (item?: { id?: string } | null) =>
+    !!item?.id &&
+    locale.value !== defaultLocale &&
+    item.id.startsWith(`content_${defaultLocale}/`)
+}
+
 export const useLocalisedCollection = () => {
   const { defaultLocale, locale } = useI18n()
 

@@ -41,6 +41,9 @@ export default defineI18nLocale(async () => {
       },
     },
     pages: {
+      localeFallback: {
+        notice: 'This page is only available in English.',
+      },
       notFound: {
         title: 'Not Found',
         content: 'Check out these pages:',
