@@ -4,10 +4,13 @@ definePageMeta({
 })
 
 const route = useRoute()
+const contentPath = useContentPath()
 const queryLocalisedCollection = useLocalisedCollection()
 
 const { data: page, status } = await useAsyncData(route.path, () => {
-  return queryLocalisedCollection((builder) => builder.path(route.path).first())
+  return queryLocalisedCollection((builder) =>
+    builder.path(contentPath.value).first(),
+  )
 })
 </script>
 

@@ -15,7 +15,7 @@ const isDev = import.meta.dev
 <template>
   <header class="sticky z-40 top-0 bg-background/80 backdrop-blur-lg border-b">
     <div class="container flex h-14 items-center max-w-384 mx-auto px-8">
-      <NuxtLink class="flex gap-2 items-center me-6" to="/">
+      <NuxtLink class="flex gap-2 items-center me-6" :to="localePath('/')">
         <KaragozLogo
           aria-hidden="true"
           class="fill-primary h-8"

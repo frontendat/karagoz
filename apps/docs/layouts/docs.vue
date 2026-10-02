@@ -4,12 +4,13 @@ import { ScrollArea } from '@karagoz/shared'
 import DefaultLayout from '~/layouts/default.vue'
 
 const route = useRouter().currentRoute
+const contentPath = useContentPath()
 const queryLocalisedCollection = useLocalisedCollection()
 const { data: page } = await useAsyncData(
   () => route.value.path,
   () =>
     queryLocalisedCollection((builder) =>
-      builder.path(route.value.path).first(),
+      builder.path(contentPath.value).first(),
     ),
 )
 
