@@ -1,7 +1,11 @@
 <script setup lang="ts">
-const { t } = useI18n()
+const { locale, t } = useI18n()
+const dir = useLocaleDir()
 </script>
 
 <template>
-  <Hint hide-title>{{ t('pages.localeFallback.notice') }}</Hint>
+  <!-- The notice is translated, unlike the content around it. -->
+  <Hint hide-title :lang="locale" :dir="dir">{{
+    t('pages.localeFallback.notice')
+  }}</Hint>
 </template>

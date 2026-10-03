@@ -5,6 +5,8 @@ import DefaultLayout from '~/layouts/default.vue'
 
 const route = useRouter().currentRoute
 const dir = useLocaleDir()
+const { defaultLocale } = useI18n()
+const isLocaleFallback = useIsLocaleFallback()
 const contentPath = useContentPath()
 const queryLocalisedCollection = useLocalisedCollection()
 const { data: page } = await useAsyncData(
@@ -17,6 +19,10 @@ const { data: page } = await useAsyncData(
 
 const hideToc = computed(() => !page.value || page.value.hideToc)
 const toc = computed(() => page.value?.body?.toc)
+// Untranslated pages show default-locale content, which keeps its own direction.
+const contentLocaleAttrs = computed(() =>
+  isLocaleFallback(page.value) ? { lang: defaultLocale, dir: 'ltr' } : {},
+)
 </script>
 
 <template>
@@ -37,7 +43,10 @@ const toc = computed(() => page.value?.body?.toc)
             <div v-if="!page || !page?.hideBreadcrumb" class="mb-4">
               <DocsBreadcrumb />
             </div>
-            <div class="max-w-none min-w-0 w-full prose dark:prose-invert">
+            <div
+              class="max-w-none min-w-0 w-full prose dark:prose-invert"
+              v-bind="contentLocaleAttrs"
+            >
               <slot></slot>
             </div>
           </div>
