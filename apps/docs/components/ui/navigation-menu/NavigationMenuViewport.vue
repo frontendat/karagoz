@@ -7,12 +7,18 @@ import {
 } from 'radix-vue'
 import { computed, type HTMLAttributes } from 'vue'
 
-const props = defineProps<
-  NavigationMenuViewportProps & { class?: HTMLAttributes['class'] }
->()
+const props = withDefaults(
+  defineProps<
+    NavigationMenuViewportProps & {
+      align?: 'start' | 'end'
+      class?: HTMLAttributes['class']
+    }
+  >(),
+  { align: 'start' },
+)
 
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props
+  const { align: _align, class: _, ...delegated } = props
   return delegated
 })
 
@@ -20,7 +26,12 @@ const forwardedProps = useForwardProps(delegatedProps)
 </script>
 
 <template>
-  <div class="absolute start-0 top-full flex justify-center">
+  <div
+    :class="[
+      'absolute top-full flex justify-center',
+      align === 'end' ? 'end-0' : 'start-0',
+    ]"
+  >
     <NavigationMenuViewport
       v-bind="forwardedProps"
       :class="

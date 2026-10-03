@@ -30,6 +30,7 @@ export default defineI18nLocale(async () => {
             switchToDarkTheme: 'Switch to Dark Theme',
             switchToLightTheme: 'Switch to Light Theme',
             github: 'Code on GitHub',
+            language: 'Language',
           },
         },
         footer: {

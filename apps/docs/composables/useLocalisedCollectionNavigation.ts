@@ -1,5 +1,7 @@
 import type { Collections, ContentNavigationItem } from '@nuxt/content'
 
+import { fallbackTitleKey } from '~/utils/fallbackTitleKey'
+
 type LocalisedCollectionNavigationHandler<R> = (
   builder: ReturnType<typeof queryCollectionNavigation>,
 ) => Promise<R>
@@ -25,13 +27,30 @@ const applyTitles = (
     ...(item.children && { children: applyTitles(item.children, titles) }),
   }))
 
+// Folders without an index page take their title from the folder name.
+// Use the translated title from the i18n messages instead, where available.
+const applyFolderTitles = (
+  items: ContentNavigationItem[],
+  translate: (key: string, fallback: string) => string,
+): ContentNavigationItem[] =>
+  items.map((item) => ({
+    ...item,
+    ...(item.page === false && {
+      title: translate(fallbackTitleKey(item.path), item.title),
+    }),
+    ...(item.children && {
+      children: applyFolderTitles(item.children, translate),
+    }),
+  }))
+
 /**
  * Queries navigation using the default locale's structure, so pages without a
  * translation (e.g. generated pages) still appear. Titles are taken from the
  * current locale wherever a translation exists.
  */
 export const useLocalisedCollectionNavigation = () => {
-  const { defaultLocale, locale } = useI18n()
+  const { defaultLocale, locale, t } = useI18n()
+  const translate = (key: string, fallback: string) => t(key, fallback)
 
   return <R extends ContentNavigationItem[]>(
     handler: LocalisedCollectionNavigationHandler<R>,
@@ -43,11 +62,13 @@ export const useLocalisedCollectionNavigation = () => {
       ),
     )
     if (defaultLocale === locale.value) {
-      return defaultNavigation.catch((error) => {
-        console.log('Unable to perform query.')
-        console.error(error)
-        return fallback ?? ([] as unknown as R)
-      })
+      return defaultNavigation
+        .then((items) => applyFolderTitles(items, translate) as R)
+        .catch((error) => {
+          console.log('Unable to perform query.')
+          console.error(error)
+          return fallback ?? ([] as unknown as R)
+        })
     }
 
     const localisedNavigation = handler(
@@ -61,7 +82,10 @@ export const useLocalisedCollectionNavigation = () => {
     return Promise.all([defaultNavigation, localisedNavigation])
       .then(
         ([items, localisedItems]) =>
-          applyTitles(items, collectTitles(localisedItems)) as R,
+          applyFolderTitles(
+            applyTitles(items, collectTitles(localisedItems)),
+            translate,
+          ) as R,
       )
       .catch((error) => {
         console.log('Unable to perform query.')
