@@ -21,7 +21,9 @@ const isDev = import.meta.dev
           class="fill-primary h-8"
           :title="t('layouts.siteName')"
         />
-        <span class="font-bold hidden md:block">{{ t('layouts.siteName') }}</span>
+        <span class="font-bold hidden md:block">{{
+          t('layouts.siteName')
+        }}</span>
       </NuxtLink>
       <UiNavigationMenu>
         <UiNavigationMenuList>
@@ -115,9 +117,7 @@ const isDev = import.meta.dev
           </UiNavigationMenuItem>
         </UiNavigationMenuList>
       </UiNavigationMenu>
-      <div
-        class="flex flex-1 items-center justify-end md:space-x-2"
-      >
+      <div class="flex flex-1 items-center justify-end md:space-x-2">
         <DocsTopBarLanguageSwitcher />
         <nav class="flex items-center">
           <Button
