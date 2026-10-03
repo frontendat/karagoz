@@ -73,7 +73,6 @@ export default defineNuxtConfig({
   i18n: {
     baseUrl: 'https://karagoz.dev',
     defaultLocale: 'en',
-    // currently only English in production
     detectBrowserLanguage: import.meta.dev
       ? {
           useCookie: true,
@@ -107,7 +106,8 @@ export default defineNuxtConfig({
     minify: false,
     prerender: {
       crawlLinks: true,
-      routes: ['/'],
+      // Locale entry points; the crawler discovers the rest from their links.
+      routes: ['/', '/de', '/ar'],
     },
     preset: 'cloudflare_module',
     scanDirs: ['server'],

@@ -1,20 +1,42 @@
 <script setup lang="ts">
-const { locale, locales, setLocale } = useI18n()
+import { Languages } from 'lucide-vue-next'
 
-const availableLocales = computed(() => {
-  return locales.value.filter((i) => i.code !== locale.value)
-})
+const { locale, locales, t } = useI18n()
+const switchLocalePath = useSwitchLocalePath()
 </script>
 
 <template>
-  <div class="bg-pink-200 gap-4 hidden md:flex">
-    <a
-      v-for="localeOption in availableLocales"
-      :key="localeOption.code"
-      href="#"
-      @click.prevent.stop="setLocale(localeOption.code)"
-    >
-      {{ localeOption.name }}
-    </a>
-  </div>
+  <UiNavigationMenu class="md:flex" viewport-align="end">
+    <UiNavigationMenuList>
+      <UiNavigationMenuItem>
+        <UiNavigationMenuTrigger
+          :aria-label="t('layouts.default.topBar.extras.language')"
+        >
+          <Languages class="h-5 w-5" aria-hidden="true" />
+        </UiNavigationMenuTrigger>
+        <UiNavigationMenuContent>
+          <ul class="grid gap-1 p-2 w-40">
+            <li v-for="localeOption in locales" :key="localeOption.code">
+              <UiNavigationMenuLink
+                as-child
+                :active="localeOption.code === locale"
+              >
+                <NuxtLink
+                  class="block select-none rounded-md px-3 py-2 text-sm leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground data-active:bg-accent/50 data-active:font-medium"
+                  :to="switchLocalePath(localeOption.code)"
+                  :lang="localeOption.code"
+                  :hreflang="localeOption.code"
+                  :aria-current="
+                    localeOption.code === locale ? 'page' : undefined
+                  "
+                >
+                  {{ localeOption.name }}
+                </NuxtLink>
+              </UiNavigationMenuLink>
+            </li>
+          </ul>
+        </UiNavigationMenuContent>
+      </UiNavigationMenuItem>
+    </UiNavigationMenuList>
+  </UiNavigationMenu>
 </template>

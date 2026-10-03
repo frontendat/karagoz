@@ -30,6 +30,7 @@ export default defineI18nLocale(async () => {
             switchToDarkTheme: 'تبديل إلى الوضع المظلم',
             switchToLightTheme: 'تبديل إلى الوضع المضيئ',
             github: 'رابط GitHub',
+            language: 'اللغة',
           },
         },
         footer: {
@@ -41,6 +42,9 @@ export default defineI18nLocale(async () => {
       },
     },
     pages: {
+      localeFallback: {
+        notice: 'هذه الصفحة متاحة باللغة الإنجليزية فقط.',
+      },
       notFound: {
         title: 'غير موجود',
         content: 'ألق نظرة على الصفحات التالية:',

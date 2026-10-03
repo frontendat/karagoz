@@ -10,13 +10,16 @@ import { computed, type HTMLAttributes } from 'vue'
 import NavigationMenuViewport from './NavigationMenuViewport.vue'
 
 const props = defineProps<
-  NavigationMenuRootProps & { class?: HTMLAttributes['class'] }
+  NavigationMenuRootProps & {
+    class?: HTMLAttributes['class']
+    viewportAlign?: 'start' | 'end'
+  }
 >()
 
 const emits = defineEmits<NavigationMenuRootEmits>()
 
 const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props
+  const { class: _, viewportAlign: _viewportAlign, ...delegated } = props
 
   return delegated
 })
@@ -35,6 +38,6 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits)
     "
   >
     <slot />
-    <NavigationMenuViewport />
+    <NavigationMenuViewport :align="viewportAlign" />
   </NavigationMenuRoot>
 </template>

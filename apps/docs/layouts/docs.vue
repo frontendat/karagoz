@@ -4,17 +4,25 @@ import { ScrollArea } from '@karagoz/shared'
 import DefaultLayout from '~/layouts/default.vue'
 
 const route = useRouter().currentRoute
+const dir = useLocaleDir()
+const { defaultLocale } = useI18n()
+const isLocaleFallback = useIsLocaleFallback()
+const contentPath = useContentPath()
 const queryLocalisedCollection = useLocalisedCollection()
 const { data: page } = await useAsyncData(
   () => route.value.path,
   () =>
     queryLocalisedCollection((builder) =>
-      builder.path(route.value.path).first(),
+      builder.path(contentPath.value).first(),
     ),
 )
 
 const hideToc = computed(() => !page.value || page.value.hideToc)
 const toc = computed(() => page.value?.body?.toc)
+// Untranslated pages show default-locale content, which keeps its own direction.
+const contentLocaleAttrs = computed(() =>
+  isLocaleFallback(page.value) ? { lang: defaultLocale, dir: 'ltr' } : {},
+)
 </script>
 
 <template>
@@ -26,7 +34,7 @@ const toc = computed(() => page.value?.body?.toc)
         <aside
           class="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block overflow-hidden"
         >
-          <ScrollArea type="auto" class="h-full">
+          <ScrollArea type="auto" class="h-full" :dir="dir">
             <DocsSideBar />
           </ScrollArea>
         </aside>
@@ -35,7 +43,10 @@ const toc = computed(() => page.value?.body?.toc)
             <div v-if="!page || !page?.hideBreadcrumb" class="mb-4">
               <DocsBreadcrumb />
             </div>
-            <div class="max-w-none min-w-0 w-full prose dark:prose-invert">
+            <div
+              class="max-w-none min-w-0 w-full prose dark:prose-invert"
+              v-bind="contentLocaleAttrs"
+            >
               <slot></slot>
             </div>
           </div>

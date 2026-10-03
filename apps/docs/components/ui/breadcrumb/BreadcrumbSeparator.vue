@@ -15,7 +15,7 @@ const props = defineProps<{
     :class="cn('[&>svg]:w-3.5 [&>svg]:h-3.5', props.class)"
   >
     <slot>
-      <ChevronRight />
+      <ChevronRight class="rtl:rotate-180" />
     </slot>
   </li>
 </template>
