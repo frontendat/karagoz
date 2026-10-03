@@ -2,6 +2,7 @@
 import { Button, ScrollArea } from '@karagoz/shared'
 
 const { t } = useI18n()
+const dir = useLocaleDir()
 
 const props = defineProps<{
   toc: { links?: unknown[] } | null | undefined
@@ -14,7 +15,7 @@ const tocIsOpen = ref(false)
   <div v-if="props.toc?.links?.length" class="text-sm">
     <div class="hidden sticky top-24 xl:block">
       <div class="h-[calc(100vh-7rem)] overflow-hidden w-full z-30">
-        <ScrollArea type="auto" class="h-full">
+        <ScrollArea type="auto" class="h-full" :dir="dir">
           <DocsTOC :toc="props.toc" />
         </ScrollArea>
       </div>

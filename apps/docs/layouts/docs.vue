@@ -4,6 +4,7 @@ import { ScrollArea } from '@karagoz/shared'
 import DefaultLayout from '~/layouts/default.vue'
 
 const route = useRouter().currentRoute
+const dir = useLocaleDir()
 const contentPath = useContentPath()
 const queryLocalisedCollection = useLocalisedCollection()
 const { data: page } = await useAsyncData(
@@ -27,7 +28,7 @@ const toc = computed(() => page.value?.body?.toc)
         <aside
           class="fixed top-14 z-30 -ml-2 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block overflow-hidden"
         >
-          <ScrollArea type="auto" class="h-full">
+          <ScrollArea type="auto" class="h-full" :dir="dir">
             <DocsSideBar />
           </ScrollArea>
         </aside>
