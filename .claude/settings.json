@@ -101,5 +101,6 @@
         { "name": "GH_TOKEN", "mode": "deny" }
       ]
     }
-  }
+  },
+  "tui": "default"
 }
