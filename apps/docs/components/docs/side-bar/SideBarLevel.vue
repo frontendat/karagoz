@@ -59,11 +59,11 @@ const levelItems = computed(() => {
   padding-inline-start: calc(1rem * var(--sidebar-level, 0));
 }
 
-.item:has(> .router-link-active) {
+.item:has(> .router-link-exact-active) {
   background: hsl(var(--secondary));
 }
 
-.router-link-active {
+.router-link-exact-active {
   color: hsl(var(--secondary-foreground));
 }
 </style>
