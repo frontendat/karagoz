@@ -6,7 +6,7 @@ const switchLocalePath = useSwitchLocalePath()
 </script>
 
 <template>
-  <UiNavigationMenu class="md:flex" viewport-align="end">
+  <UiNavigationMenu viewport-align="end">
     <UiNavigationMenuList>
       <UiNavigationMenuItem>
         <UiNavigationMenuTrigger
