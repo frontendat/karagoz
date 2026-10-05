@@ -107,14 +107,6 @@ const isDev = import.meta.dev
               </ul>
             </UiNavigationMenuContent>
           </UiNavigationMenuItem>
-          <UiNavigationMenuItem v-if="isDev">
-            <UiNavigationMenuLink
-              href="/docs/introduction"
-              :class="navigationMenuTriggerStyle()"
-            >
-              {{ t('layouts.default.topBar.nav.blog') }}
-            </UiNavigationMenuLink>
-          </UiNavigationMenuItem>
         </UiNavigationMenuList>
       </UiNavigationMenu>
       <div class="flex flex-1 items-center justify-end md:space-x-2">
