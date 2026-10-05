@@ -41,7 +41,9 @@ onMounted(async () => {
   // Generate react app
   await sandbox.processTabs.open('npm create', 'Generating React App', {
     command: 'npm',
-    args: 'create vite@latest my-react-app -y -- --template react --no-interactive'.split(' '),
+    args: 'create vite@latest my-react-app -y -- --template react --no-interactive'.split(
+      ' ',
+    ),
     suppressClose: true,
     suppressInput: true,
   })
