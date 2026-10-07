@@ -49,8 +49,7 @@ const applyFolderTitles = (
  * current locale wherever a translation exists.
  */
 export const useLocalisedCollectionNavigation = () => {
-  const { defaultLocale, locale, t } = useI18n()
-  const translate = (key: string, fallback: string) => t(key, fallback)
+  const { defaultLocale, locale, t: translate } = useI18n()
 
   return <R extends ContentNavigationItem[]>(
     handler: LocalisedCollectionNavigationHandler<R>,
