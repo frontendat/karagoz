@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { fallbackTitleKey } from '~/utils/fallbackTitleKey'
 
-const { t } = useI18n()
-const route = useRouter().currentRoute
+const { locale, t } = useI18n()
+const contentPath = useContentPath()
 const queryLocalisedCollection = useLocalisedCollection()
 const queryLocalisedCollectionNavigation = useLocalisedCollectionNavigation()
 
-const pathParts = computed(() => route.value.path.split('/').slice(0, 3))
+const pathParts = computed(() => contentPath.value.split('/').slice(0, 3))
 const topPath = computed(() =>
   2 <= pathParts.value.length
     ? pathParts.value.slice(0, 2).join('/')
@@ -17,7 +17,7 @@ const bottomPath = computed(() =>
 )
 
 const { data: topNav } = await useAsyncData(
-  () => `sidebar-top-${topPath.value}`,
+  () => `sidebar-top-${locale.value}-${topPath.value}`,
   () =>
     topPath.value
       ? queryLocalisedCollectionNavigation((builder) =>
@@ -27,7 +27,7 @@ const { data: topNav } = await useAsyncData(
 )
 
 const { data: bottomNav } = await useAsyncData(
-  () => `sidebar-bottom-${bottomPath.value}`,
+  () => `sidebar-bottom-${locale.value}-${bottomPath.value}`,
   () =>
     bottomPath.value
       ? queryLocalisedCollectionNavigation((builder) =>
@@ -53,12 +53,12 @@ const getTitle = async (path?: string) => {
 }
 
 const { data: topTitle } = useAsyncData(
-  () => `sidebar-top-title-${topPath.value}`,
+  () => `sidebar-top-title-${locale.value}-${topPath.value}`,
   () => getTitle(topPath.value),
 )
 
 const { data: bottomTitle } = useAsyncData(
-  () => `sidebar-bottom-title-${bottomPath.value}`,
+  () => `sidebar-bottom-title-${locale.value}-${bottomPath.value}`,
   () => getTitle(bottomPath.value),
 )
 </script>

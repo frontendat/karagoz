@@ -2,9 +2,10 @@
 import type { ContentNavigationItem } from '@nuxt/content'
 import { fallbackTitleKey } from '~/utils/fallbackTitleKey'
 
-const { t } = useI18n()
-const route = useRouter().currentRoute
-const pathParts = computed(() => route.value.path.split('/'))
+const { locale, t } = useI18n()
+const contentPath = useContentPath()
+const localePath = useLocalePath()
+const pathParts = computed(() => contentPath.value.split('/'))
 
 const titleKey = computed(() => fallbackTitleKey(pathParts.value))
 
@@ -19,7 +20,7 @@ const sectionPath = computed(() => pathParts.value.slice(0, 3).join('/'))
 const queryLocalisedCollectionNavigation = useLocalisedCollectionNavigation()
 
 const { data: result } = await useAsyncData(
-  () => `not-found-nav-${sectionPath.value}`,
+  () => `not-found-nav-${locale.value}-${sectionPath.value}`,
   () =>
     queryLocalisedCollectionNavigation((builder) =>
       builder.where('path', 'LIKE', `${sectionPath.value}%`),
@@ -41,7 +42,7 @@ const findChildren = (
   return undefined
 }
 
-const list = computed(() => findChildren(result.value, route.value.path))
+const list = computed(() => findChildren(result.value, contentPath.value))
 </script>
 
 <template>
@@ -54,7 +55,7 @@ const list = computed(() => findChildren(result.value, route.value.path))
       </p>
       <ul>
         <li v-for="item in list" :key="item.path">
-          <NuxtLink :to="item.path">{{ item.title }}</NuxtLink>
+          <NuxtLink :to="localePath(item.path)">{{ item.title }}</NuxtLink>
         </li>
       </ul>
     </template>

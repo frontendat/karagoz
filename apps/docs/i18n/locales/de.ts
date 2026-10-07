@@ -30,6 +30,7 @@ export default defineI18nLocale(async () => {
             switchToDarkTheme: 'Zum Dunkelmodus wechseln',
             switchToLightTheme: 'Zum Lichtmodus wechseln',
             github: 'Code auf GitHub',
+            language: 'Sprache',
           },
         },
         footer: {
@@ -41,9 +42,12 @@ export default defineI18nLocale(async () => {
       },
     },
     pages: {
+      localeFallback: {
+        notice: 'Diese Seite ist nur auf Englisch verfügbar.',
+      },
       notFound: {
         title: 'Nicht gefunden',
-        content: 'Schau dir folgende Seiten:',
+        content: 'Schau dir folgende Seiten an:',
         noContent: 'Nichts zu sehen!',
       },
       sandbox: {

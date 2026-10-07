@@ -15,13 +15,15 @@ const isDev = import.meta.dev
 <template>
   <header class="sticky z-40 top-0 bg-background/80 backdrop-blur-lg border-b">
     <div class="container flex h-14 items-center max-w-384 mx-auto px-8">
-      <NuxtLink class="flex gap-2 items-center me-6" to="/">
+      <NuxtLink class="flex gap-2 items-center me-6" :to="localePath('/')">
         <KaragozLogo
           aria-hidden="true"
           class="fill-primary h-8"
           :title="t('layouts.siteName')"
         />
-        <span class="font-bold">{{ t('layouts.siteName') }}</span>
+        <span class="font-bold hidden md:block">{{
+          t('layouts.siteName')
+        }}</span>
       </NuxtLink>
       <UiNavigationMenu>
         <UiNavigationMenuList>
@@ -105,20 +107,10 @@ const isDev = import.meta.dev
               </ul>
             </UiNavigationMenuContent>
           </UiNavigationMenuItem>
-          <UiNavigationMenuItem v-if="isDev">
-            <UiNavigationMenuLink
-              href="/docs/introduction"
-              :class="navigationMenuTriggerStyle()"
-            >
-              {{ t('layouts.default.topBar.nav.blog') }}
-            </UiNavigationMenuLink>
-          </UiNavigationMenuItem>
         </UiNavigationMenuList>
       </UiNavigationMenu>
-      <div
-        class="flex flex-1 items-center justify-between space-x-2 md:justify-end"
-      >
-        <DocsTopBarLanguageSwitcher v-if="isDev" />
+      <div class="flex flex-1 items-center justify-end md:space-x-2">
+        <DocsTopBarLanguageSwitcher />
         <nav class="flex items-center">
           <Button
             as="a"

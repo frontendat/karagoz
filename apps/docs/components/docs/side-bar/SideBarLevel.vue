@@ -16,6 +16,8 @@ const props = withDefaults(
   },
 )
 
+const localePath = useLocalePath()
+
 const levelItems = computed(() => {
   if (props.level) return props.items
   let items: ContentNavigationItem[] | undefined = props.items
@@ -37,7 +39,7 @@ const levelItems = computed(() => {
       <div class="item">
         <NuxtLink
           class="block px-2 py-1 hover:underline text-muted-foreground"
-          :to="item.path"
+          :to="localePath(item.path)"
         >
           {{ item.title }}
         </NuxtLink>
@@ -57,11 +59,11 @@ const levelItems = computed(() => {
   padding-inline-start: calc(1rem * var(--sidebar-level, 0));
 }
 
-.item:has(> .router-link-active) {
+.item:has(> .router-link-exact-active) {
   background: hsl(var(--secondary));
 }
 
-.router-link-active {
+.router-link-exact-active {
   color: hsl(var(--secondary-foreground));
 }
 </style>
