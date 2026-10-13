@@ -36,7 +36,6 @@
     "access": "public"
   },
   "scripts": {
-    "nx": "nx",
     "dev": "pnpm --filter @karagoz/sandbox --parallel /^watch:/",
     "dev-hmr": "vite",
     "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
