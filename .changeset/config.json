@@ -2,7 +2,14 @@
   "$schema": "https://unpkg.com/@changesets/config@3.1.0/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [],
+  "fixed": [
+    [
+      "@karagoz/hayali",
+      "@karagoz/puppeteer",
+      "@karagoz/sandbox",
+      "@karagoz/shared"
+    ]
+  ],
   "linked": [],
   "access": "restricted",
   "baseBranch": "main",
