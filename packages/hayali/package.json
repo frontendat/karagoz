@@ -31,8 +31,10 @@
   },
   "scripts": {
     "dev": "pnpm --filter @karagoz/hayali --parallel /^watch:/",
+    "dev-hmr": "vite",
     "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
     "prepublish": "pnpm build",
+    "preview": "vite preview",
     "watch:vite": "vite build --watch",
     "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
     "lint": "oxlint src",

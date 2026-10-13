@@ -13,6 +13,10 @@ export default defineConfig({
     }),
     dts({ bundleTypes: true }),
   ],
+  server: {
+    // Listen on all interfaces so a published sandbox port is reachable from the host.
+    host: '0.0.0.0',
+  },
   build: {
     lib: {
       // src/index.ts is where we have exported the component(s)
