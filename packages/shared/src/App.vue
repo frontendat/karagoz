@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {
   Files,
+  Info,
   Lightbulb,
   Minimize,
   Sun,
@@ -9,6 +10,7 @@ import {
 } from 'lucide-vue-next'
 
 import KaragozLogo from '@/components/KaragozLogo.vue'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -30,12 +32,29 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+
+const alertDemoVariants = [
+  'default',
+  'destructive',
+  'tip',
+  'warning',
+  'note',
+] as const
 </script>
 
 <template>
   <section class="m-4">
     <KaragozLogo class="size-16" />
     <h1 class="text-4xl">Karagoz Shared Components:</h1>
+
+    <h2 class="mb-4 mt-8">Alert</h2>
+    <div class="flex max-w-md flex-col gap-4">
+      <Alert v-for="variant in alertDemoVariants" :key="variant" :variant>
+        <Info class="size-4" />
+        <AlertTitle class="capitalize">{{ variant }}</AlertTitle>
+        <AlertDescription> This is a {{ variant }} alert. </AlertDescription>
+      </Alert>
+    </div>
 
     <h2 class="mb-4 mt-8">Button</h2>
     <Button>Default</Button>

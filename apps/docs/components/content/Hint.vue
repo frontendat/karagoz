@@ -1,12 +1,19 @@
 <script setup lang="ts">
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+  type AlertVariants,
+} from '@karagoz/shared'
 import { BookOpenText, TriangleAlert } from 'lucide-vue-next'
+import type { Component } from 'vue'
 
-import type { AlertVariants } from '~/components/ui/alert'
-
-const IconMap = {
+const IconMap: Partial<
+  Record<NonNullable<AlertVariants['variant']>, Component>
+> = {
   default: BookOpenText,
   destructive: TriangleAlert,
-} as const
+}
 
 const props = withDefaults(
   defineProps<{
@@ -30,15 +37,15 @@ const IconComponent = computed(
 
 <template>
   <div class="hint">
-    <UiAlert class="not-prose" :variant="variant">
+    <Alert class="not-prose" :variant="variant">
       <IconComponent v-if="IconComponent && !hideIcon" class="size-4" />
-      <UiAlertTitle v-if="!hideTitle">{{
+      <AlertTitle v-if="!hideTitle">{{
         title ?? t('component.hint.defaultTitle')
-      }}</UiAlertTitle>
-      <UiAlertDescription>
+      }}</AlertTitle>
+      <AlertDescription>
         <slot></slot>
-      </UiAlertDescription>
-    </UiAlert>
+      </AlertDescription>
+    </Alert>
   </div>
 </template>
 
