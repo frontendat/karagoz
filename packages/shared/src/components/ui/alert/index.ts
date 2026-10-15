@@ -12,6 +12,10 @@ export const alertVariants = cva(
         default: 'bg-accent text-accent-foreground',
         destructive:
           'bg-destructive text-destructive-foreground [&>svg]:text-destructive-foreground',
+        tip: 'border border-emerald-500/40 bg-emerald-500/10 text-foreground [&>svg]:text-emerald-600 dark:[&>svg]:text-emerald-400',
+        warning:
+          'border border-amber-500/40 bg-amber-500/10 text-foreground [&>svg]:text-amber-600 dark:[&>svg]:text-amber-400',
+        note: 'border border-sky-500/40 bg-sky-500/10 text-foreground [&>svg]:text-sky-600 dark:[&>svg]:text-sky-400',
       },
     },
     defaultVariants: {
