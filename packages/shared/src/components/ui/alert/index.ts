@@ -24,4 +24,8 @@ export const alertVariants = cva(
   },
 )
 
+/** Shared with `AlertTitle`/`AlertDescription` so non-component renderers (e.g. markdown HTML) stay in sync. */
+export const alertTitleClass = 'mb-1 font-medium leading-none tracking-tight'
+export const alertDescriptionClass = 'text-sm [&_p]:leading-relaxed'
+
 export type AlertVariants = VariantProps<typeof alertVariants>
