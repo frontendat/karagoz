@@ -96,7 +96,7 @@ describe('useLessonReset', () => {
     expect(dirty.value).toBe(true)
   })
 
-  it('requires confirm iff dirty', async () => {
+  it('requires confirm if dirty', async () => {
     const { bootSettled, emit, requiresConfirm } = setup()
     await bootSettled(s1)
     expect(requiresConfirm.value).toBe(false)
