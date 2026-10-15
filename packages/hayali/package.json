@@ -46,7 +46,8 @@
   },
   "dependencies": {
     "@karagoz/sandbox": "workspace:^",
-    "@karagoz/shared": "workspace:^"
+    "@karagoz/shared": "workspace:^",
+    "ignore": "^6.0.2"
   },
   "peerDependencies": {
     "vue": "^3.5.21",
