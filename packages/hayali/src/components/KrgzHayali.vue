@@ -28,7 +28,7 @@ const props = defineProps<{ lesson: Lesson }>()
 const position = defineModel<Position>('position', { required: true })
 
 const { t } = useI18n()
-const { container } = useSandbox()
+const { container, bootstrap } = useSandbox()
 
 const { step, prev, next, groups, goTo } = useLessonPosition(
   () => props.lesson,
@@ -48,7 +48,7 @@ const reset = useLessonReset({
 watch(
   container,
   (c) => {
-    if (c) void reset.boot(position.value)
+    if (c) void reset.boot(position.value).then(bootstrap)
   },
   { immediate: true },
 )

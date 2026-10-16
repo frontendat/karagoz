@@ -16,6 +16,11 @@ export default defineConfig({
   server: {
     // Listen on all interfaces so a published sandbox port is reachable from the host.
     host: '0.0.0.0',
+    // WebContainers need cross-origin isolation.
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'require-corp',
+      'Cross-Origin-Opener-Policy': 'same-origin',
+    },
   },
   build: {
     lib: {

@@ -25,7 +25,7 @@ vi.mock('@karagoz/sandbox', async () => {
   }
   const container = r({ fs: hoisted.fs, mount: hoisted.fs.mount })
   return {
-    useSandbox: () => ({ container }),
+    useSandbox: () => ({ container, bootstrap: vi.fn(async () => {}) }),
     KrgzSandbox: dc({ render: () => h('div', { 'data-testid': 'sandbox' }) }),
   }
 })
