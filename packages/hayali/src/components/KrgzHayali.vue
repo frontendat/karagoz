@@ -115,12 +115,15 @@ const indexOf = (p: Position) =>
     <ResizablePanelGroup direction="horizontal">
       <ResizablePanel :default-size="35" :min-size="20">
         <div class="flex h-full flex-col gap-4 overflow-auto p-4">
-          <nav :aria-label="t('krgz.hayali.steps')">
-            <template v-for="group in groups" :key="group.chapterId">
-              <h3 v-if="group.title" class="font-semibold">
+          <nav :aria-label="t('krgz.hayali.steps')" class="flex flex-col gap-3">
+            <div v-for="group in groups" :key="group.chapterId">
+              <h3
+                v-if="group.title"
+                class="text-muted-foreground mb-1 text-xs font-semibold uppercase tracking-wide"
+              >
                 {{ group.title }}
               </h3>
-              <ol>
+              <ol class="flex flex-col gap-0.5">
                 <li
                   v-for="s in group.steps"
                   :key="s.position.stepId"
@@ -131,11 +134,33 @@ const indexOf = (p: Position) =>
                       ? 'step'
                       : undefined
                   "
+                  class="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm data-[status=current]:bg-accent data-[status=current]:text-accent-foreground data-[status=current]:font-medium data-[status=upcoming]:text-muted-foreground"
                 >
-                  {{ s.title }}
+                  <span
+                    aria-hidden="true"
+                    class="flex size-5 shrink-0 items-center justify-center rounded-full border text-xs"
+                    :class="{
+                      'border-primary bg-primary text-primary-foreground':
+                        statusOf(indexOf(s.position)) === 'done',
+                      'border-primary text-primary':
+                        statusOf(indexOf(s.position)) === 'current',
+                    }"
+                  >
+                    {{
+                      statusOf(indexOf(s.position)) === 'done'
+                        ? '✓'
+                        : statusOf(indexOf(s.position)) === 'current'
+                          ? '●'
+                          : ''
+                    }}
+                  </span>
+                  <span class="truncate">{{ s.title }}</span>
+                  <span class="sr-only">
+                    {{ t(`krgz.hayali.${statusOf(indexOf(s.position))}`) }}
+                  </span>
                 </li>
               </ol>
-            </template>
+            </div>
           </nav>
           <StepBody v-if="step" :body="step.body" />
           <div class="mt-auto flex gap-2">
