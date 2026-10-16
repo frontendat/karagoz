@@ -1,3 +1,4 @@
+import tailwindcss from '@tailwindcss/postcss'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
@@ -5,6 +6,11 @@ import dts from 'vite-plugin-dts'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  css: {
+    postcss: {
+      plugins: [tailwindcss()],
+    },
+  },
   plugins: [
     vue({
       script: {
@@ -33,7 +39,13 @@ export default defineConfig({
     rollupOptions: {
       // make sure to externalize deps that shouldn't be bundled
       // into your library
-      external: ['@karagoz/sandbox', '@karagoz/shared', 'vue', 'vue-i18n'],
+      external: [
+        '@karagoz/sandbox',
+        '@karagoz/shared',
+        'radix-vue',
+        'vue',
+        'vue-i18n',
+      ],
       output: {
         // Provide global variables to use in the UMD build
         // for externalized deps

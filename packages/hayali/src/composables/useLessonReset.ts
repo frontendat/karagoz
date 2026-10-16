@@ -78,6 +78,8 @@ export const useLessonReset = (options: {
   const current = ref<Position>()
   /** Tier-B paths we wrote ourselves whose watch echo has not been seen yet. */
   const expected = new Set<string>()
+  /** Directories containing paths we wrote; WebContainer also reports them, and they are never user edits. */
+  const expectedDirs = new Set<string>()
   /** Tier-B paths created by the user (seen via watch), so reset can remove them. */
   const userPaths = new Set<string>()
 
@@ -94,10 +96,24 @@ export const useLessonReset = (options: {
     return tree
   }
 
+  /** Replace the expected set with `paths` plus their ancestor directories. */
+  const expect = (...groups: Iterable<string>[]) => {
+    expected.clear()
+    expectedDirs.clear()
+    for (const group of groups)
+      for (const path of group) {
+        expected.add(path)
+        const parts = path.split('/')
+        for (let i = 1; i < parts.length; i++)
+          expectedDirs.add(parts.slice(0, i).join('/'))
+      }
+  }
+
   const listener = (_event: string, filename: string | Uint8Array | null) => {
     if (typeof filename !== 'string') return
     const path = normalize(filename)
     if (tierOf(path) !== 'B') return
+    if (expectedDirs.has(path)) return
     if (expected.delete(path)) return
     userPaths.add(path)
     dirty.value = true
@@ -116,8 +132,7 @@ export const useLessonReset = (options: {
     const tierA: FlatTree = new Map(
       [...flatten(lesson().files)].filter(([p]) => tierOf(p) === 'A'),
     )
-    expected.clear()
-    for (const path of tierB.keys()) expected.add(path)
+    expect(tierB.keys())
     await fs.mount(nest(new Map([...tierA, ...tierB])))
     current.value = { ...position }
     dirty.value = false
@@ -138,9 +153,7 @@ export const useLessonReset = (options: {
     ])
     for (const path of target.keys()) stale.delete(path)
 
-    expected.clear()
-    for (const path of stale) expected.add(path)
-    for (const path of target.keys()) expected.add(path)
+    expect(stale, target.keys())
 
     for (const path of stale)
       await fs.rm(path, { recursive: true, force: true })

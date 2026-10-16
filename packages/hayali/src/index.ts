@@ -1,3 +1,5 @@
+import './style.css'
+
 import { calloutPlugin, createCalloutRegistry } from './callouts'
 import KrgzHayali from './components/KrgzHayali.vue'
 import StepBody from './components/StepBody.vue'
