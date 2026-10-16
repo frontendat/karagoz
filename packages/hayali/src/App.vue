@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import '@karagoz/shared/dist/karagoz-shared.css'
+import '@karagoz/sandbox/dist/karagoz-sandbox.css'
+
 import KrgzHayali from './components/KrgzHayali.vue'
 import StepBody from './components/StepBody.vue'
 
