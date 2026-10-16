@@ -50,6 +50,7 @@
     "ignore": "^6.0.2",
     "markdown-it": "^14.2.0",
     "markdown-it-container": "^4.0.0",
+    "radix-vue": "^1.9.17",
     "vue-markdown-render": "^2.3.1"
   },
   "peerDependencies": {
