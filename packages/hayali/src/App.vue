@@ -59,7 +59,7 @@ const demoLesson: Lesson = {
       },
     },
   },
-  immutable: ['package.json', 'server.js'],
+  immutable: ['node_modules', 'package.json', 'package-lock.json', 'server.js'],
   chapters: [
     {
       id: 'intro',
@@ -102,7 +102,19 @@ const demoPosition = ref<Position>({ chapterId: 'intro', stepId: 'one' })
 </script>
 
 <template>
-  <main class="h-screen">
+  <main class="flex-1 h-screen">
     <KrgzHayali v-model:position="demoPosition" :lesson="demoLesson" />
   </main>
 </template>
+
+<style>
+body {
+  margin: 0;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 700px;
+}
+</style>
