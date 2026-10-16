@@ -3,13 +3,15 @@ import type { HTMLAttributes } from 'vue'
 
 import { cn } from '@/utils'
 
+import { alertTitleClass } from '.'
+
 const props = defineProps<{
   class?: HTMLAttributes['class']
 }>()
 </script>
 
 <template>
-  <h5 :class="cn('mb-1 font-medium leading-none tracking-tight', props.class)">
+  <h5 :class="cn(alertTitleClass, props.class)">
     <slot />
   </h5>
 </template>
