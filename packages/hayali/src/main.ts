@@ -1,3 +1,7 @@
+import '@karagoz/shared/dist/karagoz-shared.css'
+import '@karagoz/sandbox/dist/karagoz-sandbox.css'
+import './style.css'
+
 import { createApp } from 'vue'
 
 import App from './App.vue'

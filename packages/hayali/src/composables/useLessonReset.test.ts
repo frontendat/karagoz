@@ -96,6 +96,14 @@ describe('useLessonReset', () => {
     expect(dirty.value).toBe(true)
   })
 
+  it('ignores events for directories containing its own writes', async () => {
+    const { boot, emit, dirty } = setup()
+    await boot(s1)
+    emit('src')
+    emit('src')
+    expect(dirty.value).toBe(false)
+  })
+
   it('requires confirm if dirty', async () => {
     const { bootSettled, emit, requiresConfirm } = setup()
     await bootSettled(s1)
