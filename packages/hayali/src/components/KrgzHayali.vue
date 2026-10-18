@@ -134,35 +134,41 @@ const indexOf = (p: Position) =>
                       ? 'step'
                       : undefined
                   "
-                  class="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm data-[status=current]:bg-accent data-[status=current]:text-accent-foreground data-[status=current]:font-medium data-[status=upcoming]:text-muted-foreground"
+                  class="flex flex-col gap-2 rounded-md px-2 py-1.5 text-sm data-[status=current]:bg-accent data-[status=current]:text-accent-foreground data-[status=current]:font-medium data-[status=upcoming]:text-muted-foreground"
                 >
-                  <span
-                    aria-hidden="true"
-                    class="flex size-5 shrink-0 items-center justify-center rounded-full border text-xs"
-                    :class="{
-                      'border-primary bg-primary text-primary-foreground':
-                        statusOf(indexOf(s.position)) === 'done',
-                      'border-primary text-primary':
-                        statusOf(indexOf(s.position)) === 'current',
-                    }"
-                  >
-                    {{
-                      statusOf(indexOf(s.position)) === 'done'
-                        ? '✓'
-                        : statusOf(indexOf(s.position)) === 'current'
-                          ? '●'
-                          : ''
-                    }}
-                  </span>
-                  <span class="truncate">{{ s.title }}</span>
-                  <span class="sr-only">
-                    {{ t(`krgz.hayali.${statusOf(indexOf(s.position))}`) }}
-                  </span>
+                  <div class="flex items-center gap-2">
+                    <span
+                      aria-hidden="true"
+                      class="flex size-5 shrink-0 items-center justify-center rounded-full border text-xs"
+                      :class="{
+                        'border-primary bg-primary text-primary-foreground':
+                          statusOf(indexOf(s.position)) === 'done',
+                        'border-primary text-primary':
+                          statusOf(indexOf(s.position)) === 'current',
+                      }"
+                    >
+                      {{
+                        statusOf(indexOf(s.position)) === 'done'
+                          ? '✓'
+                          : statusOf(indexOf(s.position)) === 'current'
+                            ? '●'
+                            : ''
+                      }}
+                    </span>
+                    <span class="truncate">{{ s.title }}</span>
+                    <span class="sr-only">
+                      {{ t(`krgz.hayali.${statusOf(indexOf(s.position))}`) }}
+                    </span>
+                  </div>
+                  <StepBody
+                    v-if="statusOf(indexOf(s.position)) === 'current' && step"
+                    class="ps-7 font-normal"
+                    :body="step.body"
+                  />
                 </li>
               </ol>
             </div>
           </nav>
-          <StepBody v-if="step" :body="step.body" />
           <div class="mt-auto flex gap-2">
             <Button
               data-testid="prev"
