@@ -35,3 +35,15 @@
   --animate-collapsible-down: collapsible-down 0.2s ease-in-out;
   --animate-collapsible-up: collapsible-up 0.2s ease-in-out;
 }
+
+@layer base {
+    *,
+    ::before,
+    ::after {
+        border-color: hsl(var(--border));
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}

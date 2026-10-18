@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import '@karagoz/shared/dist/karagoz-shared.css'
-import '@karagoz/sandbox/dist/karagoz-sandbox.css'
-
 import {
   provideWebContainer,
   useSandbox,
@@ -103,9 +100,13 @@ const demoPosition = ref<Position>({ chapterId: 'intro', stepId: 'one' })
 </script>
 
 <template>
-  <main class="flex-1 h-screen">
-    <KrgzHayali v-model:position="demoPosition" :lesson="demoLesson" />
-  </main>
+  <div class="mt-8 mx-8">
+    <div class="border-4 border-dashed flex-1 m-8">
+      <div class="h-180">
+        <KrgzHayali v-model:position="demoPosition" :lesson="demoLesson" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <style>
