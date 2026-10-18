@@ -8,7 +8,8 @@
     "url": "https://github.com/frontendat/karagoz.git"
   },
   "files": [
-    "dist"
+    "dist",
+    "src/lib.css"
   ],
   "type": "module",
   "main": "./dist/karagoz-hayali.umd.cjs",
@@ -24,7 +25,12 @@
         "types": "./dist/types.d.ts",
         "default": "./dist/karagoz-hayali.umd.cjs"
       }
-    }
+    },
+    "./dist/karagoz-hayali.css": {
+      "import": "./dist/karagoz-hayali.css",
+      "require": "./dist/karagoz-hayali.css"
+    },
+    "./style.css": "./src/lib.css"
   },
   "publishConfig": {
     "access": "public"
