@@ -9,8 +9,9 @@ export const en = {
       current: 'Current',
       upcoming: 'Upcoming',
       confirm: {
-        title: 'Discard your changes?',
-        description: 'Moving to another step resets the files you changed.',
+        title: 'Changes will be reset',
+        description:
+          "Moving to another step reverts any edits you've made to the files in this step. Continue?",
         cancel: 'Cancel',
         continue: 'Continue',
       },

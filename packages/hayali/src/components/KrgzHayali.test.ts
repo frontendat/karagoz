@@ -104,6 +104,14 @@ describe('KrgzHayali', () => {
     expect(wrapper.find('[data-testid="pos"]').text()).toBe('s1')
   })
 
+  it('navigates by clicking a step in the list', async () => {
+    const links = wrapper.findAll('[data-testid="step-link"]')
+    expect(links).toHaveLength(2)
+    await links[1].trigger('click')
+    await flushPromises()
+    expect(wrapper.find('[data-testid="pos"]').text()).toBe('s3')
+  })
+
   it('cancel aborts with no state change when dirty', async () => {
     hoisted.listener?.('change', 'user.txt')
     hoisted.fs.mount.mockClear()

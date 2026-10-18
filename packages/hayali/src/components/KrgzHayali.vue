@@ -97,123 +97,215 @@ const currentIndex = computed(() =>
       s.position.stepId === position.value.stepId,
   ),
 )
-const statusOf = (i: number) =>
-  i < currentIndex.value
-    ? 'done'
-    : i === currentIndex.value
-      ? 'current'
-      : 'upcoming'
 const indexOf = (p: Position) =>
   flat.value.findIndex(
     (s) =>
       s.position.chapterId === p.chapterId && s.position.stepId === p.stepId,
   )
+const statusOf = (p: Position) => {
+  const i = indexOf(p)
+  return i < currentIndex.value
+    ? 'done'
+    : i === currentIndex.value
+      ? 'current'
+      : 'upcoming'
+}
+/** Every step but the very last one draws a connector line down to the next marker. */
+const isLast = (p: Position) => indexOf(p) === flat.value.length - 1
 </script>
 
 <template>
-  <div data-testid="krgz-hayali" class="h-full w-full">
-    <ResizablePanelGroup direction="horizontal">
-      <ResizablePanel :default-size="35" :min-size="20">
-        <div class="flex h-full flex-col gap-4 overflow-auto p-4">
-          <nav :aria-label="t('krgz.hayali.steps')" class="flex flex-col gap-3">
-            <div v-for="group in groups" :key="group.chapterId">
-              <h3
-                v-if="group.title"
-                class="text-muted-foreground mb-1 text-xs font-semibold uppercase tracking-wide"
+  <div
+    data-testid="krgz-hayali"
+    class="bg-background flex h-full w-full flex-col"
+  >
+    <div class="flex h-14 min-h-14 items-center gap-1 border-b px-7">
+      <Button
+        data-testid="prev"
+        variant="ghost"
+        size="icon"
+        class="-ms-1.5 size-7"
+        :title="t('krgz.hayali.prev')"
+        :aria-label="t('krgz.hayali.prev')"
+        :disabled="!ready || !prev"
+        @click="navigate(prev)"
+      >
+        <svg
+          class="size-[15px] rtl:-scale-x-100"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="m12 19-7-7 7-7" />
+          <path d="M19 12H5" />
+        </svg>
+      </Button>
+      <Button
+        data-testid="next"
+        variant="ghost"
+        size="icon"
+        class="size-7"
+        :title="t('krgz.hayali.next')"
+        :aria-label="t('krgz.hayali.next')"
+        :disabled="!ready || !next"
+        @click="navigate(next)"
+      >
+        <svg
+          class="size-[15px] rtl:-scale-x-100"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M5 12h14" />
+          <path d="m12 5 7 7-7 7" />
+        </svg>
+      </Button>
+    </div>
+
+    <ResizablePanelGroup direction="horizontal" class="min-h-0 flex-1">
+      <ResizablePanel :default-size="30" class="min-w-[300px]">
+        <nav
+          :aria-label="t('krgz.hayali.steps')"
+          class="h-full overflow-auto px-[22px] py-5"
+        >
+          <template v-for="group in groups" :key="group.chapterId">
+            <h3
+              v-if="group.title"
+              class="text-muted-foreground mb-3 text-xs font-semibold uppercase tracking-wide"
+            >
+              {{ group.title }}
+            </h3>
+            <ol>
+              <li
+                v-for="s in group.steps"
+                :key="s.position.stepId"
+                data-testid="step-item"
+                :data-status="statusOf(s.position)"
+                :aria-current="
+                  statusOf(s.position) === 'current' ? 'step' : undefined
+                "
+                class="relative flex gap-3"
               >
-                {{ group.title }}
-              </h3>
-              <ol class="flex flex-col gap-0.5">
-                <li
-                  v-for="s in group.steps"
-                  :key="s.position.stepId"
-                  data-testid="step-item"
-                  :data-status="statusOf(indexOf(s.position))"
-                  :aria-current="
-                    statusOf(indexOf(s.position)) === 'current'
-                      ? 'step'
-                      : undefined
-                  "
-                  class="flex flex-col gap-2 rounded-md px-2 py-1.5 text-sm data-[status=current]:bg-accent data-[status=current]:text-accent-foreground data-[status=current]:font-medium data-[status=upcoming]:text-muted-foreground"
+                <div
+                  v-if="!isLast(s.position)"
+                  aria-hidden="true"
+                  class="bg-border absolute start-[11px] top-[26px] -bottom-3.5 w-px"
+                />
+                <div
+                  aria-hidden="true"
+                  class="mt-px flex size-[23px] flex-none items-center justify-center rounded-full"
+                  :class="{
+                    'bg-foreground text-background':
+                      statusOf(s.position) === 'done',
+                    'border-foreground bg-background border-2':
+                      statusOf(s.position) === 'current',
+                    'bg-muted border': statusOf(s.position) === 'upcoming',
+                  }"
                 >
-                  <div class="flex items-center gap-2">
-                    <span
-                      aria-hidden="true"
-                      class="flex size-5 shrink-0 items-center justify-center rounded-full border text-xs"
-                      :class="{
-                        'border-primary bg-primary text-primary-foreground':
-                          statusOf(indexOf(s.position)) === 'done',
-                        'border-primary text-primary':
-                          statusOf(indexOf(s.position)) === 'current',
-                      }"
-                    >
-                      {{
-                        statusOf(indexOf(s.position)) === 'done'
-                          ? '✓'
-                          : statusOf(indexOf(s.position)) === 'current'
-                            ? '●'
-                            : ''
-                      }}
-                    </span>
-                    <span class="truncate">{{ s.title }}</span>
-                    <span class="sr-only">
-                      {{ t(`krgz.hayali.${statusOf(indexOf(s.position))}`) }}
-                    </span>
+                  <svg
+                    v-if="statusOf(s.position) === 'done'"
+                    class="size-[11px]"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <div
+                    v-else-if="statusOf(s.position) === 'current'"
+                    class="bg-foreground size-[7px] rounded-full"
+                  />
+                </div>
+                <div class="min-w-0 flex-1 pb-5">
+                  <div
+                    v-if="statusOf(s.position) === 'current'"
+                    class="pt-0.5 text-[13.5px] font-semibold"
+                  >
+                    {{ s.title }}
                   </div>
+                  <button
+                    v-else
+                    type="button"
+                    data-testid="step-link"
+                    class="text-muted-foreground block pt-0.5 text-start text-[13.5px] hover:text-foreground"
+                    :class="
+                      statusOf(s.position) === 'done'
+                        ? 'font-medium'
+                        : 'font-semibold'
+                    "
+                    :disabled="!ready"
+                    @click="navigate(s.position)"
+                  >
+                    {{ s.title }}
+                  </button>
+                  <span class="sr-only">
+                    {{ t(`krgz.hayali.${statusOf(s.position)}`) }}
+                  </span>
                   <StepBody
-                    v-if="statusOf(indexOf(s.position)) === 'current' && step"
-                    class="ps-7 font-normal"
+                    v-if="statusOf(s.position) === 'current' && step"
+                    class="mt-2.5 text-[13.5px]"
                     :body="step.body"
                   />
-                </li>
-              </ol>
-            </div>
-          </nav>
-          <div class="mt-auto flex gap-2">
-            <Button
-              data-testid="prev"
-              variant="outline"
-              :disabled="!ready || !prev"
-              @click="navigate(prev)"
-            >
-              {{ t('krgz.hayali.prev') }}
-            </Button>
-            <Button
-              data-testid="next"
-              :disabled="!ready || !next"
-              @click="navigate(next)"
-            >
-              {{ t('krgz.hayali.next') }}
-            </Button>
-          </div>
-        </div>
+                </div>
+              </li>
+            </ol>
+          </template>
+        </nav>
       </ResizablePanel>
       <ResizableHandle />
-      <ResizablePanel :default-size="65">
-        <KrgzSandbox :booting="!ready" />
+      <ResizablePanel :default-size="70" class="min-w-[460px]">
+        <div
+          class="m-3 me-5 h-[calc(100%-1.5rem)] overflow-hidden rounded-lg border shadow-sm"
+        >
+          <KrgzSandbox :booting="!ready" />
+        </div>
       </ResizablePanel>
     </ResizablePanelGroup>
 
     <AlertDialogRoot :open="confirmOpen" @update:open="onOpenChange">
       <AlertDialogPortal>
-        <AlertDialogOverlay class="fixed inset-0 bg-black/50" />
+        <AlertDialogOverlay
+          class="bg-background/60 fixed inset-0 z-[100] backdrop-blur-[1px]"
+        />
         <AlertDialogContent
-          class="bg-background fixed left-1/2 top-1/2 w-96 -translate-x-1/2 -translate-y-1/2 rounded-md border p-6"
+          class="bg-background fixed start-1/2 top-1/2 z-[100] w-[340px] -translate-x-1/2 -translate-y-1/2 rounded-lg border p-5 shadow-md rtl:translate-x-1/2"
         >
-          <AlertDialogTitle class="font-semibold">
+          <AlertDialogTitle class="mb-2 text-[14.5px] font-semibold">
             {{ t('krgz.hayali.confirm.title') }}
           </AlertDialogTitle>
-          <AlertDialogDescription class="text-muted-foreground text-sm">
+          <AlertDialogDescription
+            class="text-muted-foreground mb-[18px] text-[13px]"
+          >
             {{ t('krgz.hayali.confirm.description') }}
           </AlertDialogDescription>
-          <div class="mt-4 flex justify-end gap-2">
+          <div class="flex justify-end gap-2">
             <AlertDialogCancel as-child>
-              <Button data-testid="confirm-cancel" variant="outline">
+              <Button
+                data-testid="confirm-cancel"
+                variant="outline"
+                class="h-8 px-3.5 text-[12.5px]"
+              >
                 {{ t('krgz.hayali.confirm.cancel') }}
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction as-child>
-              <Button data-testid="confirm-continue" @click="onContinue">
+              <Button
+                data-testid="confirm-continue"
+                variant="destructive"
+                class="h-8 px-3.5 text-[12.5px]"
+                @click="onContinue"
+              >
                 {{ t('krgz.hayali.confirm.continue') }}
               </Button>
             </AlertDialogAction>

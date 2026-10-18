@@ -9,9 +9,9 @@ export const de = {
       current: 'Aktuell',
       upcoming: 'Ausstehend',
       confirm: {
-        title: 'Änderungen verwerfen?',
+        title: 'Änderungen werden zurückgesetzt',
         description:
-          'Beim Wechsel zu einem anderen Schritt werden deine geänderten Dateien zurückgesetzt.',
+          'Beim Wechsel zu einem anderen Schritt werden deine Änderungen an den Dateien dieses Schritts verworfen. Fortfahren?',
         cancel: 'Abbrechen',
         continue: 'Fortfahren',
       },
