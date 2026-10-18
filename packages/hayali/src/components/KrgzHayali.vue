@@ -275,7 +275,9 @@ const isLast = (p: Position) => indexOf(p) === flat.value.length - 1
         <div
           class="m-3 me-5 h-[calc(100%-1.5rem)] overflow-hidden rounded-lg border shadow-sm"
         >
-          <KrgzSandbox :booting="!ready" />
+          <slot name="sandbox">
+            <KrgzSandbox :booting="!ready" />
+          </slot>
         </div>
       </ResizablePanel>
     </ResizablePanelGroup>
