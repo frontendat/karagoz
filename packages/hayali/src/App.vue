@@ -8,6 +8,7 @@ import { onBeforeUnmount, ref } from 'vue'
 
 import KrgzHayali from './components/KrgzHayali.vue'
 import type { Lesson, Position } from './types'
+import {KrgzSandbox} from "@karagoz/sandbox";
 
 // Temporary demo; remove as the lesson implementation progresses.
 const { boot } = useSandboxBoot()
@@ -103,7 +104,11 @@ const demoPosition = ref<Position>({ chapterId: 'intro', stepId: 'one' })
   <div class="mt-8 mx-8">
     <div class="border-4 border-dashed flex-1 m-8">
       <div class="h-180">
-        <KrgzHayali v-model:position="demoPosition" :lesson="demoLesson" />
+        <KrgzHayali v-model:position="demoPosition" :lesson="demoLesson">
+          <template #sandbox="{ ready }">
+            <KrgzSandbox :booting="!ready" :available-panels="['code', 'result']" />
+          </template>
+        </KrgzHayali>
       </div>
     </div>
   </div>
