@@ -168,6 +168,13 @@ const isLast = (p: Position) => indexOf(p) === flat.value.length - 1
           <path d="m12 5 7 7-7 7" />
         </svg>
       </Button>
+      <span
+        v-if="lesson.title"
+        data-testid="lesson-title"
+        class="ms-2 text-sm font-semibold"
+      >
+        {{ lesson.title }}
+      </span>
     </div>
 
     <ResizablePanelGroup direction="horizontal" class="min-h-0 flex-1">

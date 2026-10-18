@@ -31,6 +31,7 @@ vi.mock('@karagoz/sandbox', async () => {
 })
 
 const lesson: Lesson = {
+  title: 'Demo lesson',
   chapters: [
     {
       id: 'c1',
@@ -87,6 +88,9 @@ describe('KrgzHayali', () => {
       'Body one',
     )
     expect(wrapper.find('[data-testid="sandbox"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="lesson-title"]').text()).toBe(
+      'Demo lesson',
+    )
   })
 
   it('navigates without confirm when clean', async () => {
