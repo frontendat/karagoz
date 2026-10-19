@@ -1,19 +1,23 @@
 <script setup lang="ts">
 import { Alert, AlertDescription, AlertTitle } from '@karagoz/shared'
+import { computed } from 'vue'
 import { Translation, useI18n } from 'vue-i18n'
 
 import type { PathPattern } from '../types'
 
-defineProps<{
+const props = defineProps<{
   /** Lock patterns of the current step. */
   locks: PathPattern[]
 }>()
 
 const { t } = useI18n()
+
+// Negated patterns carve exceptions out of a lock; they are not locked themselves.
+const shown = computed(() => props.locks.filter((l) => !l.startsWith('!')))
 </script>
 
 <template>
-  <Alert v-if="locks.length" data-testid="step-locks" variant="warning">
+  <Alert v-if="shown.length" data-testid="step-locks" variant="warning">
     <svg
       aria-hidden="true"
       class="size-4"
@@ -31,11 +35,11 @@ const { t } = useI18n()
     <AlertDescription>
       <Translation
         keypath="krgz.hayali.locks.description"
-        :plural="locks.length"
+        :plural="shown.length"
         tag="p"
       >
         <template #files>
-          <template v-for="(lock, i) in locks" :key="lock">
+          <template v-for="(lock, i) in shown" :key="lock">
             <template v-if="i">, </template>
             <code>{{ lock }}</code>
           </template>

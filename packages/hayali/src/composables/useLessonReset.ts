@@ -1,6 +1,7 @@
 import ignore from 'ignore'
 import { computed, ref, toValue } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
+import { findStep, normalize } from '../lesson'
 import type { AdjustmentsTree, Lesson, Position, Step } from '../types'
 
 /** The slice of WebContainer's `fs` this composable needs; injectable for tests. */
@@ -20,8 +21,6 @@ export interface LessonFs {
 export type Tier = 'A' | 'B'
 
 type FlatTree = Map<string, string>
-
-const normalize = (path: string) => path.replace(/^\.?\/+/, '')
 
 const flatten = (tree: AdjustmentsTree = {}, prefix = ''): FlatTree => {
   const out: FlatTree = new Map()
@@ -52,11 +51,6 @@ const nest = (flat: FlatTree): AdjustmentsTree => {
   }
   return root
 }
-
-const findStep = (lesson: Lesson, p: Position): Step | undefined =>
-  lesson.chapters
-    .find((c) => c.id === p.chapterId)
-    ?.steps.find((s) => s.id === p.stepId)
 
 /**
  * Tier A (immutable) / tier B (resettable) tracking, dirty flag, confirm gate and reset-on-navigate.

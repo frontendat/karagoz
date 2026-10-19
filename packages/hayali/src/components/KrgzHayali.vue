@@ -91,7 +91,7 @@ onBeforeUnmount(reset.dispose)
 const locks = useStepLocks({
   lesson: () => props.lesson,
   position,
-  setOption: (key, setter) => setOption(key, setter),
+  setOption,
 })
 
 const confirmOpen = ref(false)

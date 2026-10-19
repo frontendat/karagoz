@@ -10,7 +10,7 @@ const props = defineProps<{
   steps: Step[]
   currentStepId: string
   /** Lock patterns of the current step. */
-  locks?: PathPattern[]
+  locks: PathPattern[]
   disabled?: boolean
 }>()
 defineEmits<{ select: [stepId: string] }>()
@@ -93,7 +93,7 @@ const statusOf = (i: number) =>
             {{ t(`krgz.hayali.${statusOf(i)}`) }}
           </span>
           <template v-if="statusOf(i) === 'current'">
-            <StepLockAlert class="mt-2.5" :locks="locks ?? []" />
+            <StepLockAlert class="mt-2.5" :locks="locks" />
             <StepBody class="mt-2.5 text-[13.5px]" :body="s.body" />
           </template>
         </div>

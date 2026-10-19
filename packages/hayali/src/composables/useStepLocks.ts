@@ -2,6 +2,7 @@ import type { SandboxOptions } from '@karagoz/sandbox'
 import { computed, onScopeDispose, toValue, watch } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
 
+import { findStep, normalize } from '../lesson'
 import type { Lesson, PathPattern, Position } from '../types'
 
 type ExplorerOptions = SandboxOptions['explorer']
@@ -18,7 +19,7 @@ export type SetExplorerOption = (
  */
 export const toSandboxPattern = (pattern: PathPattern) => {
   const negated = pattern.startsWith('!')
-  const path = (negated ? pattern.slice(1) : pattern).replace(/^\.?\/+/, '')
+  const path = normalize(negated ? pattern.slice(1) : pattern)
   const anchored = path.replace(/\/$/, '').includes('/')
   return `${negated ? '!' : ''}${anchored ? './' : '**/'}${path}`
 }
@@ -35,14 +36,10 @@ export const useStepLocks = (options: {
   position: MaybeRefOrGetter<Position>
   setOption: SetExplorerOption
 }) => {
-  const locks = computed<PathPattern[]>(() => {
-    const { chapterId, stepId } = toValue(options.position)
-    return (
-      toValue(options.lesson)
-        .chapters.find((c) => c.id === chapterId)
-        ?.steps.find((s) => s.id === stepId)?.locks ?? []
-    )
-  })
+  const locks = computed<PathPattern[]>(
+    () =>
+      findStep(toValue(options.lesson), toValue(options.position))?.locks ?? [],
+  )
 
   const patterns = computed(() =>
     [...(toValue(options.lesson).immutable ?? []), ...locks.value].map(
