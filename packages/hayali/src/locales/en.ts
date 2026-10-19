@@ -8,6 +8,7 @@ export const en = {
       done: 'Done',
       current: 'Current',
       upcoming: 'Upcoming',
+      toc: 'Table of contents',
       confirm: {
         title: 'Changes will be reset',
         description:

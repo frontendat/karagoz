@@ -23,6 +23,7 @@ import { useLessonPosition } from '../composables/useLessonPosition'
 import { useLessonReset } from '../composables/useLessonReset'
 import type { Lesson, Position } from '../types'
 import StepBody from './StepBody.vue'
+import TocDropdown from './TocDropdown.vue'
 
 const props = defineProps<{ lesson: Lesson }>()
 const position = defineModel<Position>('position', { required: true })
@@ -30,7 +31,7 @@ const position = defineModel<Position>('position', { required: true })
 const { t } = useI18n()
 const { container, bootstrap } = useSandbox()
 
-const { step, prev, next, groups, goTo } = useLessonPosition(
+const { chapter, step, prev, next, groups, goTo } = useLessonPosition(
   () => props.lesson,
   position,
 )
@@ -89,29 +90,21 @@ const navigate = async (target: Position | undefined) => {
 
 const ready = computed(() => !!reset.current.value)
 
-const flat = computed(() => groups.value.flatMap((g) => g.steps))
+// The content pane lists only the current chapter's steps; chapters surface in the TOC.
+const steps = computed(() => chapter.value?.steps ?? [])
 const currentIndex = computed(() =>
-  flat.value.findIndex(
-    (s) =>
-      s.position.chapterId === position.value.chapterId &&
-      s.position.stepId === position.value.stepId,
-  ),
+  steps.value.findIndex((s) => s.id === position.value.stepId),
 )
-const indexOf = (p: Position) =>
-  flat.value.findIndex(
-    (s) =>
-      s.position.chapterId === p.chapterId && s.position.stepId === p.stepId,
-  )
-const statusOf = (p: Position) => {
-  const i = indexOf(p)
-  return i < currentIndex.value
+const statusOf = (i: number) =>
+  i < currentIndex.value
     ? 'done'
     : i === currentIndex.value
       ? 'current'
       : 'upcoming'
-}
-/** Every step but the very last one draws a connector line down to the next marker. */
-const isLast = (p: Position) => indexOf(p) === flat.value.length - 1
+const positionOf = (stepId: string): Position => ({
+  chapterId: position.value.chapterId,
+  stepId,
+})
 </script>
 
 <template>
@@ -168,12 +161,18 @@ const isLast = (p: Position) => indexOf(p) === flat.value.length - 1
           <path d="m12 5 7 7-7 7" />
         </svg>
       </Button>
+      <TocDropdown
+        :groups="groups"
+        :current="position"
+        :disabled="!ready"
+        @select="navigate"
+      />
       <span
-        v-if="lesson.title"
-        data-testid="lesson-title"
+        v-if="chapter"
+        data-testid="chapter-title"
         class="ms-2 text-sm font-semibold"
       >
-        {{ lesson.title }}
+        {{ chapter.title }}
       </span>
     </div>
 
@@ -183,91 +182,78 @@ const isLast = (p: Position) => indexOf(p) === flat.value.length - 1
           :aria-label="t('krgz.hayali.steps')"
           class="h-full overflow-auto px-[22px] py-5"
         >
-          <template v-for="group in groups" :key="group.chapterId">
-            <h3
-              v-if="group.title"
-              class="text-muted-foreground mb-3 text-xs font-semibold uppercase tracking-wide"
+          <ol>
+            <li
+              v-for="(s, i) in steps"
+              :key="s.id"
+              data-testid="step-item"
+              :data-status="statusOf(i)"
+              :aria-current="statusOf(i) === 'current' ? 'step' : undefined"
+              class="relative flex gap-3"
             >
-              {{ group.title }}
-            </h3>
-            <ol>
-              <li
-                v-for="s in group.steps"
-                :key="s.position.stepId"
-                data-testid="step-item"
-                :data-status="statusOf(s.position)"
-                :aria-current="
-                  statusOf(s.position) === 'current' ? 'step' : undefined
-                "
-                class="relative flex gap-3"
+              <div
+                v-if="i < steps.length - 1"
+                aria-hidden="true"
+                class="bg-border absolute start-[11px] top-[26px] -bottom-3.5 w-px"
+              />
+              <div
+                aria-hidden="true"
+                class="mt-px flex size-[23px] flex-none items-center justify-center rounded-full"
+                :class="{
+                  'bg-foreground text-background': statusOf(i) === 'done',
+                  'border-foreground bg-background border-2':
+                    statusOf(i) === 'current',
+                  'bg-muted border': statusOf(i) === 'upcoming',
+                }"
               >
-                <div
-                  v-if="!isLast(s.position)"
-                  aria-hidden="true"
-                  class="bg-border absolute start-[11px] top-[26px] -bottom-3.5 w-px"
-                />
-                <div
-                  aria-hidden="true"
-                  class="mt-px flex size-[23px] flex-none items-center justify-center rounded-full"
-                  :class="{
-                    'bg-foreground text-background':
-                      statusOf(s.position) === 'done',
-                    'border-foreground bg-background border-2':
-                      statusOf(s.position) === 'current',
-                    'bg-muted border': statusOf(s.position) === 'upcoming',
-                  }"
+                <svg
+                  v-if="statusOf(i) === 'done'"
+                  class="size-[11px]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
                 >
-                  <svg
-                    v-if="statusOf(s.position) === 'done'"
-                    class="size-[11px]"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="3"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                  <div
-                    v-else-if="statusOf(s.position) === 'current'"
-                    class="bg-foreground size-[7px] rounded-full"
-                  />
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+                <div
+                  v-else-if="statusOf(i) === 'current'"
+                  class="bg-foreground size-[7px] rounded-full"
+                />
+              </div>
+              <div class="min-w-0 flex-1 pb-5">
+                <div
+                  v-if="statusOf(i) === 'current'"
+                  class="pt-0.5 text-[13.5px] font-semibold"
+                >
+                  {{ s.title }}
                 </div>
-                <div class="min-w-0 flex-1 pb-5">
-                  <div
-                    v-if="statusOf(s.position) === 'current'"
-                    class="pt-0.5 text-[13.5px] font-semibold"
-                  >
-                    {{ s.title }}
-                  </div>
-                  <button
-                    v-else
-                    type="button"
-                    data-testid="step-link"
-                    class="text-muted-foreground block pt-0.5 text-start text-[13.5px] hover:text-foreground"
-                    :class="
-                      statusOf(s.position) === 'done'
-                        ? 'font-medium'
-                        : 'font-semibold'
-                    "
-                    :disabled="!ready"
-                    @click="navigate(s.position)"
-                  >
-                    {{ s.title }}
-                  </button>
-                  <span class="sr-only">
-                    {{ t(`krgz.hayali.${statusOf(s.position)}`) }}
-                  </span>
-                  <StepBody
-                    v-if="statusOf(s.position) === 'current' && step"
-                    class="mt-2.5 text-[13.5px]"
-                    :body="step.body"
-                  />
-                </div>
-              </li>
-            </ol>
-          </template>
+                <button
+                  v-else
+                  type="button"
+                  data-testid="step-link"
+                  class="text-muted-foreground block pt-0.5 text-start text-[13.5px] hover:text-foreground"
+                  :class="
+                    statusOf(i) === 'done' ? 'font-medium' : 'font-semibold'
+                  "
+                  :disabled="!ready"
+                  @click="navigate(positionOf(s.id))"
+                >
+                  {{ s.title }}
+                </button>
+                <span class="sr-only">
+                  {{ t(`krgz.hayali.${statusOf(i)}`) }}
+                </span>
+                <StepBody
+                  v-if="statusOf(i) === 'current' && step"
+                  class="mt-2.5 text-[13.5px]"
+                  :body="step.body"
+                />
+              </div>
+            </li>
+          </ol>
         </nav>
       </ResizablePanel>
       <ResizableHandle />

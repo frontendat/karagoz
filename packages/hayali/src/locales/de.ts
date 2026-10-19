@@ -8,6 +8,7 @@ export const de = {
       done: 'Erledigt',
       current: 'Aktuell',
       upcoming: 'Ausstehend',
+      toc: 'Inhaltsverzeichnis',
       confirm: {
         title: 'Änderungen werden zurückgesetzt',
         description:

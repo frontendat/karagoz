@@ -45,7 +45,6 @@ const html = (heading: string) => `<html>
 `
 
 const demoLesson: Lesson = {
-  title: 'Express basics',
   files: {
     'package.json': { file: { contents: packageJson } },
     'server.js': { file: { contents: serverJs } },
@@ -92,6 +91,52 @@ const demoLesson: Lesson = {
           title: 'Remove styles',
           body: 'The stylesheet is removed again.',
           removals: ['public/style.css'],
+        },
+      ],
+    },
+    {
+      id: 'pages',
+      title: 'More pages',
+      steps: [
+        {
+          // Step ids only need to be unique within their chapter.
+          id: 'one',
+          title: 'Add an about page',
+          body: 'A second page lives at `public/about.html`. Open `/about.html` in the preview.\n\n:::tip\nExpress serves every file in `public/` as-is.\n:::',
+          adjustments: {
+            public: {
+              directory: {
+                'about.html': { file: { contents: html('About us') } },
+              },
+            },
+          },
+        },
+        {
+          id: 'two',
+          title: 'Link the pages',
+          body: 'Both pages now link to each other.\n\n:::note\n`server.js` is immutable, so it never resets between steps.\n:::',
+          adjustments: {
+            public: {
+              directory: {
+                'index.html': {
+                  file: {
+                    contents: html('Hello').replace(
+                      '</h1>',
+                      '</h1>\n<a href="./about.html">About</a>',
+                    ),
+                  },
+                },
+                'about.html': {
+                  file: {
+                    contents: html('About us').replace(
+                      '</h1>',
+                      '</h1>\n<a href="./index.html">Home</a>',
+                    ),
+                  },
+                },
+              },
+            },
+          },
         },
       ],
     },
