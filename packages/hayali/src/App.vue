@@ -146,7 +146,7 @@ const demoPosition = ref<Position>({ chapterId: 'intro', stepId: 'one' })
 </script>
 
 <template>
-  <div class="mt-8 mx-8">
+  <div class="mt-4 mx-4">
     <div class="border-4 border-dashed flex-1 m-8">
       <div class="h-180">
         <KrgzHayali v-model:position="demoPosition" :lesson="demoLesson">

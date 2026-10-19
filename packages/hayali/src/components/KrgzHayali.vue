@@ -50,7 +50,7 @@ const props = withDefaults(
      */
     multiPanelFrom?: FullLayoutFrom
   }>(),
-  { fullLayoutFrom: '3xl', multiPanelFrom: 'md' },
+  { fullLayoutFrom: '3xl', multiPanelFrom: '3xl' },
 )
 const position = defineModel<Position>('position', { required: true })
 
