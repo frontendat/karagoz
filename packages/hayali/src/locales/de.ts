@@ -11,6 +11,11 @@ export const de = {
       toc: 'Inhaltsverzeichnis',
       lesson: 'Lektion',
       sandbox: 'Sandbox',
+      locks: {
+        title: 'Achtung!',
+        description:
+          '{files} ist in diesem Schritt gesperrt. | {files} sind in diesem Schritt gesperrt.',
+      },
       confirm: {
         title: 'Änderungen werden zurückgesetzt',
         description:

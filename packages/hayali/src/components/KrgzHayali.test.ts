@@ -11,6 +11,7 @@ type Listener = (event: string, filename: string) => void
 const hoisted = vi.hoisted(() => ({
   listener: undefined as undefined | ((e: string, f: string) => void),
   fs: {} as Record<string, ReturnType<typeof vi.fn>>,
+  explorer: { readonly: ['*/node_modules'] } as { readonly?: string[] },
 }))
 
 vi.mock('@karagoz/sandbox', async () => {
@@ -25,7 +26,14 @@ vi.mock('@karagoz/sandbox', async () => {
   }
   const container = r({ fs: hoisted.fs, mount: hoisted.fs.mount })
   return {
-    useSandbox: () => ({ container, bootstrap: vi.fn(async () => {}) }),
+    useSandbox: () => ({
+      container,
+      bootstrap: vi.fn(async () => {}),
+      setOption: (
+        _key: 'explorer',
+        setter: (old: typeof hoisted.explorer) => typeof hoisted.explorer,
+      ) => (hoisted.explorer = setter(hoisted.explorer)),
+    }),
     KrgzSandbox: dc({
       props: ['booting', 'multiPanelFrom'],
       setup: (props: { multiPanelFrom?: string }) => () =>
@@ -44,7 +52,7 @@ const lesson: Lesson = {
       title: 'Basics',
       steps: [
         { id: 's1', title: 'One', body: 'Body one' },
-        { id: 's2', title: 'Two', body: 'Body two' },
+        { id: 's2', title: 'Two', body: 'Body two', locks: ['a.txt'] },
         { id: 's3', title: 'Three', body: 'Body three' },
       ],
     },
@@ -194,12 +202,43 @@ describe('KrgzHayali', () => {
     expect(hoisted.fs.mount).toHaveBeenCalled()
   })
 
-  it('passes multiPanelFrom to the default sandbox, md by default', () => {
+  it('alerts and marks readonly the current step locks only', async () => {
+    expect(wrapper.find('[data-testid="step-locks"]').exists()).toBe(false)
+    expect(hoisted.explorer.readonly).toEqual(['*/node_modules'])
+
+    await wrapper.find('[data-testid="next"]').trigger('click')
+    await flushPromises()
+    const alert = wrapper.find('[data-testid="step-locks"]')
+    expect(alert.text()).toContain('Heads up!')
+    expect(alert.text()).toContain('a.txt is locked for this step.')
+    expect(hoisted.explorer.readonly).toEqual(['*/node_modules', '**/a.txt'])
+
+    await wrapper.find('[data-testid="next"]').trigger('click')
+    await flushPromises()
+    expect(wrapper.find('[data-testid="step-locks"]').exists()).toBe(false)
+    expect(hoisted.explorer.readonly).toEqual(['*/node_modules'])
+  })
+
+  it('still treats edits to locked files as dirty', async () => {
+    await wrapper.find('[data-testid="next"]').trigger('click')
+    await flushPromises()
+    // The first event is the echo of our own mount (the mock mount emits none).
+    hoisted.listener?.('change', 'a.txt')
+    hoisted.listener?.('change', 'a.txt')
+    await wrapper.find('[data-testid="next"]').trigger('click')
+    await flushPromises()
+    expect(q('confirm-continue')).not.toBeNull()
+    q('confirm-cancel')!.click()
+    await flushPromises()
+    expect(wrapper.find('[data-testid="pos"]').text()).toBe('c1/s2')
+  })
+
+  it('passes multiPanelFrom to the default sandbox, 3xl by default', () => {
     expect(
       wrapper
         .find('[data-testid="sandbox"]')
         .attributes('data-multi-panel-from'),
-    ).toBe('md')
+    ).toBe('3xl')
   })
 
   it('exposes ready and multiPanelFrom on the sandbox slot', async () => {

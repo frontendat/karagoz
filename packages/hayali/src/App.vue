@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  KrgzSandbox,
   provideWebContainer,
   useSandbox,
   useSandboxBoot,
@@ -8,7 +9,6 @@ import { onBeforeUnmount, ref } from 'vue'
 
 import KrgzHayali from './components/KrgzHayali.vue'
 import type { Lesson, Position } from './types'
-import {KrgzSandbox} from "@karagoz/sandbox";
 
 // Temporary demo; remove as the lesson implementation progresses.
 const { boot } = useSandboxBoot()
@@ -72,6 +72,7 @@ const demoLesson: Lesson = {
           id: 'two',
           title: 'Add styling',
           body: 'The heading is now styled. Changing files and moving on asks for confirmation.',
+          locks: ['public/index.html'],
           adjustments: {
             public: {
               directory: {

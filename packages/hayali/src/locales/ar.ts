@@ -11,6 +11,11 @@ export const ar = {
       toc: 'جدول المحتويات',
       lesson: 'الدرس',
       sandbox: 'بيئة التجربة',
+      locks: {
+        title: 'تنبيه!',
+        description:
+          '{files} مقفل في هذه الخطوة. | {files} مقفلة في هذه الخطوة.',
+      },
       confirm: {
         title: 'سيتم التراجع عن التغييرات',
         description:
