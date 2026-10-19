@@ -150,8 +150,12 @@ const demoPosition = ref<Position>({ chapterId: 'intro', stepId: 'one' })
     <div class="border-4 border-dashed flex-1 m-8">
       <div class="h-180">
         <KrgzHayali v-model:position="demoPosition" :lesson="demoLesson">
-          <template #sandbox="{ ready }">
-            <KrgzSandbox :booting="!ready" :available-panels="['code', 'result']" />
+          <template #sandbox="{ ready, multiPanelFrom }">
+            <KrgzSandbox
+              :booting="!ready"
+              :available-panels="['code', 'result']"
+              :multi-panel-from="multiPanelFrom"
+            />
           </template>
         </KrgzHayali>
       </div>

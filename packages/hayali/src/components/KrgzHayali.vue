@@ -43,8 +43,14 @@ const props = withDefaults(
      * **Available values:** none, xs, sm, md, lg, xl, 2xl, 3xl, 4xl, 5xl, 6xl, 7xl
      */
     fullLayoutFrom?: FullLayoutFrom
+    /**
+     * Forwarded to the default `KrgzSandbox` (and exposed on the `sandbox` slot) as its `multi-panel-from`,
+     * so the sandbox drops to a single panel when its pane is narrow.
+     * **Available values:** none, xs, sm, md, lg, xl, 2xl, 3xl, 4xl, 5xl, 6xl, 7xl
+     */
+    multiPanelFrom?: FullLayoutFrom
   }>(),
-  { fullLayoutFrom: 'md' },
+  { fullLayoutFrom: '3xl', multiPanelFrom: 'md' },
 )
 const position = defineModel<Position>('position', { required: true })
 
@@ -160,8 +166,15 @@ const toolbarProps = computed(() => ({
             <div
               class="m-3 me-5 h-[calc(100%-1.5rem)] overflow-hidden rounded-lg border shadow-sm"
             >
-              <slot name="sandbox" :ready="ready">
-                <KrgzSandbox :booting="!ready" />
+              <slot
+                name="sandbox"
+                :ready="ready"
+                :multi-panel-from="multiPanelFrom"
+              >
+                <KrgzSandbox
+                  :booting="!ready"
+                  :multi-panel-from="multiPanelFrom"
+                />
               </slot>
             </div>
           </ResizablePanel>
@@ -198,8 +211,15 @@ const toolbarProps = computed(() => ({
             <div
               class="m-3 h-[calc(100%-1.5rem)] overflow-hidden rounded-lg border shadow-sm"
             >
-              <slot name="sandbox" :ready="ready">
-                <KrgzSandbox :booting="!ready" />
+              <slot
+                name="sandbox"
+                :ready="ready"
+                :multi-panel-from="multiPanelFrom"
+              >
+                <KrgzSandbox
+                  :booting="!ready"
+                  :multi-panel-from="multiPanelFrom"
+                />
               </slot>
             </div>
           </TabsContent>

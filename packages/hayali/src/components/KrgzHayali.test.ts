@@ -26,7 +26,14 @@ vi.mock('@karagoz/sandbox', async () => {
   const container = r({ fs: hoisted.fs, mount: hoisted.fs.mount })
   return {
     useSandbox: () => ({ container, bootstrap: vi.fn(async () => {}) }),
-    KrgzSandbox: dc({ render: () => h('div', { 'data-testid': 'sandbox' }) }),
+    KrgzSandbox: dc({
+      props: ['booting', 'multiPanelFrom'],
+      setup: (props: { multiPanelFrom?: string }) => () =>
+        h('div', {
+          'data-testid': 'sandbox',
+          'data-multi-panel-from': props.multiPanelFrom,
+        }),
+    }),
   }
 })
 
@@ -187,8 +194,40 @@ describe('KrgzHayali', () => {
     expect(hoisted.fs.mount).toHaveBeenCalled()
   })
 
+  it('passes multiPanelFrom to the default sandbox, md by default', () => {
+    expect(
+      wrapper
+        .find('[data-testid="sandbox"]')
+        .attributes('data-multi-panel-from'),
+    ).toBe('md')
+  })
+
+  it('exposes ready and multiPanelFrom on the sandbox slot', async () => {
+    const custom = mount(
+      defineComponent({
+        components: { KrgzHayali },
+        setup: () => ({
+          lesson,
+          position: ref<Position>({ chapterId: 'c1', stepId: 's1' }),
+        }),
+        template: `<KrgzHayali :lesson="lesson" v-model:position="position" multi-panel-from="lg">
+            <template #sandbox="{ ready, multiPanelFrom }">
+              <i data-testid="slot">{{ ready }}/{{ multiPanelFrom }}</i>
+            </template>
+          </KrgzHayali>`,
+      }),
+      { global: { plugins: [i18n] } },
+    )
+    await flushPromises()
+    expect(custom.find('[data-testid="slot"]').text()).toBe('true/lg')
+    custom.unmount()
+  })
+
   it('uses the desktop split with no Lesson/Sandbox toggle by default', () => {
     expect(wrapper.find('[data-testid="layout-toggle"]').exists()).toBe(false)
+    expect(
+      wrapper.find('[data-testid="krgz-hayali"] > div').classes(),
+    ).toContain('@3xl/hayali:[--full-layout:1]')
     expect(wrapper.find('[data-testid="toolbar"]').exists()).toBe(true)
   })
 })
