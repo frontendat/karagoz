@@ -9,6 +9,8 @@ export const en = {
       current: 'Current',
       upcoming: 'Upcoming',
       toc: 'Table of contents',
+      lesson: 'Lesson',
+      sandbox: 'Sandbox',
       confirm: {
         title: 'Changes will be reset',
         description:

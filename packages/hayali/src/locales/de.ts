@@ -9,6 +9,8 @@ export const de = {
       current: 'Aktuell',
       upcoming: 'Ausstehend',
       toc: 'Inhaltsverzeichnis',
+      lesson: 'Lektion',
+      sandbox: 'Sandbox',
       confirm: {
         title: 'Änderungen werden zurückgesetzt',
         description:

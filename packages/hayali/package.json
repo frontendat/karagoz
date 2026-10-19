@@ -53,6 +53,7 @@
   "dependencies": {
     "@karagoz/sandbox": "workspace:^",
     "@karagoz/shared": "workspace:^",
+    "@vueuse/core": "^14.3.0",
     "ignore": "^6.0.2",
     "markdown-it": "^14.2.0",
     "markdown-it-container": "^4.0.0",

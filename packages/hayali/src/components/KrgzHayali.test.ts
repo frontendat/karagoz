@@ -186,4 +186,78 @@ describe('KrgzHayali', () => {
     })
     expect(hoisted.fs.mount).toHaveBeenCalled()
   })
+
+  it('uses the desktop split with no Lesson/Sandbox toggle by default', () => {
+    expect(wrapper.find('[data-testid="layout-toggle"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="toolbar"]').exists()).toBe(true)
+  })
+})
+
+describe('KrgzHayali below fullLayoutFrom', () => {
+  let wrapper: ReturnType<typeof mount>
+  beforeEach(async () => {
+    // Below the container-query threshold `--full-layout` is unset.
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        constructor(private cb: ResizeObserverCallback) {}
+        observe(target: Element) {
+          this.cb(
+            [{ target } as ResizeObserverEntry],
+            this as unknown as ResizeObserver,
+          )
+        }
+        disconnect() {}
+      },
+    )
+    wrapper = mount(Host, {
+      global: { plugins: [i18n] },
+      attachTo: document.body,
+    })
+    await flushPromises()
+  })
+  afterEach(() => {
+    wrapper.unmount()
+    vi.unstubAllGlobals()
+  })
+
+  const visible = (id: string) =>
+    wrapper.find(`[data-testid="${id}"]`).isVisible()
+
+  it('shows a single panel, switched by the Lesson/Sandbox toggle', async () => {
+    const tabs = wrapper.findAll('[data-testid="layout-toggle"] [role="tab"]')
+    expect(tabs.map((t) => t.text())).toEqual(['Lesson', 'Sandbox'])
+    expect(visible('step-body')).toBe(true)
+    expect(visible('sandbox')).toBe(false)
+
+    await tabs[1].trigger('mousedown', { button: 0 })
+    expect(visible('step-body')).toBe(false)
+    expect(visible('sandbox')).toBe(true)
+
+    await tabs[0].trigger('mousedown', { button: 0 })
+    expect(visible('step-body')).toBe(true)
+  })
+
+  it('places the nav bar after the content and navigates from it', async () => {
+    const root = wrapper.find('[data-testid="krgz-hayali"]').element
+    const toolbar = wrapper.find('[data-testid="toolbar"]').element
+    const toggle = wrapper.find('[data-testid="layout-toggle"]').element
+    expect(root.lastElementChild?.contains(toolbar)).toBe(true)
+    expect(
+      toggle.compareDocumentPosition(toolbar) &
+        Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy()
+
+    await wrapper.find('[data-testid="next"]').trigger('click')
+    await flushPromises()
+    expect(wrapper.find('[data-testid="pos"]').text()).toBe('c1/s2')
+  })
+
+  it('keeps the selected panel across step navigation', async () => {
+    const tabs = wrapper.findAll('[data-testid="layout-toggle"] [role="tab"]')
+    await tabs[1].trigger('mousedown', { button: 0 })
+    await wrapper.find('[data-testid="next"]').trigger('click')
+    await flushPromises()
+    expect(visible('sandbox')).toBe(true)
+  })
 })
