@@ -31,15 +31,22 @@ vi.mock('@karagoz/sandbox', async () => {
 })
 
 const lesson: Lesson = {
-  title: 'Demo lesson',
   chapters: [
     {
       id: 'c1',
-      title: 'Chapter',
+      title: 'Basics',
       steps: [
         { id: 's1', title: 'One', body: 'Body one' },
         { id: 's2', title: 'Two', body: 'Body two' },
         { id: 's3', title: 'Three', body: 'Body three' },
+      ],
+    },
+    {
+      id: 'c2',
+      title: 'Advanced',
+      steps: [
+        { id: 's1', title: 'Four', body: 'Body four' },
+        { id: 's2', title: 'Five', body: 'Body five' },
       ],
     },
   ],
@@ -59,7 +66,7 @@ const Host = defineComponent({
     position: ref<Position>({ chapterId: 'c1', stepId: 's1' }),
   }),
   template:
-    '<KrgzHayali :lesson="lesson" v-model:position="position" /><i data-testid="pos">{{ position.stepId }}</i>',
+    '<KrgzHayali :lesson="lesson" v-model:position="position" /><i data-testid="pos">{{ position.chapterId }}/{{ position.stepId }}</i>',
 })
 
 const body = () => document.body
@@ -88,15 +95,37 @@ describe('KrgzHayali', () => {
       'Body one',
     )
     expect(wrapper.find('[data-testid="sandbox"]').exists()).toBe(true)
-    expect(wrapper.find('[data-testid="lesson-title"]').text()).toBe(
-      'Demo lesson',
+    expect(wrapper.find('[data-testid="chapter-title"]').text()).toBe('Basics')
+  })
+
+  it('lists only the current chapter, without chapter headers', async () => {
+    expect(
+      wrapper.findAll('[data-testid="step-item"]').map((i) => i.text()),
+    ).toEqual([
+      expect.stringContaining('One'),
+      expect.stringContaining('Two'),
+      expect.stringContaining('Three'),
+    ])
+    expect(wrapper.find('nav h3').exists()).toBe(false)
+    for (let i = 0; i < 3; i++) {
+      await wrapper.find('[data-testid="next"]').trigger('click')
+      await flushPromises()
+    }
+    const items = wrapper.findAll('[data-testid="step-item"]')
+    expect(items.map((i) => i.attributes('data-status'))).toEqual([
+      'current',
+      'upcoming',
+    ])
+    expect(items[0].text()).toContain('Four')
+    expect(wrapper.find('[data-testid="chapter-title"]').text()).toBe(
+      'Advanced',
     )
   })
 
   it('navigates without confirm when clean', async () => {
     await wrapper.find('[data-testid="next"]').trigger('click')
     await flushPromises()
-    expect(wrapper.find('[data-testid="pos"]').text()).toBe('s2')
+    expect(wrapper.find('[data-testid="pos"]').text()).toBe('c1/s2')
     expect(q('confirm-continue')).toBeNull()
     expect(
       wrapper
@@ -105,7 +134,7 @@ describe('KrgzHayali', () => {
     ).toEqual(['done', 'current', 'upcoming'])
     await wrapper.find('[data-testid="prev"]').trigger('click')
     await flushPromises()
-    expect(wrapper.find('[data-testid="pos"]').text()).toBe('s1')
+    expect(wrapper.find('[data-testid="pos"]').text()).toBe('c1/s1')
   })
 
   it('navigates by clicking a step in the list', async () => {
@@ -113,7 +142,7 @@ describe('KrgzHayali', () => {
     expect(links).toHaveLength(2)
     await links[1].trigger('click')
     await flushPromises()
-    expect(wrapper.find('[data-testid="pos"]').text()).toBe('s3')
+    expect(wrapper.find('[data-testid="pos"]').text()).toBe('c1/s3')
   })
 
   it('TOC click jumps via the confirm-nav flow', async () => {
@@ -127,7 +156,7 @@ describe('KrgzHayali', () => {
     expect(q('confirm-continue')).not.toBeNull()
     q('confirm-continue')!.click()
     await flushPromises()
-    expect(wrapper.find('[data-testid="pos"]').text()).toBe('s3')
+    expect(wrapper.find('[data-testid="pos"]').text()).toBe('c1/s3')
   })
 
   it('cancel aborts with no state change when dirty', async () => {
@@ -138,7 +167,7 @@ describe('KrgzHayali', () => {
     expect(q('confirm-continue')).not.toBeNull()
     q('confirm-cancel')!.click()
     await flushPromises()
-    expect(wrapper.find('[data-testid="pos"]').text()).toBe('s1')
+    expect(wrapper.find('[data-testid="pos"]').text()).toBe('c1/s1')
     expect(hoisted.fs.mount).not.toHaveBeenCalled()
     expect(hoisted.fs.rm).not.toHaveBeenCalled()
   })
@@ -150,7 +179,7 @@ describe('KrgzHayali', () => {
     await flushPromises()
     q('confirm-continue')!.click()
     await flushPromises()
-    expect(wrapper.find('[data-testid="pos"]').text()).toBe('s2')
+    expect(wrapper.find('[data-testid="pos"]').text()).toBe('c1/s2')
     expect(hoisted.fs.rm).toHaveBeenCalledWith('user.txt', {
       recursive: true,
       force: true,

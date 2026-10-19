@@ -30,8 +30,6 @@ export interface Chapter {
 }
 
 export interface Lesson {
-  /** Shown in the lesson header next to the Prev/Next controls. */
-  title?: string
   chapters: Chapter[]
   /** Base tree mounted at boot, split into immutable and resettable tiers by `immutable`. */
   files?: AdjustmentsTree

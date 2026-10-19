@@ -45,7 +45,6 @@ const html = (heading: string) => `<html>
 `
 
 const demoLesson: Lesson = {
-  title: 'Express basics',
   files: {
     'package.json': { file: { contents: packageJson } },
     'server.js': { file: { contents: serverJs } },
