@@ -8,6 +8,7 @@ export const ar = {
       done: 'مكتملة',
       current: 'الحالية',
       upcoming: 'القادمة',
+      toc: 'جدول المحتويات',
       confirm: {
         title: 'سيتم التراجع عن التغييرات',
         description:

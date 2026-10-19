@@ -116,6 +116,20 @@ describe('KrgzHayali', () => {
     expect(wrapper.find('[data-testid="pos"]').text()).toBe('s3')
   })
 
+  it('TOC click jumps via the confirm-nav flow', async () => {
+    await wrapper.find('[data-testid="toc-trigger"]').trigger('keydown', {
+      key: 'Enter',
+    })
+    await flushPromises()
+    hoisted.listener?.('change', 'user.txt')
+    body().querySelectorAll<HTMLElement>('[data-testid="toc-step"]')[2].click()
+    await flushPromises()
+    expect(q('confirm-continue')).not.toBeNull()
+    q('confirm-continue')!.click()
+    await flushPromises()
+    expect(wrapper.find('[data-testid="pos"]').text()).toBe('s3')
+  })
+
   it('cancel aborts with no state change when dirty', async () => {
     hoisted.listener?.('change', 'user.txt')
     hoisted.fs.mount.mockClear()

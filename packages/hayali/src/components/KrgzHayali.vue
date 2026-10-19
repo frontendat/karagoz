@@ -23,6 +23,7 @@ import { useLessonPosition } from '../composables/useLessonPosition'
 import { useLessonReset } from '../composables/useLessonReset'
 import type { Lesson, Position } from '../types'
 import StepBody from './StepBody.vue'
+import TocDropdown from './TocDropdown.vue'
 
 const props = defineProps<{ lesson: Lesson }>()
 const position = defineModel<Position>('position', { required: true })
@@ -168,6 +169,12 @@ const isLast = (p: Position) => indexOf(p) === flat.value.length - 1
           <path d="m12 5 7 7-7 7" />
         </svg>
       </Button>
+      <TocDropdown
+        :groups="groups"
+        :current="position"
+        :disabled="!ready"
+        @select="navigate"
+      />
       <span
         v-if="lesson.title"
         data-testid="lesson-title"
