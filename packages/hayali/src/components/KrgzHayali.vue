@@ -123,7 +123,7 @@ const positionOf = (stepId: string): Position => ({
   stepId,
 })
 
-const toolbar = computed(() => ({
+const toolbarProps = computed(() => ({
   prev: prev.value,
   next: next.value,
   groups: groups.value,
@@ -140,7 +140,11 @@ const toolbar = computed(() => ({
   >
     <div ref="layout" class="flex h-full flex-col" :class="fullLayoutClass">
       <template v-if="fullLayout">
-        <LessonToolbar v-bind="toolbar" placement="top" @navigate="navigate" />
+        <LessonToolbar
+          v-bind="toolbarProps"
+          placement="top"
+          @navigate="navigate"
+        />
         <ResizablePanelGroup direction="horizontal" class="min-h-0 flex-1">
           <ResizablePanel :default-size="30" class="min-w-[300px]">
             <StepList
@@ -201,7 +205,7 @@ const toolbar = computed(() => ({
           </TabsContent>
         </Tabs>
         <LessonToolbar
-          v-bind="toolbar"
+          v-bind="toolbarProps"
           placement="bottom"
           @navigate="navigate"
         />

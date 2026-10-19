@@ -53,8 +53,6 @@ export function useFullLayout(
         return '@6xl/hayali:[--full-layout:1]'
       case '7xl':
         return '@7xl/hayali:[--full-layout:1]'
-      default:
-        return '[--full-layout:1]'
     }
   })
 

@@ -34,13 +34,13 @@ afterEach(() => {
 })
 
 const setup = (from: FullLayoutFrom) => {
-  const from_ = ref(from)
+  const fromRef = ref(from)
   let api!: ReturnType<typeof useFullLayout>
   const wrapper = mount(
     defineComponent({
       setup() {
         const el = useTemplateRef<HTMLElement>('el')
-        api = useFullLayout(el, () => from_.value)
+        api = useFullLayout(el, () => fromRef.value)
         return () => h('div', { ref: 'el' })
       },
     }),
@@ -53,7 +53,7 @@ const setup = (from: FullLayoutFrom) => {
     )
     await nextTick()
   }
-  return { api, from: from_, resize }
+  return { api, from: fromRef, resize }
 }
 
 describe('useFullLayout', () => {
