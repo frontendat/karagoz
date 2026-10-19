@@ -5,13 +5,13 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@karagoz/shared'
-import { ref } from 'vue'
+import { nextTick, ref, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import type { StepGroup } from '../composables/useLessonPosition'
 import type { Position } from '../types'
 
-defineProps<{
+const props = defineProps<{
   groups: StepGroup[]
   current: Position
   disabled?: boolean
@@ -21,13 +21,43 @@ const emit = defineEmits<{ select: [position: Position] }>()
 const { t } = useI18n()
 const open = ref(false)
 
-const isCurrent = (p: Position, current: Position) =>
-  p.chapterId === current.chapterId && p.stepId === current.stepId
+const list = useTemplateRef<HTMLElement>('list')
+const items = () => [
+  ...(list.value?.querySelectorAll<HTMLButtonElement>('[data-toc-step]') ?? []),
+]
+
+const isCurrent = (p: Position) =>
+  p.chapterId === props.current.chapterId && p.stepId === props.current.stepId
 
 // Plain buttons, not DropdownMenuItem: this is a navigation list, not an action menu.
+// Choosing the current step is a no-op: it isn't a jump, and would reset in-progress edits.
 const select = (p: Position) => {
   open.value = false
-  emit('select', p)
+  if (!isCurrent(p)) emit('select', p)
+}
+
+// The radix menu only roves focus over its own items, so the plain list handles its own keys.
+watch(open, async (isOpen) => {
+  if (!isOpen) return
+  await nextTick()
+  items()
+    .find((el) => el.hasAttribute('aria-current'))
+    ?.focus()
+})
+
+const onKeydown = (e: KeyboardEvent) => {
+  const all = items()
+  const i = all.indexOf(document.activeElement as HTMLButtonElement)
+  const target = {
+    ArrowDown: (i + 1) % all.length,
+    ArrowUp: (i - 1 + all.length) % all.length,
+    Home: 0,
+    End: all.length - 1,
+  }[e.key]
+  if (target === undefined) return
+  e.preventDefault()
+  e.stopPropagation()
+  all[target]?.focus()
 }
 </script>
 
@@ -65,7 +95,7 @@ const select = (p: Position) => {
       align="start"
       class="max-h-[min(420px,var(--radix-dropdown-menu-content-available-height))] w-64 overflow-auto"
     >
-      <nav :aria-label="t('krgz.hayali.toc')">
+      <nav ref="list" :aria-label="t('krgz.hayali.toc')" @keydown="onKeydown">
         <section
           v-for="group in groups"
           :key="group.chapterId"
@@ -83,11 +113,10 @@ const select = (p: Position) => {
               <button
                 type="button"
                 data-testid="toc-step"
+                data-toc-step
                 class="hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent w-full rounded-sm px-2 py-1.5 text-start text-sm outline-none"
-                :class="{ 'font-semibold': isCurrent(s.position, current) }"
-                :aria-current="
-                  isCurrent(s.position, current) ? 'step' : undefined
-                "
+                :class="{ 'font-semibold': isCurrent(s.position) }"
+                :aria-current="isCurrent(s.position) ? 'step' : undefined"
                 @click="select(s.position)"
               >
                 {{ s.title }}

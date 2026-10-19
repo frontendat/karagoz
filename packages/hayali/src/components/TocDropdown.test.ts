@@ -82,6 +82,35 @@ describe('TocDropdown', () => {
     expect(all('[role="menuitem"]')).toHaveLength(0)
   })
 
+  it('focuses the current step on open and moves with arrow keys', async () => {
+    wrapper = await open(multi)
+    const steps = all('[data-testid="toc-step"]')
+    expect(document.activeElement).toBe(steps[0])
+    const key = (k: string) =>
+      document.activeElement!.dispatchEvent(
+        new KeyboardEvent('keydown', { key: k, bubbles: true }),
+      )
+    key('ArrowDown')
+    key('ArrowDown')
+    expect(document.activeElement).toBe(steps[2])
+    key('ArrowDown')
+    expect(document.activeElement).toBe(steps[0])
+    key('ArrowUp')
+    expect(document.activeElement).toBe(steps[2])
+    key('Home')
+    expect(document.activeElement).toBe(steps[0])
+    key('End')
+    expect(document.activeElement).toBe(steps[2])
+  })
+
+  it('closes without emitting when the current step is chosen', async () => {
+    wrapper = await open(multi)
+    all('[data-testid="toc-step"]')[0].click()
+    await flushPromises()
+    expect(wrapper.emitted('select')).toBeUndefined()
+    expect(all('[data-testid="toc-step"]')).toHaveLength(0)
+  })
+
   it('emits the clicked position and closes', async () => {
     wrapper = await open(multi)
     all('[data-testid="toc-step"]')[2].click()
