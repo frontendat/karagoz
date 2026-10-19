@@ -15,4 +15,5 @@ export {
   StepBody,
 }
 export type { CalloutDefinition, CalloutRegistry } from './callouts'
+export type { FullLayoutFrom } from './composables/useFullLayout'
 export type { Chapter, Lesson, Position, Step } from './types'

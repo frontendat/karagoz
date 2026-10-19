@@ -4,6 +4,10 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
 } from '@karagoz/shared'
 import { KrgzSandbox, useSandbox } from '@karagoz/sandbox'
 import {
@@ -16,22 +20,50 @@ import {
   AlertDialogRoot,
   AlertDialogTitle,
 } from 'radix-vue'
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import {
+  type FullLayoutFrom,
+  useFullLayout,
+} from '../composables/useFullLayout'
 import { useLessonPosition } from '../composables/useLessonPosition'
 import { useLessonReset } from '../composables/useLessonReset'
 import type { Lesson, Position } from '../types'
-import StepBody from './StepBody.vue'
-import TocDropdown from './TocDropdown.vue'
+import LessonToolbar from './LessonToolbar.vue'
+import StepList from './StepList.vue'
 
-const props = defineProps<{ lesson: Lesson }>()
+const props = withDefaults(
+  defineProps<{
+    lesson: Lesson
+    /**
+     * Minimum container width for the side-by-side lesson/sandbox split; below it a single panel is shown
+     * with a Lesson/Sandbox toggle. Uses the component's own width (container query), not the viewport's.
+     * `none` always uses the single-panel layout.
+     * **Available values:** none, xs, sm, md, lg, xl, 2xl, 3xl, 4xl, 5xl, 6xl, 7xl
+     */
+    fullLayoutFrom?: FullLayoutFrom
+    /**
+     * Forwarded to the default `KrgzSandbox` (and exposed on the `sandbox` slot) as its `multi-panel-from`,
+     * so the sandbox drops to a single panel when its pane is narrow.
+     * **Available values:** none, xs, sm, md, lg, xl, 2xl, 3xl, 4xl, 5xl, 6xl, 7xl
+     */
+    multiPanelFrom?: FullLayoutFrom
+  }>(),
+  { fullLayoutFrom: '3xl', multiPanelFrom: '3xl' },
+)
 const position = defineModel<Position>('position', { required: true })
 
 const { t } = useI18n()
 const { container, bootstrap } = useSandbox()
 
-const { chapter, step, prev, next, groups, goTo } = useLessonPosition(
+const { fullLayout, fullLayoutClass } = useFullLayout(
+  useTemplateRef<HTMLElement>('layout'),
+  () => props.fullLayoutFrom,
+)
+const mobilePanel = ref<'lesson' | 'sandbox'>('lesson')
+
+const { chapter, prev, next, groups, goTo } = useLessonPosition(
   () => props.lesson,
   position,
 )
@@ -92,181 +124,113 @@ const ready = computed(() => !!reset.current.value)
 
 // The content pane lists only the current chapter's steps; chapters surface in the TOC.
 const steps = computed(() => chapter.value?.steps ?? [])
-const currentIndex = computed(() =>
-  steps.value.findIndex((s) => s.id === position.value.stepId),
-)
-const statusOf = (i: number) =>
-  i < currentIndex.value
-    ? 'done'
-    : i === currentIndex.value
-      ? 'current'
-      : 'upcoming'
 const positionOf = (stepId: string): Position => ({
   chapterId: position.value.chapterId,
   stepId,
 })
+
+const toolbarProps = computed(() => ({
+  prev: prev.value,
+  next: next.value,
+  groups: groups.value,
+  current: position.value,
+  chapterTitle: chapter.value?.title,
+  disabled: !ready.value,
+}))
 </script>
 
 <template>
   <div
     data-testid="krgz-hayali"
-    class="bg-background flex h-full w-full flex-col"
+    class="bg-background @container/hayali h-full w-full"
   >
-    <div class="flex h-14 min-h-14 items-center gap-1 border-b px-7">
-      <Button
-        data-testid="prev"
-        variant="ghost"
-        size="icon"
-        class="-ms-1.5 size-7"
-        :title="t('krgz.hayali.prev')"
-        :aria-label="t('krgz.hayali.prev')"
-        :disabled="!ready || !prev"
-        @click="navigate(prev)"
-      >
-        <svg
-          class="size-[15px] rtl:-scale-x-100"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="m12 19-7-7 7-7" />
-          <path d="M19 12H5" />
-        </svg>
-      </Button>
-      <Button
-        data-testid="next"
-        variant="ghost"
-        size="icon"
-        class="size-7"
-        :title="t('krgz.hayali.next')"
-        :aria-label="t('krgz.hayali.next')"
-        :disabled="!ready || !next"
-        @click="navigate(next)"
-      >
-        <svg
-          class="size-[15px] rtl:-scale-x-100"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M5 12h14" />
-          <path d="m12 5 7 7-7 7" />
-        </svg>
-      </Button>
-      <TocDropdown
-        :groups="groups"
-        :current="position"
-        :disabled="!ready"
-        @select="navigate"
-      />
-      <span
-        v-if="chapter"
-        data-testid="chapter-title"
-        class="ms-2 text-sm font-semibold"
-      >
-        {{ chapter.title }}
-      </span>
-    </div>
-
-    <ResizablePanelGroup direction="horizontal" class="min-h-0 flex-1">
-      <ResizablePanel :default-size="30" class="min-w-[300px]">
-        <nav
-          :aria-label="t('krgz.hayali.steps')"
-          class="h-full overflow-auto px-[22px] py-5"
-        >
-          <ol>
-            <li
-              v-for="(s, i) in steps"
-              :key="s.id"
-              data-testid="step-item"
-              :data-status="statusOf(i)"
-              :aria-current="statusOf(i) === 'current' ? 'step' : undefined"
-              class="relative flex gap-3"
+    <div ref="layout" class="flex h-full flex-col" :class="fullLayoutClass">
+      <template v-if="fullLayout">
+        <LessonToolbar
+          v-bind="toolbarProps"
+          placement="top"
+          @navigate="navigate"
+        />
+        <ResizablePanelGroup direction="horizontal" class="min-h-0 flex-1">
+          <ResizablePanel :default-size="30" class="min-w-[300px]">
+            <StepList
+              class="h-full overflow-auto"
+              :steps="steps"
+              :current-step-id="position.stepId"
+              :disabled="!ready"
+              @select="navigate(positionOf($event))"
+            />
+          </ResizablePanel>
+          <ResizableHandle />
+          <ResizablePanel :default-size="70" class="min-w-[460px]">
+            <div
+              class="m-3 me-5 h-[calc(100%-1.5rem)] overflow-hidden rounded-lg border shadow-sm"
             >
-              <div
-                v-if="i < steps.length - 1"
-                aria-hidden="true"
-                class="bg-border absolute start-[11px] top-[26px] -bottom-3.5 w-px"
-              />
-              <div
-                aria-hidden="true"
-                class="mt-px flex size-[23px] flex-none items-center justify-center rounded-full"
-                :class="{
-                  'bg-foreground text-background': statusOf(i) === 'done',
-                  'border-foreground bg-background border-2':
-                    statusOf(i) === 'current',
-                  'bg-muted border': statusOf(i) === 'upcoming',
-                }"
+              <slot
+                name="sandbox"
+                :ready="ready"
+                :multi-panel-from="multiPanelFrom"
               >
-                <svg
-                  v-if="statusOf(i) === 'done'"
-                  class="size-[11px]"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="3"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-                <div
-                  v-else-if="statusOf(i) === 'current'"
-                  class="bg-foreground size-[7px] rounded-full"
+                <KrgzSandbox
+                  :booting="!ready"
+                  :multi-panel-from="multiPanelFrom"
                 />
-              </div>
-              <div class="min-w-0 flex-1 pb-5">
-                <div
-                  v-if="statusOf(i) === 'current'"
-                  class="pt-0.5 text-[13.5px] font-semibold"
-                >
-                  {{ s.title }}
-                </div>
-                <button
-                  v-else
-                  type="button"
-                  data-testid="step-link"
-                  class="text-muted-foreground block pt-0.5 text-start text-[13.5px] hover:text-foreground"
-                  :class="
-                    statusOf(i) === 'done' ? 'font-medium' : 'font-semibold'
-                  "
-                  :disabled="!ready"
-                  @click="navigate(positionOf(s.id))"
-                >
-                  {{ s.title }}
-                </button>
-                <span class="sr-only">
-                  {{ t(`krgz.hayali.${statusOf(i)}`) }}
-                </span>
-                <StepBody
-                  v-if="statusOf(i) === 'current' && step"
-                  class="mt-2.5 text-[13.5px]"
-                  :body="step.body"
+              </slot>
+            </div>
+          </ResizablePanel>
+        </ResizablePanelGroup>
+      </template>
+      <template v-else>
+        <Tabs v-model="mobilePanel" class="flex min-h-0 flex-1 flex-col">
+          <div class="bg-background sticky top-0 z-10 border-b px-3 py-2">
+            <TabsList
+              data-testid="layout-toggle"
+              class="grid h-9 w-full grid-cols-2 rounded-full"
+            >
+              <TabsTrigger value="lesson" class="rounded-full">
+                {{ t('krgz.hayali.lesson') }}
+              </TabsTrigger>
+              <TabsTrigger value="sandbox" class="rounded-full">
+                {{ t('krgz.hayali.sandbox') }}
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          <TabsContent
+            value="lesson"
+            force-mount
+            class="mt-0 min-h-0 flex-1 overflow-auto"
+          >
+            <StepList
+              :steps="steps"
+              :current-step-id="position.stepId"
+              :disabled="!ready"
+              @select="navigate(positionOf($event))"
+            />
+          </TabsContent>
+          <TabsContent value="sandbox" force-mount class="mt-0 min-h-0 flex-1">
+            <div
+              class="m-3 h-[calc(100%-1.5rem)] overflow-hidden rounded-lg border shadow-sm"
+            >
+              <slot
+                name="sandbox"
+                :ready="ready"
+                :multi-panel-from="multiPanelFrom"
+              >
+                <KrgzSandbox
+                  :booting="!ready"
+                  :multi-panel-from="multiPanelFrom"
                 />
-              </div>
-            </li>
-          </ol>
-        </nav>
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel :default-size="70" class="min-w-[460px]">
-        <div
-          class="m-3 me-5 h-[calc(100%-1.5rem)] overflow-hidden rounded-lg border shadow-sm"
-        >
-          <slot name="sandbox" :ready="ready">
-            <KrgzSandbox :booting="!ready" />
-          </slot>
-        </div>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+              </slot>
+            </div>
+          </TabsContent>
+        </Tabs>
+        <LessonToolbar
+          v-bind="toolbarProps"
+          placement="bottom"
+          @navigate="navigate"
+        />
+      </template>
+    </div>
 
     <AlertDialogRoot :open="confirmOpen" @update:open="onOpenChange">
       <AlertDialogPortal>

@@ -233,6 +233,9 @@ importers:
       '@karagoz/shared':
         specifier: workspace:^
         version: link:../shared
+      '@vueuse/core':
+        specifier: ^14.3.0
+        version: 14.3.0(vue@3.5.39(typescript@5.9.3))
       ignore:
         specifier: ^6.0.2
         version: 6.0.2

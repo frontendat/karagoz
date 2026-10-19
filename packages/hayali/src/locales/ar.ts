@@ -9,6 +9,8 @@ export const ar = {
       current: 'الحالية',
       upcoming: 'القادمة',
       toc: 'جدول المحتويات',
+      lesson: 'الدرس',
+      sandbox: 'بيئة التجربة',
       confirm: {
         title: 'سيتم التراجع عن التغييرات',
         description:
