@@ -29,6 +29,7 @@ import {
 } from '../composables/useFullLayout'
 import { useLessonPosition } from '../composables/useLessonPosition'
 import { useLessonReset } from '../composables/useLessonReset'
+import { useStepLocks } from '../composables/useStepLocks'
 import type { Lesson, Position } from '../types'
 import LessonToolbar from './LessonToolbar.vue'
 import StepList from './StepList.vue'
@@ -55,7 +56,7 @@ const props = withDefaults(
 const position = defineModel<Position>('position', { required: true })
 
 const { t } = useI18n()
-const { container, bootstrap } = useSandbox()
+const { container, bootstrap, setOption } = useSandbox()
 
 const { fullLayout, fullLayoutClass } = useFullLayout(
   useTemplateRef<HTMLElement>('layout'),
@@ -86,6 +87,12 @@ watch(
   { immediate: true },
 )
 onBeforeUnmount(reset.dispose)
+
+const locks = useStepLocks({
+  lesson: () => props.lesson,
+  position,
+  setOption,
+})
 
 const confirmOpen = ref(false)
 let settle: ((ok: boolean) => void) | undefined
@@ -157,6 +164,7 @@ const toolbarProps = computed(() => ({
               class="h-full overflow-auto"
               :steps="steps"
               :current-step-id="position.stepId"
+              :locks="locks"
               :disabled="!ready"
               @select="navigate(positionOf($event))"
             />
@@ -203,6 +211,7 @@ const toolbarProps = computed(() => ({
             <StepList
               :steps="steps"
               :current-step-id="position.stepId"
+              :locks="locks"
               :disabled="!ready"
               @select="navigate(positionOf($event))"
             />

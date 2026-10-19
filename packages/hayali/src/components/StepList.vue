@@ -2,12 +2,15 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import type { Step } from '../types'
+import type { PathPattern, Step } from '../types'
 import StepBody from './StepBody.vue'
+import StepLockAlert from './StepLockAlert.vue'
 
 const props = defineProps<{
   steps: Step[]
   currentStepId: string
+  /** Lock patterns of the current step. */
+  locks: PathPattern[]
   disabled?: boolean
 }>()
 defineEmits<{ select: [stepId: string] }>()
@@ -89,11 +92,10 @@ const statusOf = (i: number) =>
           <span class="sr-only">
             {{ t(`krgz.hayali.${statusOf(i)}`) }}
           </span>
-          <StepBody
-            v-if="statusOf(i) === 'current'"
-            class="mt-2.5 text-[13.5px]"
-            :body="s.body"
-          />
+          <template v-if="statusOf(i) === 'current'">
+            <StepLockAlert class="mt-2.5" :locks="locks" />
+            <StepBody class="mt-2.5 text-[13.5px]" :body="s.body" />
+          </template>
         </div>
       </li>
     </ol>

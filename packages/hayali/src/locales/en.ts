@@ -11,6 +11,11 @@ export const en = {
       toc: 'Table of contents',
       lesson: 'Lesson',
       sandbox: 'Sandbox',
+      locks: {
+        title: 'Heads up!',
+        description:
+          '{files} is locked for this step. | {files} are locked for this step.',
+      },
       confirm: {
         title: 'Changes will be reset',
         description:
