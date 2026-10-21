@@ -38,6 +38,7 @@
   "scripts": {
     "dev": "pnpm --filter @karagoz/hayali --parallel /^watch:/",
     "dev-hmr": "vite",
+    "proto:css-layout": "vite --open /proto-css-layout.html",
     "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
     "prepublish": "pnpm build",
     "preview": "vite preview",
