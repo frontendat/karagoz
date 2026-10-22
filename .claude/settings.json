@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // empty'); case \"$file\" in *apps/docs*) for d in packages/shared packages/sandbox packages/puppeteer; do [ ! -d \"$d/dist\" ] && echo \"WARNING: $d/dist missing\" && exit 2; done ;; esac; true"
+            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // empty'); case \"$file\" in *apps/docs*) for d in packages/shared packages/sandbox packages/hayali; do [ ! -d \"$d/dist\" ] && echo \"WARNING: $d/dist missing\" && exit 2; done ;; esac; true"
           }
         ]
       }

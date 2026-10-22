@@ -5,7 +5,6 @@
   "fixed": [
     [
       "@karagoz/hayali",
-      "@karagoz/puppeteer",
       "@karagoz/sandbox",
       "@karagoz/shared"
     ]

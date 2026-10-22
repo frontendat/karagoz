@@ -22,7 +22,6 @@
   },
   "references": [
     { "path": "./packages/hayali/tsconfig.json" },
-    { "path": "./packages/puppeteer/tsconfig.json" },
     { "path": "./packages/sandbox/tsconfig.json" },
     { "path": "./packages/shared/tsconfig.json" }
   ]
