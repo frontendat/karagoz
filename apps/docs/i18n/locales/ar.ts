@@ -1,6 +1,6 @@
 export default defineI18nLocale(async () => {
   return {
-    ...(await import('@karagoz/sandbox')).i18nMessages.ar,
+    ...(await import('@karagoz/hayali')).i18nMessages.ar,
     component: {
       demoRunner: {
         clickToStart: 'اضغط لعرض المثال',
@@ -24,6 +24,12 @@ export default defineI18nLocale(async () => {
             sandboxGettingStarted: 'الإعداد لأول مرة',
             sandboxHandbook: 'دليل الاستخدام',
             sandboxApiReference: 'مرجع الواجهة البرمجية',
+            hayali: 'Hayali',
+            hayaliTeaser: 'حوّل الشيفرة البرمجية إلى دروس تفاعلية موجّهة.',
+            hayaliSetup: 'التثبيت',
+            hayaliGettingStarted: 'البدء',
+            hayaliHandbook: 'الدليل',
+            hayaliApiReference: 'مرجع الـ API',
             blog: 'المدونة',
           },
           extras: {

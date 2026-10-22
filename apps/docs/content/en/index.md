@@ -25,10 +25,11 @@ count: 2
 
     ::::landing-teaser
     ---
-    headline: Karagöz Puppeteer
-    buttonText: Coming Soon
+    headline: Karagöz Hayali
+    buttonText: Get Started
+    buttonLink: /hayali
     ---
-    Take your coding tutorials to the next level with a comprehensive UI.
+    Take your coding tutorials to the next level with guided, interactive lessons.
     ::::
 
 :::

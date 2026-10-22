@@ -10,6 +10,21 @@ const localePath = useLocalePath()
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 const isDev = import.meta.dev
+const hayaliLinks = [
+  { path: '/hayali/setup', label: 'layouts.default.topBar.nav.hayaliSetup' },
+  {
+    path: '/hayali/getting-started',
+    label: 'layouts.default.topBar.nav.hayaliGettingStarted',
+  },
+  {
+    path: '/hayali/handbook',
+    label: 'layouts.default.topBar.nav.hayaliHandbook',
+  },
+  {
+    path: '/hayali/api-reference',
+    label: 'layouts.default.topBar.nav.hayaliApiReference',
+  },
+]
 </script>
 
 <template>
@@ -100,6 +115,45 @@ const isDev = import.meta.dev
                         {{
                           t('layouts.default.topBar.nav.sandboxApiReference')
                         }}
+                      </div>
+                    </NuxtLink>
+                  </UiNavigationMenuLink>
+                </li>
+              </ul>
+            </UiNavigationMenuContent>
+          </UiNavigationMenuItem>
+          <UiNavigationMenuItem>
+            <UiNavigationMenuTrigger>{{
+              t('layouts.default.topBar.nav.hayali')
+            }}</UiNavigationMenuTrigger>
+            <UiNavigationMenuContent>
+              <ul
+                class="grid gap-3 p-6 md:w-100 lg:w-125 lg:grid-cols-[minmax(0,.75fr)_minmax(0,1fr)]"
+              >
+                <li class="row-span-5">
+                  <UiNavigationMenuLink as-child>
+                    <NuxtLink
+                      class="flex h-full w-full select-none flex-col justify-end rounded-md bg-muted p-4 no-underline outline-none focus:shadow-md"
+                      :to="localePath({ path: '/hayali' })"
+                    >
+                      <div class="mb-2 mt-4 text-lg font-medium">
+                        {{ t('layouts.siteName') }} <br />
+                        {{ t('layouts.default.topBar.nav.hayali') }}
+                      </div>
+                      <p class="text-xs leading-tight text-muted-foreground">
+                        {{ t('layouts.default.topBar.nav.hayaliTeaser') }}
+                      </p>
+                    </NuxtLink>
+                  </UiNavigationMenuLink>
+                </li>
+                <li v-for="link in hayaliLinks" :key="link.path">
+                  <UiNavigationMenuLink as-child>
+                    <NuxtLink
+                      :to="localePath({ path: link.path })"
+                      class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                    >
+                      <div class="text-sm font-medium leading-none">
+                        {{ t(link.label) }}
                       </div>
                     </NuxtLink>
                   </UiNavigationMenuLink>

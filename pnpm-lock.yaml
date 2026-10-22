@@ -166,6 +166,9 @@ importers:
 
   apps/docs:
     dependencies:
+      '@karagoz/hayali':
+        specifier: workspace:^
+        version: link:../../packages/hayali
       '@karagoz/sandbox':
         specifier: workspace:^
         version: link:../../packages/sandbox

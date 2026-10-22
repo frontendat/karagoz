@@ -25,10 +25,11 @@ count: 2
 
     ::::landing-teaser
     ---
-    headline: Karagöz Puppeteer
-    buttonText: قريبًا
+    headline: Karagöz Hayali
+    buttonText: ابدأ الآن
+    buttonLink: /hayali
     ---
-    دروس برمجة بمستوى جديد كليًا عبر واجهة مستخدم متكاملة.
+    دروس برمجة بمستوى جديد كليًا عبر دروس تفاعلية موجّهة.
     ::::
 
 :::

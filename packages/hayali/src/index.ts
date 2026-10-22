@@ -17,10 +17,12 @@ export {
 export type { CalloutDefinition, CalloutRegistry } from './callouts'
 export type { FullLayoutFrom } from './layout/breakpoints'
 export type {
+  AdjustmentsTree,
   Chapter,
   EditorDirective,
   Lesson,
   LineSpec,
+  PathPattern,
   Position,
   Step,
 } from './types'
