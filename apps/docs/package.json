@@ -13,6 +13,7 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "test": "vitest run",
     "postinstall": "nuxt prepare",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
