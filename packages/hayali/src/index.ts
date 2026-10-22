@@ -15,7 +15,7 @@ export {
   validateLesson,
 }
 export type { CalloutDefinition, CalloutRegistry } from './callouts'
-export type { FullLayoutFrom } from './composables/useFullLayout'
+export type { FullLayoutFrom } from './layout/breakpoints'
 export type {
   Chapter,
   EditorDirective,

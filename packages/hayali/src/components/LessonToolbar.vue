@@ -13,8 +13,6 @@ defineProps<{
   current: Position
   chapterTitle?: string
   disabled?: boolean
-  /** `bottom` is the mobile sticky nav: Prev/Next pinned to either edge. */
-  placement: 'top' | 'bottom'
 }>()
 defineEmits<{ navigate: [position: Position] }>()
 
@@ -24,12 +22,7 @@ const { t } = useI18n()
 <template>
   <div
     data-testid="toolbar"
-    class="bg-background flex h-14 min-h-14 items-center gap-1"
-    :class="
-      placement === 'top'
-        ? 'border-b px-7'
-        : 'sticky bottom-0 z-10 border-t px-3'
-    "
+    class="bg-background sticky bottom-0 z-10 flex h-14 min-h-14 items-center gap-1 border-solid px-[var(--hf-tb-px,0.75rem)] [border-width:var(--hf-tb-bw,1px_0_0_0)] [order:var(--hf-tb-order,1)]"
   >
     <Button
       data-testid="prev"
@@ -59,8 +52,7 @@ const { t } = useI18n()
       data-testid="next"
       variant="ghost"
       size="icon"
-      class="size-7"
-      :class="{ '-me-1.5 order-last': placement === 'bottom' }"
+      class="size-7 [margin-inline-end:var(--hf-next-me,-0.375rem)] [order:var(--hf-next-order,9)]"
       :title="t('krgz.hayali.next')"
       :aria-label="t('krgz.hayali.next')"
       :disabled="disabled || !next"
@@ -81,8 +73,7 @@ const { t } = useI18n()
       </svg>
     </Button>
     <div
-      class="flex min-w-0 items-center gap-1"
-      :class="{ 'flex-1 justify-center': placement === 'bottom' }"
+      class="flex min-w-0 items-center gap-1 [flex:var(--hf-toc-flex,1_1_0%)] [justify-content:var(--hf-toc-justify,center)]"
     >
       <TocDropdown
         :groups="groups"

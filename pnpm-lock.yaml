@@ -264,6 +264,9 @@ importers:
       '@types/markdown-it-container':
         specifier: ^4.0.1
         version: 4.0.1
+      jiti:
+        specifier: ^2.7.0
+        version: 2.7.0
 
   packages/puppeteer:
     dependencies:

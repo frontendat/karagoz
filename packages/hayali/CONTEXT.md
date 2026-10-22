@@ -66,6 +66,12 @@ _Avoid_: Generation, request id
 The single-flight state covering confirm, reset and position change. Further navigate calls are ignored while it is set; directive application does not hold it.
 _Avoid_: Loading, busy
 
+### Layout
+
+**Active Panel**:
+Which of Lesson or Sandbox the toggle shows when the container is narrower than `fullLayoutFrom`. The only layout state JS owns; the split-vs-single switch itself is CSS (container queries), so first paint needs no JS.
+_Avoid_: Mobile tab, view mode
+
 ### Sandbox state
 
 **Container**:
