@@ -1,6 +1,5 @@
 export const ar = {
   krgz: {
-    dir: 'rtl',
     hayali: {
       prev: 'السابق',
       next: 'التالي',

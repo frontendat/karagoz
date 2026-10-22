@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, ref } from 'vue'
 import { createI18n } from 'vue-i18n'
 
-import { en } from '../locales'
+import { en } from '../locales/en'
 import KrgzHayali from './KrgzHayali.vue'
 import type { Lesson, Position } from '../types'
 
