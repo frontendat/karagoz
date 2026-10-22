@@ -186,8 +186,7 @@ export const useStepEntry = (options: {
     // preview
     const url = step?.preview?.url
     if (url) {
-      if (!from && !sandbox.preview.url.value)
-        pendingUrl = { url, token: entry }
+      if (!sandbox.preview.url.value) pendingUrl = { url, token: entry }
       else sandbox.preview.navigate(url)
     } else if (from && removedAny && sandbox.preview.path.value !== '/') {
       sandbox.preview.navigate('/')
