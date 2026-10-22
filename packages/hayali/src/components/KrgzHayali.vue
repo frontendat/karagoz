@@ -29,6 +29,7 @@ import {
 } from '../composables/useFullLayout'
 import { useLessonPosition } from '../composables/useLessonPosition'
 import { useLessonReset } from '../composables/useLessonReset'
+import { useStepEntry } from '../composables/useStepEntry'
 import { useStepLocks } from '../composables/useStepLocks'
 import type { Lesson, Position } from '../types'
 import LessonToolbar from './LessonToolbar.vue'
@@ -56,7 +57,8 @@ const props = withDefaults(
 const position = defineModel<Position>('position', { required: true })
 
 const { t } = useI18n()
-const { container, bootstrap, setOption } = useSandbox()
+const sandbox = useSandbox()
+const { container, bootstrap, setOption } = sandbox
 
 const { fullLayout, fullLayoutClass } = useFullLayout(
   useTemplateRef<HTMLElement>('layout'),
@@ -82,7 +84,12 @@ const reset = useLessonReset({
 watch(
   container,
   (c) => {
-    if (c) void reset.boot(position.value).then(bootstrap)
+    if (c)
+      void reset.boot(position.value).then(() => {
+        // Directives for the initial step apply right after the boot mount, without waiting for install/dev server.
+        void entry.enterInitial()
+        return bootstrap()
+      })
   },
   { immediate: true },
 )
@@ -122,12 +129,24 @@ const onOpenChange = (open: boolean) => {
   })
 }
 
-const navigate = async (target: Position | undefined) => {
-  if (!target) return
-  if (await reset.navigate(target, confirm)) goTo(target)
+const entry = useStepEntry({
+  lesson: () => props.lesson,
+  position,
+  goTo,
+  reset,
+  confirm,
+  sandbox,
+  sandboxVisible: computed(
+    () => fullLayout.value || mobilePanel.value === 'sandbox',
+  ),
+})
+
+const navigate = (target: Position | undefined) => {
+  if (target) void entry.navigate(target)
 }
 
 const ready = computed(() => !!reset.current.value)
+const busy = computed(() => !ready.value || entry.navigating.value)
 
 // The content pane lists only the current chapter's steps; chapters surface in the TOC.
 const steps = computed(() => chapter.value?.steps ?? [])
@@ -142,7 +161,7 @@ const toolbarProps = computed(() => ({
   groups: groups.value,
   current: position.value,
   chapterTitle: chapter.value?.title,
-  disabled: !ready.value,
+  disabled: busy.value,
 }))
 </script>
 
@@ -165,7 +184,7 @@ const toolbarProps = computed(() => ({
               :steps="steps"
               :current-step-id="position.stepId"
               :locks="locks"
-              :disabled="!ready"
+              :disabled="busy"
               @select="navigate(positionOf($event))"
             />
           </ResizablePanel>
@@ -212,7 +231,7 @@ const toolbarProps = computed(() => ({
               :steps="steps"
               :current-step-id="position.stepId"
               :locks="locks"
-              :disabled="!ready"
+              :disabled="busy"
               @select="navigate(positionOf($event))"
             />
           </TabsContent>

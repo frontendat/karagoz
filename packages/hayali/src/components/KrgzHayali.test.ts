@@ -29,6 +29,18 @@ vi.mock('@karagoz/sandbox', async () => {
     useSandbox: () => ({
       container,
       bootstrap: vi.fn(async () => {}),
+      editorTabs: {
+        tabs: r([]),
+        open: vi.fn(),
+        close: vi.fn(),
+        closeAll: vi.fn(),
+      },
+      editorViews: {
+        highlightLines: vi.fn(async () => {}),
+        goToLine: vi.fn(async () => {}),
+        clearAllHighlightedLines: vi.fn(),
+      },
+      preview: { navigate: vi.fn(), path: r('/'), url: r('https://x.test') },
       setOption: (
         _key: 'explorer',
         setter: (old: typeof hoisted.explorer) => typeof hoisted.explorer,

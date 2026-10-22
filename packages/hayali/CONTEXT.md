@@ -54,6 +54,18 @@ _Avoid_: Line range, line selector
 Visual emphasis on lines of a file, set by a step's directives. Cleared when leaving the step and on the learner's first edit.
 _Avoid_: Marker, annotation
 
+**Step Entry**:
+The phase that runs on every arrival at a step (forward, back, or initial load) after the reset: clear highlights, close/open tabs, highlight, go to a line, then the preview. Derived from the step alone.
+_Avoid_: Step change, step transition
+
+**Entry Token**:
+A monotonically increasing number that identifies the current Step Entry; async directives drop themselves when it has moved on.
+_Avoid_: Generation, request id
+
+**Navigating**:
+The single-flight state covering confirm, reset and position change. Further navigate calls are ignored while it is set; directive application does not hold it.
+_Avoid_: Loading, busy
+
 ### Sandbox state
 
 **Container**:
