@@ -36,6 +36,24 @@ _Avoid_: Alert block, admonition, container
 The named type of a callout (`tip`, `warning`, `note`) that decides how it is rendered.
 _Avoid_: Callout type, variant
 
+**Lesson Validation**:
+A pure, browser-free check (`validateLesson`) of a lesson's directives against each step's resolved tree (base files + that step's adjustments − its removals; never cumulative). Reports issues, never throws.
+_Avoid_: Lint, schema check
+
+### Editor directives
+
+**Editor Directive**:
+A per-step instruction about the editor (open, close, highlight, go to a line) or the preview, applied on every entry to the step. Derived from the step alone, never inherited from the previous step.
+_Avoid_: Editor command, editor action
+
+**Line Spec**:
+How an author names lines to highlight: a single line, an inclusive range, or a list of either. Lines are 1-based.
+_Avoid_: Line range, line selector
+
+**Highlight**:
+Visual emphasis on lines of a file, set by a step's directives. Cleared when leaving the step and on the learner's first edit.
+_Avoid_: Marker, annotation
+
 ### Sandbox state
 
 **Container**:

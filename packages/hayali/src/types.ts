@@ -8,6 +8,22 @@ export interface AdjustmentsTree {
     | { directory: AdjustmentsTree }
 }
 
+/** 1-based, inclusive: a line, a `[from, to]` range, or a list of either. */
+export type LineSpec =
+  | number
+  | [from: number, to: number]
+  | (number | [number, number])[]
+
+/** Per-step editor instructions, applied on every entry to the step. */
+export interface EditorDirective {
+  /** Files to open; the last one is focused. Optionally with a line to go to. */
+  open?: (string | { path: string; line?: number })[]
+  /** Files to close, or `'all'`. */
+  close?: string[] | 'all'
+  /** Lines to highlight. */
+  highlight?: { path: string; lines: LineSpec }[]
+}
+
 export interface Step {
   /** Author-supplied, unique within its chapter. Never derived from title text. */
   id: string
@@ -20,6 +36,10 @@ export interface Step {
   removals?: string[]
   /** Paths locked (UI-only) for this step. */
   locks?: PathPattern[]
+  /** Editor directives applied on entry to this step. */
+  editor?: EditorDirective
+  /** Preview to show on entry to this step. `url` is root-relative and may carry a query/hash. */
+  preview?: { url: string }
 }
 
 export interface Chapter {
