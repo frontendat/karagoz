@@ -1,6 +1,8 @@
+import { i18nMessages } from '@karagoz/hayali'
+
 export default defineI18nLocale(async () => {
   return {
-    ...(await import('@karagoz/hayali')).i18nMessages.de,
+    ...i18nMessages.de,
     component: {
       demoRunner: {
         clickToStart: 'Demo starten',
