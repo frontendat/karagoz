@@ -1,3 +1,5 @@
+@import './layout.css';
+
 @plugin '@tailwindcss/typography';
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -36,13 +38,13 @@
 }
 
 @layer base {
-    *,
-    ::before,
-    ::after {
-        border-color: hsl(var(--border));
-    }
+  *,
+  ::before,
+  ::after {
+    border-color: hsl(var(--border));
+  }
 
-    body {
-        @apply bg-background text-foreground;
-    }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

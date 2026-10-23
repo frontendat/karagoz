@@ -13,7 +13,7 @@ const plugins = [calloutPlugin(createCalloutRegistry())]
 
 <template>
   <VueMarkdown
-    class="prose dark:prose-invert"
+    class="prose dark:prose-invert space-y-2.5"
     data-testid="step-body"
     :plugins="plugins"
     :source="body"

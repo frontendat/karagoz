@@ -1,6 +1,6 @@
 # Render callouts with a portable markdown-it registry, not @nuxt/content/MDC
 
-Step bodies are plain markdown rendered via `vue-markdown-render`; callouts are authored inline as `:::tip` / `:::warning` / `:::note` and swapped for the shared `Alert` components by a small callout-kind registry. We rejected `@nuxt/content`/MDC because `@karagoz/hayali`, like `@karagoz/sandbox` and `@karagoz/puppeteer`, has zero Nuxt coupling and must work in any Vue app; the docs app doesn't use MDC component syntax today either.
+Step bodies are plain markdown rendered via `vue-markdown-render`; callouts are authored inline as `:::tip` / `:::warning` / `:::note` and swapped for the shared `Alert` components by a small callout-kind registry. We rejected `@nuxt/content`/MDC because `@karagoz/hayali`, like `@karagoz/sandbox` and `@karagoz/puppeteer` (since removed), has zero Nuxt coupling and must work in any Vue app; the docs app doesn't use MDC component syntax today either.
 
 ## Considered options
 

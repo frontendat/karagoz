@@ -1,7 +1,7 @@
 import ignore from 'ignore'
 import { computed, ref, toValue } from 'vue'
 import type { MaybeRefOrGetter } from 'vue'
-import { findStep, normalize } from '../lesson'
+import { type FlatTree, findStep, flatten, normalize } from '../lesson'
 import type { AdjustmentsTree, Lesson, Position, Step } from '../types'
 
 /** The slice of WebContainer's `fs` this composable needs; injectable for tests. */
@@ -20,17 +20,19 @@ export interface LessonFs {
 
 export type Tier = 'A' | 'B'
 
-type FlatTree = Map<string, string>
-
-const flatten = (tree: AdjustmentsTree = {}, prefix = ''): FlatTree => {
-  const out: FlatTree = new Map()
-  for (const [name, node] of Object.entries(tree)) {
-    const path = `${prefix}${name}`
-    if ('file' in node) out.set(path, node.file.contents)
-    else for (const [p, c] of flatten(node.directory, `${path}/`)) out.set(p, c)
-  }
-  return out
-}
+/**
+ * What a package manager writes when the sandbox installs dependencies. It appears after boot without the learner
+ * touching anything, so it must never count as an edit nor be removed by a reset. Always immutable, whether or not the
+ * lesson lists it.
+ */
+const INSTALL_OUTPUT = [
+  'node_modules',
+  'package-lock.json',
+  'pnpm-lock.yaml',
+  'yarn.lock',
+  'bun.lock',
+  'bun.lockb',
+]
 
 const nest = (flat: FlatTree): AdjustmentsTree => {
   const root: AdjustmentsTree = {}
@@ -65,7 +67,9 @@ export const useLessonReset = (options: {
   const lesson = () => toValue(options.lesson)
 
   const immutable = computed(() =>
-    ignore({ allowRelativePaths: true }).add(lesson().immutable ?? []),
+    ignore({ allowRelativePaths: true })
+      .add(INSTALL_OUTPUT)
+      .add(lesson().immutable ?? []),
   )
 
   const dirty = ref(false)

@@ -9,7 +9,8 @@
   },
   "files": [
     "dist",
-    "src/lib.css"
+    "src/lib.css",
+    "src/layout.css"
   ],
   "type": "module",
   "main": "./dist/karagoz-hayali.umd.cjs",
@@ -47,6 +48,11 @@
     "lint:fix": "oxlint --fix src",
     "fmt": "oxfmt src",
     "fmt:check": "oxfmt --check src",
+    "docs": "pnpm docs:typescript && sleep 1 && pnpm docs:components && pnpm docs:copy",
+    "docs:components": "vue-docgen -c docs/docgen.config.cjs",
+    "docs:typescript": "typedoc --options docs/typedoc.json && rm ./docs/.generated-docs/README.md",
+    "docs:copy": "cp -a ./docs/.generated-docs/. ../../apps/docs/content/en/hayali/4.api-reference/",
+    "gen:layout": "jiti scripts/gen-layout.ts && oxfmt src/layout.css",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -66,6 +72,7 @@
   },
   "devDependencies": {
     "@types/markdown-it": "^14.1.2",
-    "@types/markdown-it-container": "^4.0.1"
+    "@types/markdown-it-container": "^4.0.1",
+    "jiti": "^2.7.0"
   }
 }

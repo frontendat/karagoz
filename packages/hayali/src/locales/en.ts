@@ -1,6 +1,5 @@
 export const en = {
   krgz: {
-    dir: 'ltr',
     hayali: {
       prev: 'Previous',
       next: 'Next',

@@ -4,8 +4,8 @@
 
 ## Considered options
 
-- **Dual `v-model:chapter` + `v-model:step`**: rejected because a step only makes sense within its chapter, and two bindings can be transiently out of sync (the old `KrgzPuppeteer` needed a "reset slide index when topic changes" hack for exactly this).
-- **Index-based addressing**: simpler and the old `KrgzPuppeteer` precedent, but breaks under reordering.
+- **Dual `v-model:chapter` + `v-model:step`**: rejected because a step only makes sense within its chapter, and two bindings can be transiently out of sync (the old `KrgzPuppeteer` (removed with `@karagoz/puppeteer` in Hayali v2; see git history) needed a "reset slide index when topic changes" hack for exactly this).
+- **Index-based addressing**: simpler and the precedent of the old `KrgzPuppeteer` (removed in Hayali v2), but breaks under reordering.
 - **Ids derived from heading text**: rejected as locale-specific and fragile to edits.
 
 ## Consequences

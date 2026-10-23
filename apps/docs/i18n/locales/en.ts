@@ -1,6 +1,8 @@
+import { i18nMessages } from '@karagoz/hayali'
+
 export default defineI18nLocale(async () => {
   return {
-    ...(await import('@karagoz/sandbox')).i18nMessages.en,
+    ...i18nMessages.en,
     component: {
       demoRunner: {
         clickToStart: 'Click to start demo',
@@ -24,7 +26,15 @@ export default defineI18nLocale(async () => {
             sandboxGettingStarted: 'Getting Started',
             sandboxHandbook: 'Handbook',
             sandboxApiReference: 'API Reference',
+            hayali: 'Hayali',
+            hayaliTeaser: 'Turn code into guided, interactive lessons.',
+            hayaliSetup: 'Setup',
+            hayaliGettingStarted: 'Getting Started',
+            hayaliHandbook: 'Handbook',
+            hayaliApiReference: 'API Reference',
             blog: 'Blog',
+            menu: 'Menu',
+            closeMenu: 'Close menu',
           },
           extras: {
             switchToDarkTheme: 'Switch to Dark Theme',

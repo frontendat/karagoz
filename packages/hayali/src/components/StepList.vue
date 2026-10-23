@@ -92,10 +92,17 @@ const statusOf = (i: number) =>
           <span class="sr-only">
             {{ t(`krgz.hayali.${statusOf(i)}`) }}
           </span>
-          <template v-if="statusOf(i) === 'current'">
-            <StepLockAlert class="mt-2.5" :locks="locks" />
-            <StepBody class="mt-2.5 text-[13.5px]" :body="s.body" />
-          </template>
+          <StepLockAlert
+            v-if="statusOf(i) === 'current'"
+            class="mt-2.5"
+            :locks="locks"
+          />
+          <!-- Every body is in the server HTML (SEO, no JS); only the current one is expanded. -->
+          <StepBody
+            v-show="statusOf(i) === 'current'"
+            class="mt-2.5 text-[13.5px]"
+            :body="s.body"
+          />
         </div>
       </li>
     </ol>

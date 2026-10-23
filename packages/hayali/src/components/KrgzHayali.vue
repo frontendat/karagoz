@@ -5,7 +5,6 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
   Tabs,
-  TabsContent,
   TabsList,
   TabsTrigger,
 } from '@karagoz/shared'
@@ -20,16 +19,23 @@ import {
   AlertDialogRoot,
   AlertDialogTitle,
 } from 'radix-vue'
-import { computed, onBeforeUnmount, ref, useTemplateRef, watch } from 'vue'
+import { useElementSize } from '@vueuse/core'
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  useTemplateRef,
+  watch,
+} from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import {
-  type FullLayoutFrom,
-  useFullLayout,
-} from '../composables/useFullLayout'
+import { warnIfNotIsolated } from '../composables/useIsolationWarning'
 import { useLessonPosition } from '../composables/useLessonPosition'
 import { useLessonReset } from '../composables/useLessonReset'
+import { useStepEntry } from '../composables/useStepEntry'
 import { useStepLocks } from '../composables/useStepLocks'
+import type { FullLayoutFrom } from '../layout/breakpoints'
 import type { Lesson, Position } from '../types'
 import LessonToolbar from './LessonToolbar.vue'
 import StepList from './StepList.vue'
@@ -53,16 +59,41 @@ const props = withDefaults(
   }>(),
   { fullLayoutFrom: '3xl', multiPanelFrom: '3xl' },
 )
-const position = defineModel<Position>('position', { required: true })
+/**
+ * Current step. Optional so a server render needs nothing from the consumer: it falls back to the first step of the
+ * first chapter (never restored from `localStorage`).
+ */
+const positionModel = defineModel<Position>('position')
+const position = computed<Position>({
+  get: () => {
+    if (positionModel.value) return positionModel.value
+    const chapter = props.lesson.chapters[0]
+    return { chapterId: chapter?.id ?? '', stepId: chapter?.steps[0]?.id ?? '' }
+  },
+  set: (value) => (positionModel.value = value),
+})
 
 const { t } = useI18n()
-const { container, bootstrap, setOption } = useSandbox()
+const sandbox = useSandbox()
+const { container, bootstrap, setOption } = sandbox
 
-const { fullLayout, fullLayoutClass } = useFullLayout(
-  useTemplateRef<HTMLElement>('layout'),
-  () => props.fullLayoutFrom,
+// Which panel the Lesson/Sandbox toggle shows when the container is too narrow for the side-by-side layout. The
+// layout itself is CSS-only (container queries), so first paint needs no JS.
+const panel = ref<'lesson' | 'sandbox'>('lesson')
+
+// The sandbox boots on mount only; the server renders a placeholder.
+const mounted = ref(false)
+onMounted(() => {
+  mounted.value = true
+  warnIfNotIsolated()
+})
+
+// The sandbox pane is `display: none` while the other panel is active, so a measured size means it is visible.
+const sandboxPane = useTemplateRef<HTMLElement>('sandboxPane')
+const { width: paneWidth, height: paneHeight } = useElementSize(sandboxPane)
+const sandboxVisible = computed(
+  () => paneWidth.value > 0 && paneHeight.value > 0,
 )
-const mobilePanel = ref<'lesson' | 'sandbox'>('lesson')
 
 const { chapter, prev, next, groups, goTo } = useLessonPosition(
   () => props.lesson,
@@ -82,7 +113,12 @@ const reset = useLessonReset({
 watch(
   container,
   (c) => {
-    if (c) void reset.boot(position.value).then(bootstrap)
+    if (c)
+      void reset.boot(position.value).then(() => {
+        // Directives for the initial step apply right after the boot mount, without waiting for install/dev server.
+        void entry.enterInitial()
+        return bootstrap()
+      })
   },
   { immediate: true },
 )
@@ -122,12 +158,22 @@ const onOpenChange = (open: boolean) => {
   })
 }
 
-const navigate = async (target: Position | undefined) => {
-  if (!target) return
-  if (await reset.navigate(target, confirm)) goTo(target)
+const entry = useStepEntry({
+  lesson: () => props.lesson,
+  position,
+  goTo,
+  reset,
+  confirm,
+  sandbox,
+  sandboxVisible,
+})
+
+const navigate = (target: Position | undefined) => {
+  if (target) void entry.navigate(target)
 }
 
 const ready = computed(() => !!reset.current.value)
+const busy = computed(() => !ready.value || entry.navigating.value)
 
 // The content pane lists only the current chapter's steps; chapters surface in the TOC.
 const steps = computed(() => chapter.value?.steps ?? [])
@@ -142,84 +188,53 @@ const toolbarProps = computed(() => ({
   groups: groups.value,
   current: position.value,
   chapterTitle: chapter.value?.title,
-  disabled: !ready.value,
+  disabled: busy.value,
 }))
 </script>
 
 <template>
   <div
     data-testid="krgz-hayali"
-    class="bg-background @container/hayali h-full w-full"
+    class="hf bg-background @container/hayali h-full w-full"
+    :data-panel="panel"
   >
-    <div ref="layout" class="flex h-full flex-col" :class="fullLayoutClass">
-      <template v-if="fullLayout">
-        <LessonToolbar
-          v-bind="toolbarProps"
-          placement="top"
-          @navigate="navigate"
-        />
-        <ResizablePanelGroup direction="horizontal" class="min-h-0 flex-1">
-          <ResizablePanel :default-size="30" class="min-w-[300px]">
-            <StepList
-              class="h-full overflow-auto"
-              :steps="steps"
-              :current-step-id="position.stepId"
-              :locks="locks"
-              :disabled="!ready"
-              @select="navigate(positionOf($event))"
-            />
-          </ResizablePanel>
-          <ResizableHandle />
-          <ResizablePanel :default-size="70" class="min-w-[460px]">
-            <div
-              class="m-3 me-5 h-[calc(100%-1.5rem)] overflow-hidden rounded-lg border shadow-sm"
-            >
-              <slot
-                name="sandbox"
-                :ready="ready"
-                :multi-panel-from="multiPanelFrom"
-              >
-                <KrgzSandbox
-                  :booting="!ready"
-                  :multi-panel-from="multiPanelFrom"
-                />
-              </slot>
-            </div>
-          </ResizablePanel>
-        </ResizablePanelGroup>
-      </template>
-      <template v-else>
-        <Tabs v-model="mobilePanel" class="flex min-h-0 flex-1 flex-col">
-          <div class="bg-background sticky top-0 z-10 border-b px-3 py-2">
-            <TabsList
-              data-testid="layout-toggle"
-              class="grid h-9 w-full grid-cols-2 rounded-full"
-            >
-              <TabsTrigger value="lesson" class="rounded-full">
-                {{ t('krgz.hayali.lesson') }}
-              </TabsTrigger>
-              <TabsTrigger value="sandbox" class="rounded-full">
-                {{ t('krgz.hayali.sandbox') }}
-              </TabsTrigger>
-            </TabsList>
-          </div>
-          <TabsContent
-            value="lesson"
-            force-mount
-            class="mt-0 min-h-0 flex-1 overflow-auto"
+    <div class="hf-root flex h-full flex-col" :data-from="fullLayoutFrom">
+      <div
+        data-hf-toggle
+        class="bg-background sticky top-0 z-10 border-b px-3 py-2"
+      >
+        <Tabs v-model="panel" :dir="t('krgz.dir')">
+          <TabsList
+            data-testid="layout-toggle"
+            class="grid h-9 w-full grid-cols-2 rounded-full"
           >
-            <StepList
-              :steps="steps"
-              :current-step-id="position.stepId"
-              :locks="locks"
-              :disabled="!ready"
-              @select="navigate(positionOf($event))"
-            />
-          </TabsContent>
-          <TabsContent value="sandbox" force-mount class="mt-0 min-h-0 flex-1">
-            <div
-              class="m-3 h-[calc(100%-1.5rem)] overflow-hidden rounded-lg border shadow-sm"
-            >
+            <TabsTrigger value="lesson" class="rounded-full">
+              {{ t('krgz.hayali.lesson') }}
+            </TabsTrigger>
+            <TabsTrigger value="sandbox" class="rounded-full">
+              {{ t('krgz.hayali.sandbox') }}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+      <ResizablePanelGroup direction="horizontal" class="min-h-0 flex-1">
+        <ResizablePanel :default-size="30" data-hf-pane="lesson">
+          <StepList
+            class="h-full overflow-auto"
+            :steps="steps"
+            :current-step-id="position.stepId"
+            :locks="locks"
+            :disabled="busy"
+            @select="navigate(positionOf($event))"
+          />
+        </ResizablePanel>
+        <ResizableHandle data-hf-handle />
+        <ResizablePanel :default-size="70" data-hf-pane="sandbox">
+          <div
+            ref="sandboxPane"
+            class="m-3 h-[calc(100%-1.5rem)] overflow-hidden rounded-lg border shadow-sm [margin-inline-end:var(--hf-sandbox-me,0.75rem)]"
+          >
+            <template v-if="mounted">
               <slot
                 name="sandbox"
                 :ready="ready"
@@ -230,15 +245,16 @@ const toolbarProps = computed(() => ({
                   :multi-panel-from="multiPanelFrom"
                 />
               </slot>
-            </div>
-          </TabsContent>
-        </Tabs>
-        <LessonToolbar
-          v-bind="toolbarProps"
-          placement="bottom"
-          @navigate="navigate"
-        />
-      </template>
+            </template>
+            <div
+              v-else
+              data-testid="sandbox-placeholder"
+              class="bg-muted h-full w-full"
+            />
+          </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+      <LessonToolbar v-bind="toolbarProps" @navigate="navigate" />
     </div>
 
     <AlertDialogRoot :open="confirmOpen" @update:open="onOpenChange">

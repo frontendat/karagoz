@@ -47,6 +47,8 @@
     "lint:fix": "oxlint --fix src",
     "fmt": "oxfmt src",
     "fmt:check": "oxfmt --check src",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "docs": "pnpm docs:typescript && sleep 1 && pnpm docs:components && pnpm docs:copy",
     "docs:components": "vue-docgen -c docs/docgen.config.cjs",
     "docs:typescript": "typedoc --options docs/typedoc.json && rm ./docs/.generated-docs/README.md",

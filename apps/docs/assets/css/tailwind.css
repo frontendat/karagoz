@@ -1,12 +1,13 @@
 @import '@karagoz/shared/dist/karagoz-shared.css';
 @import '@karagoz/sandbox/dist/karagoz-sandbox.css';
+@import '@karagoz/hayali/dist/karagoz-hayali.css';
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 @source "../../../../packages/shared/src";
 @source "../../../../packages/sandbox/src";
-@source "../../../../packages/puppeteer/src";
+@source "../../../../packages/hayali/src";
 
 @plugin "@tailwindcss/typography";
 @plugin "tailwindcss-animate";

@@ -50,6 +50,13 @@ export const useSandboxTabs = <T = undefined>() => {
   }
 
   /**
+   * Close all tabs.
+   */
+  const closeAll = () => {
+    tabs.value.splice(0, tabs.value.length)
+  }
+
+  /**
    * Open a tab. If a tab with the same ID exists it will be focused, otherwise a new tab is created and focused.
    * @param id
    * @param label
@@ -85,6 +92,7 @@ export const useSandboxTabs = <T = undefined>() => {
 
   return {
     close,
+    closeAll,
     /**
      * Computed ref containing the currently focused tab.
      */

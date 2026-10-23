@@ -37,5 +37,17 @@ How a page speaks to the reader. German uses informal "du", never "Sie". Arabic 
 _Avoid_: Tone, formality
 
 **Untranslated Term**:
-A name kept in English across all locales: product names (Karagöz Sandbox, Karagöz Puppeteer), code identifiers, WebContainer. German also keeps common developer loanwords (Panel, Tab, Props, Events); Arabic translates such concepts and gives the English term in parentheses on first use per page.
+A name kept in English across all locales: product names (Karagöz Sandbox, Karagöz Hayali), code identifiers, WebContainer. German also keeps common developer loanwords (Panel, Tab, Props, Events); Arabic translates such concepts and gives the English term in parentheses on first use per page.
 _Avoid_: Keyword, jargon
+
+**Lesson Vocabulary**:
+The Hayali terms and their fixed translations. Code identifiers and type names (`Lesson`, `Step`) stay in English everywhere; Arabic gives the English term in parentheses on first use per page.
+
+| English | German    | Arabic            |
+| ------- | --------- | ----------------- |
+| Lesson  | Lektion   | درس               |
+| Chapter | Kapitel   | فصل               |
+| Step    | Schritt   | خطوة              |
+| Callout | Callout   | تنبيه (Callout)   |
+
+_Avoid_: Using Unterricht, Abschnitt or Stufe for these terms

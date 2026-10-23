@@ -8,7 +8,7 @@ allowed-tools: Bash
 Lint target from $ARGUMENTS:
 
 - File path → `pnpm eslint [--fix] <file>`
-- Package name (`@shared` / `@sandbox` / `@puppeteer` / `@docs`) → `nx run @karagoz/<pkg>:lint`
+- Package name (`@shared` / `@sandbox` / `@hayali` / `@docs`) → `nx run @karagoz/<pkg>:lint`
 - No argument → `nx run-many -t lint`
 
 Use `--fix` unless $ARGUMENTS contains "check". Report errors and auto-fixed files.
