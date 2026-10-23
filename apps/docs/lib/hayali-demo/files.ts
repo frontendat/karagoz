@@ -17,9 +17,26 @@ const path = require('path')
 
 const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript' }
 
+// Live reload: pages listen on /__live and reload when a file in this folder changes.
+const clients = new Set()
+let timer
+fs.watch(__dirname, (event, name) => {
+  if (!name || name === 'node_modules' || name === 'package-lock.json') return
+  clearTimeout(timer)
+  timer = setTimeout(() => clients.forEach((res) => res.write('data: reload\\n\\n')), 100)
+})
+const liveScript = '<script>new EventSource("/__live").onmessage = () => location.reload()</script>'
+
 http
   .createServer((req, res) => {
     const { pathname } = new URL(req.url, 'http://localhost')
+    if (pathname === '/__live') {
+      res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' })
+      res.write(': connected\\n\\n')
+      clients.add(res)
+      req.on('close', () => clients.delete(res))
+      return
+    }
     const file = path.join(__dirname, path.normalize(pathname === '/' ? '/index.html' : pathname))
     fs.readFile(file.startsWith(__dirname + path.sep) ? file : '', (error, data) => {
       if (error) {
@@ -27,8 +44,9 @@ http
         res.end('Not found')
         return
       }
-      res.writeHead(200, { 'Content-Type': types[path.extname(file)] ?? 'text/plain' })
-      res.end(data)
+      const type = types[path.extname(file)] ?? 'text/plain'
+      res.writeHead(200, { 'Content-Type': type })
+      res.end(type === 'text/html' ? data + liveScript : data)
     })
   })
   .listen(3000)

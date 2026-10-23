@@ -40,7 +40,7 @@ const toPair = (item: unknown): [number, number] | undefined =>
  * Resolves a LineSpec to inclusive `[from, to]` ranges, or `undefined` if it is malformed. An ascending pair of numbers
  * is a range; any other non-empty array is a list of lines and `[from, to]` pairs (not nested further).
  */
-const toRanges = (spec: unknown): [number, number][] | undefined => {
+export const toRanges = (spec: unknown): [number, number][] | undefined => {
   if (isLine(spec)) return [[spec, spec]]
   if (!Array.isArray(spec) || spec.length === 0) return undefined
   const pair = toPair(spec)

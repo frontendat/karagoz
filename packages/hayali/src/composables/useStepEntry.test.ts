@@ -165,7 +165,8 @@ describe('useStepEntry', () => {
         'open ./a.js',
         'open ./c.css',
         'open ./a.js',
-        'highlight ./a.js [[1,2],4]',
+        'highlight ./a.js [1,2]',
+        'highlight ./a.js [4,4]',
         'goTo ./a.js:3',
         'preview /about.html?x=1#top',
       ])

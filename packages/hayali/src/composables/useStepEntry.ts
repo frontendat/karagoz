@@ -2,7 +2,8 @@ import { ref, watch } from 'vue'
 import type { Ref } from 'vue'
 
 import { findStep, normalize, resolveStepTree } from '../lesson'
-import type { Lesson, LineSpec, Position } from '../types'
+import type { Lesson, Position } from '../types'
+import { toRanges } from '../validateLesson'
 
 /** The slice of `useSandbox()` this composable calls; injectable for tests. */
 export interface StepEntrySandbox {
@@ -13,8 +14,9 @@ export interface StepEntrySandbox {
     closeAll(): void
   }
   editorViews: {
+    /** One line or one inclusive `[from, to]` range per call (the sandbox does not take lists). */
     highlightLines(
-      lines: LineSpec,
+      lines: number | [from: number, to: number],
       path: string,
       options: { open: false },
     ): Promise<void> | void
@@ -169,10 +171,17 @@ export const useStepEntry = (options: {
         const path = resolve(item?.path, 'highlight')
         if (path === undefined) continue
         if (reset.dirty.value) break // the learner already edited: lines may have shifted
-        await sandbox.editorViews.highlightLines(item.lines, tabId(path), {
-          open: false,
-        })
-        if (!alive()) return
+        const ranges = toRanges(item.lines)
+        if (!ranges) {
+          warn(`Skipping highlight "${path}": invalid lines`)
+          continue
+        }
+        for (const range of ranges) {
+          await sandbox.editorViews.highlightLines(range, tabId(path), {
+            open: false,
+          })
+          if (!alive()) return
+        }
       }
 
     // go to a line
