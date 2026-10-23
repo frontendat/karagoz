@@ -13,14 +13,16 @@ const hoisted = vi.hoisted(() => ({
 
 vi.mock('@karagoz/sandbox', () => ({
   provideWebContainer: vi.fn(),
+  useSandbox: () => ({ setOption: vi.fn() }),
   useSandboxBoot: () => ({ boot: hoisted.boot }),
+  KrgzSandbox: defineComponent({ template: '<div />' }),
 }))
 vi.mock('@karagoz/hayali', () => ({
   KrgzHayali: defineComponent({ template: '<div />' }),
 }))
 
 const flush = async () => {
-  for (let i = 0; i < 5; i++) await Promise.resolve()
+  for (let i = 0; i < 20; i++) await Promise.resolve()
 }
 
 beforeEach(() => {
@@ -60,6 +62,31 @@ describe('HayaliDemo container lifetime', () => {
     const wrapper = mount(DemoRunner, { props: { locale: 'en' } })
 
     expect(() => wrapper.unmount()).not.toThrow()
+    await flush()
+  })
+})
+
+describe('HayaliDemo taking turns', () => {
+  it('does not create the next demo until the previous one has torn its container down', async () => {
+    hoisted.resolveBoot!({ teardown: hoisted.teardown })
+    const first = mount(DemoRunner, { props: { locale: 'en' } })
+    await flush()
+
+    // Navigating: the next page's demo mounts before the old one unmounts.
+    const second = mount(DemoRunner, { props: { locale: 'en' } })
+    await flush()
+    expect(second.findComponent({ name: 'DemoRunnerSession' }).exists()).toBe(
+      false,
+    )
+
+    first.unmount()
+    await flush()
+
+    expect(hoisted.teardown).toHaveBeenCalledTimes(1)
+    expect(second.findComponent({ name: 'DemoRunnerSession' }).exists()).toBe(
+      true,
+    )
+    second.unmount()
     await flush()
   })
 })
