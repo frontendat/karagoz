@@ -24,7 +24,7 @@ If any of these files don't exist yet, **proceed silently**. Don't flag their ab
 │   ├── sandbox/
 │   │   ├── CONTEXT.md
 │   │   └── docs/adr/
-│   └── puppeteer/
+│   └── hayali/
 │       ├── CONTEXT.md
 │       └── docs/adr/
 └── apps/
@@ -33,7 +33,7 @@ If any of these files don't exist yet, **proceed silently**. Don't flag their ab
         └── docs/adr/
 ```
 
-Contexts follow the dependency order: `shared` → `sandbox` → `puppeteer` → `docs`.
+Contexts follow the dependency order: `shared` → `sandbox` → `hayali` → `docs`.
 
 ## Use the glossary's vocabulary
 

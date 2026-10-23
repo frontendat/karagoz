@@ -9,12 +9,12 @@
 
 ## Monorepo Structure
 
-pnpm workspaces. Dependency order: `shared` → `sandbox` → `puppeteer` → `docs`
+pnpm workspaces. Dependency order: `shared` → `sandbox` → `hayali` → `docs`
 
 - `apps/docs` — Nuxt 4 app, main site at karagoz.dev
 - `packages/shared` — Base UI components, no internal deps
 - `packages/sandbox` — WebContainer-powered code sandbox, depends on shared
-- `packages/puppeteer` — Explanation/walkthrough components, depends on sandbox + shared
+- `packages/hayali` — Lesson/walkthrough components (`KrgzHayali`), depends on sandbox + shared
 
 Run targets via Nx: `nx run @karagoz/docs:dev`, `nx run @karagoz/shared:build`, etc. Nx respects dependency order automatically.
 

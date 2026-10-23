@@ -1,8 +1,13 @@
-import { asyncComputed, createSharedComposable } from '@vueuse/core'
+import {
+  asyncComputed,
+  createSharedComposable,
+  useEventListener,
+} from '@vueuse/core'
 import { type IFSWatcher, reloadPreview } from '@webcontainer/api'
 import { computed, reactive, readonly, ref } from 'vue'
 
 import type { SandboxOptions } from '../types/Sandbox.ts'
+import { previewScript } from '../utils/previewScript.ts'
 import { strToCmd } from '../utils/strToCmd.ts'
 import { injectWebContainer } from '../utils/WebContainer.ts'
 import { useSandboxEditorTabs } from './useSandboxEditorTabs.ts'
@@ -14,11 +19,16 @@ function useSandboxInternal() {
   const container = asyncComputed(async () => {
     const c = await injectWebContainer()
     // Hook into the server-ready event to update the previewUrl
-    c.on('server-ready', (_, url) => (previewUrl.value = url))
+    c.on('server-ready', (_, url) => {
+      previewUrl.value = url
+      // A new preview server: forget the location of the previous one.
+      previewHref.value = undefined
+    })
     return c
   }, null)
   const previewFrame = ref<HTMLIFrameElement>()
   const previewUrl = ref<string>()
+  const previewHref = ref<string>()
   const previewConsoleShown = ref(false)
   const explorerShown = ref(true)
   const watchers = ref<{
@@ -89,6 +99,18 @@ function useSandboxInternal() {
     terminal: {
       maxCount: 3,
     },
+  })
+
+  // Track the location reported by the injected preview script. `useEventListener` is a no-op on the server.
+  useEventListener('message', (message: MessageEvent) => {
+    if (
+      !previewUrl.value ||
+      message.origin !== new URL(previewUrl.value).origin
+    )
+      return
+    if (message.data?.type === 'navigation' && message.data?.href) {
+      previewHref.value = message.data.href
+    }
   })
 
   const explorer = useSandboxExplorer(options)
@@ -165,42 +187,7 @@ function useSandboxInternal() {
     processTabs.close(options.process.commands.devServer)
     processTabs.close(options.process.commands.install)
     if (!watchers.value.reinstall) {
-      // This code gets injected into every preview and helps emit the current URL to the parent window
-      // to be shown in the address bar of the preview panel, and forwards console output to the parent
-      // window to be shown in the console panel.
-      await container.value?.setPreviewScript(`
-        window.parent.postMessage({ type: 'navigation', href: window.location.href, initial: true}, '*');
-        window.addEventListener('hashchange', () => {
-          window.parent.postMessage({ type: 'navigation', href: window.location.href}, '*');
-        });
-        (function () {
-          const serialize = (arg) => {
-            if (typeof arg === 'string') return arg;
-            if (arg instanceof Error) return arg.stack || arg.message;
-            try {
-              return JSON.stringify(arg);
-            } catch (e) {
-              return String(arg);
-            }
-          };
-          ['log', 'info', 'warn', 'error', 'debug'].forEach((level) => {
-            const original = console[level];
-            console[level] = function (...args) {
-              try {
-                window.parent.postMessage({
-                  type: 'console',
-                  level,
-                  args: args.map(serialize),
-                }, '*');
-              } catch (e) {}
-              original.apply(console, args);
-            };
-          });
-          window.addEventListener('error', (event) => {
-            window.parent.postMessage({ type: 'console', level: 'error', args: [event.message] }, '*');
-          });
-        })();
-      `)
+      await container.value?.setPreviewScript(previewScript)
       // Open terminal first to avoid waiting for other processes.
       await options.process.starters?.terminal?.()
     }
@@ -280,6 +267,27 @@ function useSandboxInternal() {
        * Hide the console panel.
        */
       hideConsole: () => (previewConsoleShown.value = false),
+      /**
+       * Navigate the preview to a root-relative path (e.g. `/about.html?x=1#top`), resolved against the preview origin.
+       * No-op until the preview frame and URL are available.
+       */
+      navigate: (path: string) => {
+        if (!previewFrame.value || !previewUrl.value) return
+        previewFrame.value.src = new URL(path, previewUrl.value).href
+      },
+      /**
+       * Read-only computed ref containing the current path of the preview (pathname, query and hash), kept up to date
+       * on load, hashchange, popstate and history.pushState / replaceState. Empty until the preview reports a location.
+       */
+      path: computed(() => {
+        if (!previewHref.value) return ''
+        try {
+          const { pathname, search, hash } = new URL(previewHref.value)
+          return `${pathname}${search}${hash}`
+        } catch {
+          return ''
+        }
+      }),
       /**
        * Reload the preview.
        */

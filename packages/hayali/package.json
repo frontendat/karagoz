@@ -1,0 +1,78 @@
+{
+  "name": "@karagoz/hayali",
+  "version": "0.5.0",
+  "private": false,
+  "homepage": "https://karagoz.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frontendat/karagoz.git"
+  },
+  "files": [
+    "dist",
+    "src/lib.css",
+    "src/layout.css"
+  ],
+  "type": "module",
+  "main": "./dist/karagoz-hayali.umd.cjs",
+  "module": "./dist/karagoz-hayali.js",
+  "types": "./dist/types.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/types.d.ts",
+        "default": "./dist/karagoz-hayali.js"
+      },
+      "require": {
+        "types": "./dist/types.d.ts",
+        "default": "./dist/karagoz-hayali.umd.cjs"
+      }
+    },
+    "./dist/karagoz-hayali.css": {
+      "import": "./dist/karagoz-hayali.css",
+      "require": "./dist/karagoz-hayali.css"
+    },
+    "./style.css": "./src/lib.css"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @karagoz/hayali --parallel /^watch:/",
+    "dev-hmr": "vite",
+    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
+    "prepublish": "pnpm build",
+    "preview": "vite preview",
+    "watch:vite": "vite build --watch",
+    "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
+    "lint": "oxlint src",
+    "lint:fix": "oxlint --fix src",
+    "fmt": "oxfmt src",
+    "fmt:check": "oxfmt --check src",
+    "docs": "pnpm docs:typescript && sleep 1 && pnpm docs:components && pnpm docs:copy",
+    "docs:components": "vue-docgen -c docs/docgen.config.cjs",
+    "docs:typescript": "typedoc --options docs/typedoc.json && rm ./docs/.generated-docs/README.md",
+    "docs:copy": "cp -a ./docs/.generated-docs/. ../../apps/docs/content/en/hayali/4.api-reference/",
+    "gen:layout": "jiti scripts/gen-layout.ts && oxfmt src/layout.css",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@karagoz/sandbox": "workspace:^",
+    "@karagoz/shared": "workspace:^",
+    "@vueuse/core": "^14.3.0",
+    "ignore": "^6.0.2",
+    "markdown-it": "^14.2.0",
+    "markdown-it-container": "^4.0.0",
+    "radix-vue": "^1.9.17",
+    "vue-markdown-render": "^2.3.1"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.21",
+    "vue-i18n": "^11.4.6"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "^14.1.2",
+    "@types/markdown-it-container": "^4.0.1",
+    "jiti": "^2.7.0"
+  }
+}

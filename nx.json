@@ -21,11 +21,17 @@
       "inputs": ["default", "{workspaceRoot}/.oxlintrc.json"],
       "cache": true
     },
+    "test": {
+      "dependsOn": ["^build"],
+      "inputs": ["default", "^production"],
+      "cache": true
+    },
     "fmt": {
       "inputs": ["default", "{workspaceRoot}/.oxfmtrc.json"],
       "cache": true
     },
     "docs": {
+      "dependsOn": ["^build"],
       "outputs": ["{projectRoot}/docs/.generated-docs"],
       "cache": true
     },

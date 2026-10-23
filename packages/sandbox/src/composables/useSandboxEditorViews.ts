@@ -61,9 +61,9 @@ export const useSandboxEditorViews = (
     views.delete(path)
   }
 
-  const resolveTargetPath = (path?: string) => {
+  const resolveTargetPath = (path?: string, open = true) => {
     if (path) {
-      editorTabs.open(path)
+      if (open) editorTabs.open(path)
       return path
     }
     return editorTabs.current.value?.id
@@ -83,11 +83,25 @@ export const useSandboxEditorViews = (
    * and reopened.
    * @param lines a single line number, or a `[from, to]` inclusive range.
    * @param path file path of the editor to highlight in. Defaults to the currently focused tab.
+   * @param options `open: false` only stores the range: no tab is opened or focused and the view is not awaited.
+   * The range is applied immediately if the view exists, or when the file is opened later.
    */
-  const highlightLines = async (lines: HighlightLines, path?: string) => {
-    const targetPath = resolveTargetPath(path)
+  const highlightLines = async (
+    lines: HighlightLines,
+    path?: string,
+    options: { open?: boolean } = {},
+  ) => {
+    const { open = true } = options
+    const targetPath = resolveTargetPath(path, open)
     if (!targetPath) return
     highlighted.set(targetPath, [...(highlighted.get(targetPath) ?? []), lines])
+    if (!open) {
+      const view = views.get(targetPath)
+      view?.dispatch({
+        effects: addHighlightRange.of(lineRange(view.state.doc, lines)),
+      })
+      return
+    }
     const view = await getReadyView(targetPath)
     if (!view) return
     view.dispatch({
@@ -100,8 +114,14 @@ export const useSandboxEditorViews = (
    * the editor. If `path` refers to a file that isn't open yet, it is opened and focused first.
    * @param line line number to go to.
    * @param path file path of the editor to go to. Defaults to the currently focused tab.
+   * @param options `focus: false` moves the cursor and scrolls without taking DOM focus.
    */
-  const goToLine = async (line: number, path?: string) => {
+  const goToLine = async (
+    line: number,
+    path?: string,
+    options: { focus?: boolean } = {},
+  ) => {
+    const { focus = true } = options
     const targetPath = resolveTargetPath(path)
     if (!targetPath) return
     const view = await getReadyView(targetPath)
@@ -111,7 +131,7 @@ export const useSandboxEditorViews = (
       selection: EditorSelection.cursor(from),
       effects: EditorView.scrollIntoView(from, { y: 'center' }),
     })
-    view.focus()
+    if (focus) view.focus()
   }
 
   /**
