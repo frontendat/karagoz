@@ -39,9 +39,9 @@ export const createDemoLesson = (locale: string): Lesson => {
     chapters: demoStructure.chapters.map(
       (chapter): Chapter => ({
         id: chapter.id,
-        title: title(chapter.id),
+        title: title(chapter.id)!,
         steps: chapter.steps.map(
-          (step): Step => ({ ...step, ...text(step.id) }),
+          (step): Step => ({ ...step, ...text(step.id)! }),
         ),
       }),
     ),

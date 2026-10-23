@@ -3,8 +3,6 @@ import { Button, KaragozLogo } from '@karagoz/shared'
 import { useDark, useToggle } from '@vueuse/core'
 import { MoonStar, Sun } from 'lucide-vue-next'
 
-import { navigationMenuTriggerStyle } from '~/components/ui/navigation-menu'
-
 const { t } = useI18n()
 const localePath = useLocalePath()
 const isDark = useDark()
@@ -15,7 +13,7 @@ const isDev = import.meta.dev
 <template>
   <header class="sticky z-40 top-0 bg-background/80 backdrop-blur-lg border-b">
     <div
-      class="container flex h-14 items-center max-w-384 mx-auto px-4 md:px-8"
+      class="container flex h-14 items-center max-w-494 mx-auto px-4 md:px-8"
     >
       <DocsTopBarMobileNav class="md:hidden" />
       <NuxtLink class="flex gap-2 items-center me-6" :to="localePath('/')">
