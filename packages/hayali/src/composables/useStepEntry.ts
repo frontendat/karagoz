@@ -177,9 +177,13 @@ export const useStepEntry = (options: {
           continue
         }
         for (const range of ranges) {
-          await sandbox.editorViews.highlightLines(range, tabId(path), {
-            open: false,
-          })
+          await sandbox.editorViews.highlightLines(
+            range[0] === range[1] ? range[0] : range,
+            tabId(path),
+            {
+              open: false,
+            },
+          )
           if (!alive()) return
         }
       }
