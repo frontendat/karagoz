@@ -26,7 +26,7 @@ vi.mock('@karagoz/sandbox', async () => {
         goToLine: vi.fn(),
         clearAllHighlightedLines: vi.fn(),
       },
-      preview: { navigate: vi.fn(), path: r('/'), url: r('') },
+      preview: { navigate: vi.fn(), reload: vi.fn(), path: r('/'), url: r('') },
     }),
     KrgzSandbox: dc({
       setup: () => () => hh('div', { 'data-testid': 'sandbox' }),

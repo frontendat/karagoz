@@ -20,6 +20,20 @@ export interface LessonFs {
 
 export type Tier = 'A' | 'B'
 
+/**
+ * What a package manager writes when the sandbox installs dependencies. It appears after boot without the learner
+ * touching anything, so it must never count as an edit nor be removed by a reset. Always immutable, whether or not the
+ * lesson lists it.
+ */
+const INSTALL_OUTPUT = [
+  'node_modules',
+  'package-lock.json',
+  'pnpm-lock.yaml',
+  'yarn.lock',
+  'bun.lock',
+  'bun.lockb',
+]
+
 const nest = (flat: FlatTree): AdjustmentsTree => {
   const root: AdjustmentsTree = {}
   for (const [path, contents] of flat) {
@@ -53,7 +67,9 @@ export const useLessonReset = (options: {
   const lesson = () => toValue(options.lesson)
 
   const immutable = computed(() =>
-    ignore({ allowRelativePaths: true }).add(lesson().immutable ?? []),
+    ignore({ allowRelativePaths: true })
+      .add(INSTALL_OUTPUT)
+      .add(lesson().immutable ?? []),
   )
 
   const dirty = ref(false)

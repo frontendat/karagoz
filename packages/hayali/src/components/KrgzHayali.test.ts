@@ -40,7 +40,12 @@ vi.mock('@karagoz/sandbox', async () => {
         goToLine: vi.fn(async () => {}),
         clearAllHighlightedLines: vi.fn(),
       },
-      preview: { navigate: vi.fn(), path: r('/'), url: r('https://x.test') },
+      preview: {
+        navigate: vi.fn(),
+        reload: vi.fn(),
+        path: r('/'),
+        url: r('https://x.test'),
+      },
       setOption: (
         _key: 'explorer',
         setter: (old: typeof hoisted.explorer) => typeof hoisted.explorer,

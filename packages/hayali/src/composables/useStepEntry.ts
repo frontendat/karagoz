@@ -27,6 +27,8 @@ export interface StepEntrySandbox {
   }
   preview: {
     navigate(path: string): void
+    /** Reload the current page, e.g. after the files under it changed. */
+    reload(): Promise<void> | void
     /** Current preview path. */
     path: Readonly<Ref<string>>
     /** Empty until the dev server is ready. */
@@ -183,13 +185,21 @@ export const useStepEntry = (options: {
       }
     }
 
-    // preview
+    if (!alive()) return
+
+    // preview: show the step's page, or at least reload so the new files are visible
     const url = step?.preview?.url
+    const serverReady = !!sandbox.preview.url.value
     if (url) {
-      if (!sandbox.preview.url.value) pendingUrl = { url, token: entry }
+      if (!serverReady) pendingUrl = { url, token: entry }
+      // Assigning the same URL to the frame would not refresh it, and the files may have changed.
+      else if (from && url === sandbox.preview.path.value)
+        await sandbox.preview.reload()
       else sandbox.preview.navigate(url)
-    } else if (from && removedAny && sandbox.preview.path.value !== '/') {
-      sandbox.preview.navigate('/')
+    } else if (from && serverReady) {
+      if (removedAny && sandbox.preview.path.value !== '/')
+        sandbox.preview.navigate('/')
+      else await sandbox.preview.reload()
     }
   }
 

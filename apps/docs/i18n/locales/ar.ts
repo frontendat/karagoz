@@ -31,6 +31,8 @@ export default defineI18nLocale(async () => {
             hayaliHandbook: 'الدليل',
             hayaliApiReference: 'مرجع الـ API',
             blog: 'المدونة',
+            menu: 'القائمة',
+            closeMenu: 'إغلاق القائمة',
           },
           extras: {
             switchToDarkTheme: 'تبديل إلى الوضع المظلم',

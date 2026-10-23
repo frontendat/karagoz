@@ -182,4 +182,59 @@ describe('useLessonReset', () => {
     dispose()
     expect(watcher.close).toHaveBeenCalled()
   })
+
+  describe('install output', () => {
+    // A lesson that never lists node_modules or lockfiles as immutable.
+    const bare: Lesson = {
+      files: { 'index.js': file('base') },
+      chapters: [
+        { id: 'c', title: 'C', steps: [{ id: 's1', title: '1', body: '' }] },
+      ],
+    }
+
+    it.each([
+      'node_modules',
+      'node_modules/express/index.js',
+      'package-lock.json',
+      'pnpm-lock.yaml',
+      'yarn.lock',
+      'src/node_modules/x/y.js',
+    ])('treats %s as tier A without being listed as immutable', (path) => {
+      const m = mockFs()
+      const api = useLessonReset({ fs: m.fs, lesson: bare })
+
+      expect(api.tierOf(path)).toBe('A')
+    })
+
+    it('does not become dirty when npm install writes its output after boot', async () => {
+      const m = mockFs()
+      const api = useLessonReset({ fs: m.fs, lesson: bare })
+      await api.boot(s1)
+      m.emit('index.js')
+
+      for (const f of [
+        'package-lock.json',
+        'node_modules',
+        'node_modules/.package-lock.json',
+      ])
+        m.emit(f)
+
+      expect(api.dirty.value).toBe(false)
+    })
+
+    it('never removes install output when resetting', async () => {
+      const m = mockFs()
+      const api = useLessonReset({ fs: m.fs, lesson: bare })
+      await api.boot(s1)
+      m.emit('index.js')
+      m.emit('node_modules/x/index.js')
+
+      await api.reset(s1, s1)
+
+      expect(m.fs.rm).not.toHaveBeenCalledWith(
+        expect.stringContaining('node_modules'),
+        expect.anything(),
+      )
+    })
+  })
 })

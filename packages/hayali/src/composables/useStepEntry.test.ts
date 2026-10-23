@@ -79,6 +79,9 @@ const setup = (
     },
     preview: {
       navigate: vi.fn((path: string) => log.push(`preview ${path}`)),
+      reload: vi.fn(async () => {
+        log.push('reload')
+      }),
       path: previewPath,
       url: previewUrl,
     },
@@ -188,7 +191,7 @@ describe('useStepEntry', () => {
 
       await go(t, 's2')
 
-      expect(t.log.slice(-2)).toEqual(['closeAll', 'open ./a.js'])
+      expect(t.log.slice(-3)).toEqual(['closeAll', 'open ./a.js', 'reload'])
     })
 
     it('never inherits directives from the previous step', async () => {
@@ -204,7 +207,7 @@ describe('useStepEntry', () => {
 
       await go(t, 's3')
 
-      expect(t.log).toEqual(['reset', 'position', 'clear'])
+      expect(t.log).toEqual(['reset', 'position', 'clear', 'reload'])
     })
 
     it('applies the same directives on back-navigation', async () => {
@@ -536,6 +539,99 @@ describe('useStepEntry', () => {
 
       expect(t.sandbox.editorViews.highlightLines).not.toHaveBeenCalled()
       expect(t.sandbox.editorViews.goToLine).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('preview reload', () => {
+    it('reloads the preview after entering a step so it shows the new files', async () => {
+      const t = setup({ s1: {}, s2: {} })
+
+      await go(t, 's2')
+
+      expect(t.sandbox.preview.reload).toHaveBeenCalledTimes(1)
+      expect(t.sandbox.preview.navigate).not.toHaveBeenCalled()
+    })
+
+    it('reloads after the other directives, so the files and tabs are in place first', async () => {
+      const t = setup({ s1: {}, s2: { editor: { open: ['a.js'] } } })
+      t.log.length = 0
+
+      await go(t, 's2')
+
+      expect(t.log.at(-1)).toBe('reload')
+    })
+
+    it('navigates instead of reloading when preview.url points elsewhere', async () => {
+      const t = setup({ s1: {}, s2: { preview: { url: '/about.html' } } })
+
+      await go(t, 's2')
+
+      expect(t.sandbox.preview.navigate).toHaveBeenCalledWith('/about.html')
+      expect(t.sandbox.preview.reload).not.toHaveBeenCalled()
+    })
+
+    it('reloads when preview.url is the page the preview is already on', async () => {
+      const t = setup({ s1: {}, s2: { preview: { url: '/about.html' } } })
+      t.previewPath.value = '/about.html'
+
+      await go(t, 's2')
+
+      expect(t.sandbox.preview.reload).toHaveBeenCalledTimes(1)
+      expect(t.sandbox.preview.navigate).not.toHaveBeenCalled()
+    })
+
+    it('navigates to / for the removal fallback instead of reloading', async () => {
+      const t = setup({ s1: {}, s2: { removals: ['c.css'] } })
+      t.previewPath.value = '/about.html'
+
+      await go(t, 's2')
+
+      expect(t.sandbox.preview.navigate).toHaveBeenCalledWith('/')
+      expect(t.sandbox.preview.reload).not.toHaveBeenCalled()
+    })
+
+    it('reloads after a removal when the preview is already on /', async () => {
+      const t = setup({ s1: {}, s2: { removals: ['c.css'] } })
+
+      await go(t, 's2')
+
+      expect(t.sandbox.preview.reload).toHaveBeenCalledTimes(1)
+    })
+
+    it('does nothing to the preview while the dev server is not ready', async () => {
+      const t = setup({ s1: {}, s2: {} }, { ready: false })
+
+      await go(t, 's2')
+
+      expect(t.sandbox.preview.reload).not.toHaveBeenCalled()
+      expect(t.sandbox.preview.navigate).not.toHaveBeenCalled()
+    })
+
+    it('does not reload for the initial step, where nothing has loaded yet', async () => {
+      const t = setup({ s1: {} })
+
+      await t.entry.enterInitial()
+      await flush()
+
+      expect(t.sandbox.preview.reload).not.toHaveBeenCalled()
+    })
+
+    it('drops the reload of a superseded entry', async () => {
+      const t = setup({
+        s1: {},
+        s2: { editor: { open: [{ path: 'a.js', line: 1 }] } },
+        s3: {},
+      })
+      const view = deferred()
+      t.sandbox.editorViews.goToLine.mockReturnValueOnce(view.promise)
+      await go(t, 's2')
+      await go(t, 's3')
+      t.sandbox.preview.reload.mockClear()
+
+      view.resolve()
+      await flush()
+
+      expect(t.sandbox.preview.reload).not.toHaveBeenCalled()
     })
   })
 
