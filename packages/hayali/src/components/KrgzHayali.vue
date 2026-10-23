@@ -203,7 +203,7 @@ const toolbarProps = computed(() => ({
         data-hf-toggle
         class="bg-background sticky top-0 z-10 border-b px-3 py-2"
       >
-        <Tabs v-model="panel">
+        <Tabs v-model="panel" :dir="t('krgz.dir')">
           <TabsList
             data-testid="layout-toggle"
             class="grid h-9 w-full grid-cols-2 rounded-full"
