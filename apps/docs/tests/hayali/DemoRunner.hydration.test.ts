@@ -32,35 +32,49 @@ const make = async (url: string) => {
   return { app, router }
 }
 
-// The deployed site is prerendered, so its HTML never sees the query: the server render is always the start step.
-describe('HayaliDemo deep link hydration', () => {
-  it('hydrates over the static start-step HTML without mismatches, then moves to the linked step', async () => {
-    const html = await renderToString((await make('/hayali')).app)
-    const root = document.createElement('div')
-    root.innerHTML = html
-    document.body.appendChild(root)
+// The deployed site is prerendered, so its HTML never sees the query: the server render is always the start step. Nuxt
+// also hydrates a prerendered page with the query stripped (from the route and the address bar) and restores it after
+// hydration, so a demo that hydrates early (visible on load) only sees the query arrive later.
+const hydrate = async (initialUrl: string) => {
+  const html = await renderToString((await make('/hayali')).app)
+  const root = document.createElement('div')
+  root.innerHTML = html
+  document.body.appendChild(root)
 
-    const warnings: string[] = []
-    const { app, router } = await make('/hayali?step=pages/about')
-    app.config.warnHandler = (message) => warnings.push(message)
-    app.mount(root)
+  const warnings: string[] = []
+  const { app, router } = await make(initialUrl)
+  app.config.warnHandler = (message) => warnings.push(message)
+  app.mount(root)
+  await flushPromises()
+  const title = () =>
+    root.querySelector('[data-testid="chapter-title"]')?.textContent?.trim()
+  return { router, warnings, title }
+}
+
+describe('HayaliDemo deep link hydration', () => {
+  it('moves to the linked step once the router restores the query after an early hydration', async () => {
+    const { router, warnings, title } = await hydrate('/hayali')
+    expect(title()).toBe('The page')
+
+    await router.replace('/hayali?step=pages/about')
     await flushPromises()
 
     expect(warnings.filter((w) => /hydrat/i.test(w))).toEqual([])
-    expect(
-      root.querySelector('[data-testid="chapter-title"]')?.textContent?.trim(),
-    ).toBe('More pages')
+    expect(title()).toBe('More pages')
     expect(router.currentRoute.value.query.step).toBe('pages/about')
   })
 
-  it('heals an unknown ?step to the start step', async () => {
-    const html = await renderToString((await make('/hayali')).app)
-    const root = document.createElement('div')
-    root.innerHTML = html
-    document.body.appendChild(root)
+  it('moves to the linked step on mount when the router already has the query (late hydration)', async () => {
+    const { warnings, title } = await hydrate('/hayali?step=pages/about')
 
-    const { app, router } = await make('/hayali?step=nope/foo')
-    app.mount(root)
+    expect(warnings.filter((w) => /hydrat/i.test(w))).toEqual([])
+    expect(title()).toBe('More pages')
+  })
+
+  it('removes an unknown ?step from the URL', async () => {
+    const { router } = await hydrate('/hayali')
+
+    await router.replace('/hayali?step=nope/foo')
     await flushPromises()
 
     expect(router.currentRoute.value.query.step).toBeUndefined()

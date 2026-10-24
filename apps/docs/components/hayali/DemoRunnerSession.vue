@@ -23,15 +23,25 @@ const lesson = computed(() => createDemoLesson(props.locale))
 
 // The step is deep-linkable through `?step=chapterID/stepID`. The deployed pages are prerendered, so their HTML never
 // sees the query: the first render is always the start step, and the URL is applied after mount so hydration matches
-// the HTML. This runs before the sandbox boots, so the container is still mounted with the linked step's files. After
-// that the position only writes to the URL. `replace` keeps Back from skipping the confirm-and-reset flow, which only
-// runs for navigation inside the lesson.
+// the HTML. Nuxt also hydrates a prerendered page with the query stripped and restores it afterwards, so a demo that
+// hydrates early (visible on load) sees it arrive later; the first time it does, it is applied. This happens before
+// the sandbox boots (the learner can't navigate yet), so the container is still mounted with the linked step's files.
+// After that the position only writes to the URL. `replace` keeps Back from skipping the confirm-and-reset flow,
+// which only runs for navigation inside the lesson.
 const route = useRoute()
 const router = useRouter()
 const position = ref<Position>({ ...demoStart })
-onMounted(() => {
-  const linked = parseStepQuery(route.query[stepQueryKey])
+const applyLinked = (raw: unknown) => {
+  const linked = parseStepQuery(raw)
   if (linked) position.value = linked
+  return !!linked
+}
+onMounted(() => {
+  if (applyLinked(route.query[stepQueryKey])) return
+  const stop = watch(
+    () => route.query[stepQueryKey],
+    (raw) => applyLinked(raw) && stop(),
+  )
 })
 watch(position, (value) => {
   const step = formatStepQuery(value)
