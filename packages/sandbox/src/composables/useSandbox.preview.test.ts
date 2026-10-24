@@ -57,6 +57,28 @@ describe('useSandbox().preview', () => {
     it('does nothing without a frame', () => {
       expect(() => sandbox.preview.navigate('/about.html')).not.toThrow()
     })
+
+    it('applies a navigation requested before the frame existed once the frame mounts', async () => {
+      sandbox.preview.navigate('/about.html')
+
+      const frame = { src: origin } as HTMLIFrameElement
+      sandbox.preview.frame.value = frame
+      await nextTick()
+
+      expect(frame.src).toBe(`${origin}/about.html`)
+    })
+
+    it('applies a pending navigation only once', async () => {
+      sandbox.preview.navigate('/about.html')
+      sandbox.preview.frame.value = { src: origin } as HTMLIFrameElement
+      await nextTick()
+
+      const remounted = { src: origin } as HTMLIFrameElement
+      sandbox.preview.frame.value = remounted
+      await nextTick()
+
+      expect(remounted.src).toBe(origin)
+    })
   })
 
   describe('path', () => {

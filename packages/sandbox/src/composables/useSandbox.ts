@@ -4,7 +4,7 @@ import {
   useEventListener,
 } from '@vueuse/core'
 import { type IFSWatcher, reloadPreview } from '@webcontainer/api'
-import { computed, reactive, readonly, ref } from 'vue'
+import { computed, reactive, readonly, ref, watch } from 'vue'
 
 import type { SandboxOptions } from '../types/Sandbox.ts'
 import { previewScript } from '../utils/previewScript.ts'
@@ -29,6 +29,8 @@ function useSandboxInternal() {
   const previewFrame = ref<HTMLIFrameElement>()
   const previewUrl = ref<string>()
   const previewHref = ref<string>()
+  // A navigation requested while the frame or the server was not there yet; applied once, when both are.
+  let pendingPreviewPath: string | undefined
   const previewConsoleShown = ref(false)
   const explorerShown = ref(true)
   const watchers = ref<{
@@ -112,6 +114,15 @@ function useSandboxInternal() {
       previewHref.value = message.data.href
     }
   })
+
+  const applyPendingPreviewPath = () => {
+    if (!pendingPreviewPath || !previewFrame.value || !previewUrl.value) return
+    previewFrame.value.src = new URL(pendingPreviewPath, previewUrl.value).href
+    pendingPreviewPath = undefined
+  }
+  // The frame is rendered with the Result panel and the URL arrives with the dev server: whichever comes last
+  // triggers the navigation. `post`, so a freshly mounted frame is already in the DOM.
+  watch([previewFrame, previewUrl], applyPendingPreviewPath, { flush: 'post' })
 
   const explorer = useSandboxExplorer(options)
   const editorTabs = useSandboxEditorTabs(options)
@@ -269,11 +280,12 @@ function useSandboxInternal() {
       hideConsole: () => (previewConsoleShown.value = false),
       /**
        * Navigate the preview to a root-relative path (e.g. `/about.html?x=1#top`), resolved against the preview origin.
-       * No-op until the preview frame and URL are available.
+       * Until the preview frame and URL are available (the Result panel may not be shown yet) the latest path is kept
+       * and applied as soon as they are.
        */
       navigate: (path: string) => {
-        if (!previewFrame.value || !previewUrl.value) return
-        previewFrame.value.src = new URL(path, previewUrl.value).href
+        pendingPreviewPath = path
+        applyPendingPreviewPath()
       },
       /**
        * Read-only computed ref containing the current path of the preview (pathname, query and hash), kept up to date
