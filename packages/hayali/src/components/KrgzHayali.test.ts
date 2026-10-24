@@ -336,6 +336,19 @@ describe('KrgzHayali', () => {
     bad.unmount()
   })
 
+  it('leaves position alone for a lesson with no steps instead of looping', async () => {
+    const empty = mount(KrgzHayali, {
+      props: {
+        lesson: { chapters: [] },
+        position: { chapterId: 'c1', stepId: 'foo' },
+      },
+      global: { plugins: [i18n] },
+    })
+    await flushPromises()
+    expect(empty.emitted('update:position')).toBeUndefined()
+    empty.unmount()
+  })
+
   it('warns once, in dev, when the page is not cross-origin isolated', async () => {
     vi.resetModules()
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
