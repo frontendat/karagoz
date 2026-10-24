@@ -301,9 +301,10 @@ function useSandboxInternal() {
         }
       }),
       /**
-       * Reload the preview.
+       * Reload the preview. A navigation still waiting for the frame is dropped: the reload supersedes it.
        */
       reload: async () => {
+        pendingPreviewPath = undefined
         if (previewFrame.value) {
           await reloadPreview(previewFrame.value)
         }

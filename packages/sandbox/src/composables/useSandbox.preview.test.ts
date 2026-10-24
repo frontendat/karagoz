@@ -81,6 +81,19 @@ describe('useSandbox().preview', () => {
     })
   })
 
+  describe('reload', () => {
+    it('drops a navigation that was still waiting for the frame', async () => {
+      sandbox.preview.navigate('/about.html')
+
+      await sandbox.preview.reload()
+      const frame = { src: origin } as HTMLIFrameElement
+      sandbox.preview.frame.value = frame
+      await nextTick()
+
+      expect(frame.src).toBe(origin)
+    })
+  })
+
   describe('path', () => {
     it('is empty before the preview reports a location', () => {
       expect(sandbox.preview.path.value).toBe('')
