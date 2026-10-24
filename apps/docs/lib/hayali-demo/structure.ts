@@ -3,7 +3,7 @@ import type { Lesson } from '@karagoz/hayali'
 import { baseFiles, behaving, styled, withAbout } from './files'
 
 /**
- * The structural half of the demo lesson: files, adjustments, removals, locks and directives keyed by step id, with
+ * The structural half of the demo lesson: files, adjustments, removals, locks and directives keyed by step ID, with
  * no prose. Titles and bodies live in `prose/<locale>.ts` and are merged in by `createDemoLesson()`.
  *
  * Every step is built from the base files plus its own adjustments, so steps that build on each other repeat the

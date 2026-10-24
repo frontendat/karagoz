@@ -13,7 +13,7 @@ export const demoLocales = ['ar', 'de', 'en'] as const
 
 /**
  * Locales that have started translating (a non-empty prose file). The coverage test is strict for these, so a
- * partly translated locale fails until it covers every id; locales with an empty file fall back to English.
+ * partly translated locale fails until it covers every ID; locales with an empty file fall back to English.
  */
 export const translatedDemoLocales = demoLocales.filter(
   (locale) => Object.keys(demoProse[locale].steps ?? {}).length > 0,
@@ -26,7 +26,7 @@ const proseOf = (locale: string): DemoProse =>
   (demoProse as Record<string, DemoProse>)[locale] ?? en
 
 /**
- * Merges the structural file with one locale's prose by id. Anything the locale has not translated yet falls back
+ * Merges the structural file with one locale's prose by ID. Anything the locale has not translated yet falls back
  * to English, so a partly translated locale still yields a complete lesson.
  */
 export const createDemoLesson = (locale: string): Lesson => {

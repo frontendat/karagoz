@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { ref } from 'vue'
 import type { Lesson, Position } from '../types'
-import { useLessonPosition } from './useLessonPosition'
+import {
+  firstPosition,
+  hasPosition,
+  useLessonPosition,
+} from './useLessonPosition'
 
 const step = (id: string) => ({ id, title: `T ${id}`, body: '' })
 
@@ -118,5 +122,27 @@ describe('useLessonPosition', () => {
     expect(groups.value).toHaveLength(1)
     expect(groups.value[0].title).toBeUndefined()
     expect(groups.value[0].steps).toHaveLength(2)
+  })
+})
+
+describe('firstPosition / hasPosition', () => {
+  it('firstPosition is the first step of the first chapter', () => {
+    expect(firstPosition(multi)).toEqual({ chapterId: 'intro', stepId: 'a' })
+  })
+
+  it('firstPosition skips leading empty chapters', () => {
+    const lesson: Lesson = {
+      chapters: [
+        { id: 'empty', title: 'Empty', steps: [] },
+        { id: 'real', title: 'Real', steps: [step('x')] },
+      ],
+    }
+    expect(firstPosition(lesson)).toEqual({ chapterId: 'real', stepId: 'x' })
+  })
+
+  it('hasPosition matches the chapter/step pair, not the step id alone', () => {
+    expect(hasPosition(multi, { chapterId: 'core', stepId: 'c' })).toBe(true)
+    expect(hasPosition(multi, { chapterId: 'intro', stepId: 'c' })).toBe(false)
+    expect(hasPosition(multi, { chapterId: 'nope', stepId: 'a' })).toBe(false)
   })
 })
