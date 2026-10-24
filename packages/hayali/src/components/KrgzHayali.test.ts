@@ -320,6 +320,22 @@ describe('KrgzHayali', () => {
       )
   })
 
+  it('falls back to the first step, writes it back and warns when position is unknown', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    const bad = mount(Host, {
+      global: { plugins: [i18n] },
+      attachTo: document.body,
+    })
+    bad.vm.position = { chapterId: 'c1', stepId: 'foo' }
+    await flushPromises()
+    expect(bad.find('[data-testid="pos"]').text()).toBe('c1/s1')
+    expect(
+      warn.mock.calls.filter((c) => /foo/.test(String(c[0]))),
+    ).toHaveLength(1)
+    warn.mockRestore()
+    bad.unmount()
+  })
+
   it('warns once, in dev, when the page is not cross-origin isolated', async () => {
     vi.resetModules()
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
