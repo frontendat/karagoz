@@ -6,7 +6,7 @@ import {
   useSandbox,
   useSandboxBoot,
 } from '@karagoz/sandbox'
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { createDemoLesson, demoStart } from '../../lib/hayali-demo'
@@ -21,14 +21,18 @@ const props = defineProps<{ locale: string; onReleased: () => void }>()
 
 const lesson = computed(() => createDemoLesson(props.locale))
 
-// The step is deep-linkable through `?step=chapterID/stepID`. The URL is read once, so the server renders the linked
-// step; after that the position only writes to it. `replace` keeps Back from skipping the confirm-and-reset flow,
-// which only runs for navigation inside the lesson.
+// The step is deep-linkable through `?step=chapterID/stepID`. The deployed pages are prerendered, so their HTML never
+// sees the query: the first render is always the start step, and the URL is applied after mount so hydration matches
+// the HTML. This runs before the sandbox boots, so the container is still mounted with the linked step's files. After
+// that the position only writes to the URL. `replace` keeps Back from skipping the confirm-and-reset flow, which only
+// runs for navigation inside the lesson.
 const route = useRoute()
 const router = useRouter()
-const position = ref<Position>(
-  parseStepQuery(route.query[stepQueryKey]) ?? { ...demoStart },
-)
+const position = ref<Position>({ ...demoStart })
+onMounted(() => {
+  const linked = parseStepQuery(route.query[stepQueryKey])
+  if (linked) position.value = linked
+})
 watch(position, (value) => {
   const step = formatStepQuery(value)
   if (route.query[stepQueryKey] === step) return

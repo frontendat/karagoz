@@ -44,16 +44,10 @@ describe('HayaliDemo server render', () => {
     expect(html).toContain('data-testid="krgz-hayali"')
   })
 
-  it('server-renders the step named by ?step, so a deep link needs no client navigation', async () => {
+  it('renders the starting step even with ?step: the deployed HTML is prerendered, so the URL is applied after mount', async () => {
     const html = await render('en', '/hayali?step=pages/about')
 
-    expect(html).toContain('This step adds')
-    expect(html).not.toContain('Every page starts as HTML.')
-  })
-
-  it('falls back to the starting step for an unknown ?step', async () => {
-    const html = await render('en', '/hayali?step=nope/foo')
-
     expect(html).toContain('Every page starts as HTML.')
+    expect(html).not.toContain('This step adds')
   })
 })
