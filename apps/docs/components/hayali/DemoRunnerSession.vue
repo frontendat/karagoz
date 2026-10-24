@@ -33,7 +33,9 @@ watch(position, (value) => {
   const step = formatStepQuery(value)
   if (route.query[stepQueryKey] === step) return
   const { [stepQueryKey]: _, ...rest } = route.query
-  void router.replace({ query: step ? { ...rest, [stepQueryKey]: step } : rest })
+  void router.replace({
+    query: step ? { ...rest, [stepQueryKey]: step } : rest,
+  })
 })
 
 // Booting is mount-only, so this is safe on the server, where the sandbox is a placeholder.

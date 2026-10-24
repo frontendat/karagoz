@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
 import { demoStart } from '../../lib/hayali-demo'
-import { formatStepQuery, parseStepQuery } from '../../lib/hayali-demo/stepQuery'
+import {
+  formatStepQuery,
+  parseStepQuery,
+} from '../../lib/hayali-demo/stepQuery'
 
 describe('step query', () => {
   it('round-trips a position', () => {
