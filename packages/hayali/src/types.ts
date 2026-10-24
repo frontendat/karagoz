@@ -58,7 +58,7 @@ export interface Lesson {
 }
 
 /**
- * A step within a lesson. Step ids are unique only within their chapter, so both ids are needed. A position that
+ * A step within a lesson. Step IDs are unique only within their chapter, so both IDs are needed. A position that
  * names no existing step falls back to the first step of the lesson.
  */
 export interface Position {

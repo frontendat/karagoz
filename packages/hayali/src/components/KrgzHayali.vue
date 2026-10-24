@@ -83,7 +83,7 @@ watch(
   ([model, lesson]) => {
     if (!model || hasPosition(lesson, model)) return
     const fallback = firstPosition(lesson)
-    // An empty lesson has nothing to fall back to; writing blank ids back would retrigger this watch forever.
+    // An empty lesson has nothing to fall back to; writing blank IDs back would retrigger this watch forever.
     if (!hasPosition(lesson, fallback)) return
     if (import.meta.env.DEV)
       console.warn(

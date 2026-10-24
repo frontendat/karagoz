@@ -51,7 +51,7 @@ const warn = (message: string) => {
   if (import.meta.env.DEV) console.warn(`[hayali] ${message}`)
 }
 
-/** Editor tab ids are explorer-style paths, e.g. `./src/app.js`. */
+/** Editor tab IDs are explorer-style paths, e.g. `./src/app.js`. */
 const tabId = (path: string) => `./${normalize(path)}`
 
 /**

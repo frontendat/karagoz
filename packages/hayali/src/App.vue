@@ -100,7 +100,7 @@ const demoLesson: Lesson = {
       title: 'More pages',
       steps: [
         {
-          // Step ids only need to be unique within their chapter.
+          // Step IDs only need to be unique within their chapter.
           id: 'one',
           title: 'Add an about page',
           body: 'A second page lives at `public/about.html`. Open `/about.html` in the preview.\n\n:::tip\nExpress serves every file in `public/` as-is.\n:::',

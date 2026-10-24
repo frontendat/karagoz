@@ -6,15 +6,35 @@ import {
   useSandbox,
   useSandboxBoot,
 } from '@karagoz/sandbox'
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import { createDemoLesson, demoStart } from '../../lib/hayali-demo'
+import {
+  formatStepQuery,
+  parseStepQuery,
+  stepQueryKey,
+} from '../../lib/hayali-demo/stepQuery'
 
 // A callback rather than an emit: Vue drops emits from an unmounted component, and this fires after unmount.
 const props = defineProps<{ locale: string; onReleased: () => void }>()
 
 const lesson = computed(() => createDemoLesson(props.locale))
-const position = ref<Position>({ ...demoStart })
+
+// The step is deep-linkable through `?step=chapterID/stepID`. The URL is read once, so the server renders the linked
+// step; after that the position only writes to it. `replace` keeps Back from skipping the confirm-and-reset flow,
+// which only runs for navigation inside the lesson.
+const route = useRoute()
+const router = useRouter()
+const position = ref<Position>(
+  parseStepQuery(route.query[stepQueryKey]) ?? { ...demoStart },
+)
+watch(position, (value) => {
+  const step = formatStepQuery(value)
+  if (route.query[stepQueryKey] === step) return
+  const { [stepQueryKey]: _, ...rest } = route.query
+  void router.replace({ query: step ? { ...rest, [stepQueryKey]: step } : rest })
+})
 
 // Booting is mount-only, so this is safe on the server, where the sandbox is a placeholder.
 const { boot } = useSandboxBoot()
