@@ -31,6 +31,16 @@
       "import": "./dist/karagoz-hayali.css",
       "require": "./dist/karagoz-hayali.css"
     },
+    "./parse": {
+      "import": {
+        "types": "./dist/src/parse/index.d.ts",
+        "default": "./dist/parse.js"
+      },
+      "require": {
+        "types": "./dist/src/parse/index.d.ts",
+        "default": "./dist/parse.cjs"
+      }
+    },
     "./style.css": "./src/lib.css"
   },
   "publishConfig": {
@@ -39,10 +49,11 @@
   "scripts": {
     "dev": "pnpm --filter @karagoz/hayali --parallel /^watch:/",
     "dev-hmr": "vite",
-    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
+    "build": "vite build && vite build -c vite.parse.config.ts && vue-tsc --declaration --emitDeclarationOnly",
     "prepublish": "pnpm build",
     "preview": "vite preview",
     "watch:vite": "vite build --watch",
+    "watch:vite-parse": "vite build -c vite.parse.config.ts --watch",
     "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
     "lint": "oxlint src",
     "lint:fix": "oxlint --fix src",
@@ -64,7 +75,8 @@
     "markdown-it": "^14.2.0",
     "markdown-it-container": "^4.0.0",
     "radix-vue": "^1.9.17",
-    "vue-markdown-render": "^2.3.1"
+    "vue-markdown-render": "^2.3.1",
+    "yaml": "^2.9.1"
   },
   "peerDependencies": {
     "vue": "^3.5.21",
