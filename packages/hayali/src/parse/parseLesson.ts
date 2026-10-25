@@ -90,6 +90,7 @@ export const parseLesson = (
   let chapterSkipped = false
   const stepLines = new Map<Step, { start: number; end: number }>()
   const chapterLines = new Map<Chapter, number>()
+  const stepScopes = new Map<Step, Scope>()
   const headingOwners = new Map<Heading, { step?: Step; chapter?: Chapter }>()
 
   headings.forEach((heading, index) => {
@@ -162,6 +163,11 @@ export const parseLesson = (
     chapter.steps.push(step)
     // Body runs from after the heading line to the next H1/H2 (or the end of the file).
     headingOwners.set(heading, { step, chapter })
+    stepScopes.set(step, {
+      chapterId: chapter.id,
+      stepId: step.id,
+      entries: new Map(),
+    })
     stepLines.set(step, {
       start: heading.line + 1,
       end: next?.line ?? lines.length,
@@ -181,7 +187,6 @@ export const parseLesson = (
   }
 
   const baseScope: Scope = { entries: new Map() }
-  const stepScopes = new Map<Step, Scope>()
   const cuts = new Map<Step, [number, number][]>()
   let lessonBlockSeen = false
   const stepBlockSeen = new Set<Step>()
@@ -258,8 +263,15 @@ export const parseLesson = (
       const note = (rule: BlockIssue['rule'], path: string, message: string) =>
         blockIssues.push({ rule, message, ...block.at(path) })
       if (block.data) {
-        if (step) Object.assign(step, readStepBlock(block.data, note))
-        else lessonConfig = readLessonBlock(block.data, note)
+        if (step) {
+          const { carry, ...directives } = readStepBlock(block.data, note)
+          Object.assign(step, directives)
+          const scope = stepScopes.get(step)
+          if (scope) {
+            scope.removals = (directives.removals ?? []).map(normalizePath)
+            if (carry) scope.carry = { ref: carry, ...block.at('carry') }
+          }
+        } else lessonConfig = readLessonBlock(block.data, note)
       }
       for (const issue of blockIssues)
         issues.push({
@@ -285,20 +297,7 @@ export const parseLesson = (
       report('missing-file-path', line, 'File fence needs file=<path>.', where)
       continue
     }
-    let scope = baseScope
-    if (step) {
-      let existing = stepScopes.get(step)
-      if (!existing)
-        stepScopes.set(
-          step,
-          (existing = {
-            chapterId: where.chapterId,
-            stepId: step.id,
-            entries: new Map(),
-          }),
-        )
-      scope = existing
-    }
+    const scope = (step && stepScopes.get(step)) || baseScope
     if (conflicts(scope.entries.keys(), path)) {
       report('duplicate-file', line, `File "${path}" is defined twice.`, {
         ...where,

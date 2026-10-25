@@ -226,13 +226,27 @@ const readEditor = (
   return editor
 }
 
+/** The directives of a step block: `Step` fields, plus `carry`, which only the parser acts on. */
+export type StepBlock = Partial<
+  Pick<Step, 'removals' | 'locks' | 'editor' | 'preview'>
+> & { carry?: string }
+
 export const readStepBlock = (
   data: Record<string, unknown>,
   report: Report,
-): Partial<Pick<Step, 'removals' | 'locks' | 'editor' | 'preview'>> => {
-  checkKeys(data, ['removals', 'locks', 'editor', 'preview'], '', report)
-  const out: Partial<Pick<Step, 'removals' | 'locks' | 'editor' | 'preview'>> =
-    {}
+): StepBlock => {
+  checkKeys(
+    data,
+    ['removals', 'locks', 'editor', 'preview', 'carry'],
+    '',
+    report,
+  )
+  const out: StepBlock = {}
+  if ('carry' in data) {
+    if (typeof data.carry === 'string' && data.carry !== '')
+      out.carry = data.carry
+    else report('invalid-value', 'carry', 'carry must be one step reference.')
+  }
   for (const key of ['removals', 'locks'] as const) {
     if (!(key in data)) continue
     if (isStrings(data[key])) out[key] = data[key]

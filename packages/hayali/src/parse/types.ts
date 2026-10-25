@@ -1,6 +1,9 @@
 import type { Lesson } from '../types'
 
 export type ParseIssueRule =
+  | 'carry-cycle'
+  | 'carry-drops-removals'
+  | 'carry-unknown-step'
   | 'conflicting-file-source'
   | 'duplicate-file'
   | 'duplicate-id'
