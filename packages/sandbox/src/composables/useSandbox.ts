@@ -4,7 +4,7 @@ import {
   useEventListener,
 } from '@vueuse/core'
 import { type IFSWatcher, reloadPreview } from '@webcontainer/api'
-import { computed, reactive, readonly, ref, watch } from 'vue'
+import { computed, nextTick, reactive, readonly, ref, watch } from 'vue'
 
 import type { SandboxOptions } from '../types/Sandbox.ts'
 import { previewScript } from '../utils/previewScript.ts'
@@ -281,11 +281,12 @@ function useSandboxInternal() {
       /**
        * Navigate the preview to a root-relative path (e.g. `/about.html?x=1#top`), resolved against the preview origin.
        * Until the preview frame and URL are available (the Result panel may not be shown yet) the latest path is kept
-       * and applied as soon as they are.
+       * and applied as soon as they are. Applied after the next render, because the frame's `src` is bound to the
+       * preview URL and that binding would otherwise reset a navigation requested while the server was becoming ready.
        */
       navigate: (path: string) => {
         pendingPreviewPath = path
-        applyPendingPreviewPath()
+        void nextTick(applyPendingPreviewPath)
       },
       /**
        * Read-only computed ref containing the current path of the preview (pathname, query and hash), kept up to date

@@ -45,11 +45,12 @@ afterEach(() => wrapper.unmount())
 
 describe('useSandbox().preview', () => {
   describe('navigate', () => {
-    it('sets the frame source relative to the preview origin', () => {
+    it('sets the frame source relative to the preview origin', async () => {
       const frame = { src: '' } as HTMLIFrameElement
       sandbox.preview.frame.value = frame
 
       sandbox.preview.navigate('/about.html?x=1#top')
+      await nextTick()
 
       expect(frame.src).toBe(`${origin}/about.html?x=1#top`)
     })
