@@ -1,7 +1,7 @@
 import MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token.mjs'
 
-import type { AdjustmentsTree, Chapter, Lesson, Step } from '../types'
+import type { Chapter, Lesson, Step } from '../types'
 import {
   parseYamlBlock,
   readLessonBlock,
@@ -9,7 +9,8 @@ import {
   type BlockIssue,
 } from './blocks'
 import { parseFenceInfo } from './fenceInfo'
-import { conflicts, normalizePath, setFile } from './tree'
+import { resolveFiles, type Scope } from './resolve'
+import { conflicts, normalizePath } from './tree'
 import type {
   ParseIssue,
   ParseIssueRule,
@@ -179,12 +180,8 @@ export const parseLesson = (
     return owner
   }
 
-  const baseFiles: AdjustmentsTree = {}
-  const baseTaken = new Set<string>()
-  const stepFiles = new Map<
-    Step,
-    { tree: AdjustmentsTree; taken: Set<string> }
-  >()
+  const baseScope: Scope = { entries: new Map() }
+  const stepScopes = new Map<Step, Scope>()
   const cuts = new Map<Step, [number, number][]>()
   let lessonBlockSeen = false
   const stepBlockSeen = new Set<Step>()
@@ -288,26 +285,57 @@ export const parseLesson = (
       report('missing-file-path', line, 'File fence needs file=<path>.', where)
       continue
     }
-    let files = baseFiles
-    let taken = baseTaken
+    let scope = baseScope
     if (step) {
-      const entry = stepFiles.get(step) ?? {
-        tree: {},
-        taken: new Set<string>(),
-      }
-      stepFiles.set(step, entry)
-      ;({ tree: files, taken } = entry)
+      let existing = stepScopes.get(step)
+      if (!existing)
+        stepScopes.set(
+          step,
+          (existing = {
+            chapterId: where.chapterId,
+            stepId: step.id,
+            entries: new Map(),
+          }),
+        )
+      scope = existing
     }
-    if (conflicts(taken, path)) {
+    if (conflicts(scope.entries.keys(), path)) {
       report('duplicate-file', line, `File "${path}" is defined twice.`, {
         ...where,
         path,
       })
       continue
     }
-    taken.add(path)
-    setFile(files, path, token.content)
+    const from = attrs.get('from')
+    if (from !== undefined && attrs.has('src')) {
+      report(
+        'conflicting-file-source',
+        line,
+        `"${path}" cannot take its content from both from= and src=.`,
+        { ...where, path },
+      )
+      continue
+    }
+    if (from !== undefined && token.content.trim() !== '') {
+      report(
+        'ref-with-body',
+        line,
+        `"${path}" reuses another step's file, so its fence must be empty.`,
+        { ...where, path },
+      )
+      continue
+    }
+    scope.entries.set(path, {
+      path,
+      line,
+      source:
+        from === undefined
+          ? { kind: 'literal', contents: token.content }
+          : { kind: 'from', ref: from },
+    })
   }
+
+  const trees = resolveFiles(baseScope, [...stepScopes.values()], report)
 
   for (const [step, { start, end }] of stepLines) {
     const out: string[] = []
@@ -331,8 +359,8 @@ export const parseLesson = (
     }
     copy(end)
     step.body = out.join('\n').trim()
-    const files = stepFiles.get(step)
-    if (files) step.adjustments = files.tree
+    const tree = trees.get(stepScopes.get(step) as Scope)
+    if (tree) step.adjustments = tree
   }
 
   for (const c of chapters) {
@@ -348,7 +376,8 @@ export const parseLesson = (
   }
 
   const lesson: Lesson = { chapters, ...lessonConfig }
-  if (baseTaken.size > 0) lesson.files = baseFiles
+  const baseTree = trees.get(baseScope)
+  if (baseTree) lesson.files = baseTree
   return {
     lesson,
     issues: issues.sort((a, b) => a.line - b.line),

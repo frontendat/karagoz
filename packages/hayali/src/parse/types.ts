@@ -1,6 +1,7 @@
 import type { Lesson } from '../types'
 
 export type ParseIssueRule =
+  | 'conflicting-file-source'
   | 'duplicate-file'
   | 'duplicate-id'
   | 'duplicate-lesson-block'
@@ -13,6 +14,10 @@ export type ParseIssueRule =
   | 'misplaced-step-block'
   | 'missing-file-path'
   | 'missing-id'
+  | 'ref-cycle'
+  | 'ref-missing-path'
+  | 'ref-unknown-step'
+  | 'ref-with-body'
   | 'step-outside-chapter'
   | 'unclosed-fence'
   | 'unknown-fence'
