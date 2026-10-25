@@ -79,4 +79,14 @@ describe('HayaliDemo deep link hydration', () => {
 
     expect(router.currentRoute.value.query.step).toBeUndefined()
   })
+
+  it('keeps the hash when it writes the step to the URL', async () => {
+    const { router } = await hydrate('/hayali#some-heading')
+
+    await router.replace('/hayali?step=nope/foo#some-heading')
+    await flushPromises()
+
+    expect(router.currentRoute.value.query.step).toBeUndefined()
+    expect(router.currentRoute.value.hash).toBe('#some-heading')
+  })
 })

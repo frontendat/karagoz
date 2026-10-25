@@ -36,11 +36,16 @@ const applyLinked = (raw: unknown) => {
   if (linked) position.value = linked
   return !!linked
 }
+// Only the first query to arrive is a restored link. Once the learner has moved off the start step, route changes are
+// our own URL writes (or something else's) and must not move the lesson, which would skip the confirm-and-reset flow.
+const atStart = () => formatStepQuery(position.value) === undefined
 onMounted(() => {
   if (applyLinked(route.query[stepQueryKey])) return
   const stop = watch(
     () => route.query[stepQueryKey],
-    (raw) => applyLinked(raw) && stop(),
+    (raw) => {
+      if (!atStart() || applyLinked(raw)) stop()
+    },
   )
 })
 watch(position, (value) => {
@@ -49,6 +54,7 @@ watch(position, (value) => {
   const { [stepQueryKey]: _, ...rest } = route.query
   void router.replace({
     query: step ? { ...rest, [stepQueryKey]: step } : rest,
+    hash: route.hash,
   })
 })
 
