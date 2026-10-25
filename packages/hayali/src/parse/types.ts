@@ -1,9 +1,11 @@
 import type { Lesson } from '../types'
 
 export type ParseIssueRule =
+  | 'duplicate-file'
   | 'duplicate-id'
   | 'empty-chapter'
   | 'invalid-id'
+  | 'missing-file-path'
   | 'missing-id'
   | 'step-outside-chapter'
   | 'unclosed-fence'

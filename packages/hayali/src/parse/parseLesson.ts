@@ -1,7 +1,9 @@
 import MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token.mjs'
 
-import type { Chapter, Lesson, Step } from '../types'
+import type { AdjustmentsTree, Chapter, Lesson, Step } from '../types'
+import { parseFenceInfo } from './fenceInfo'
+import { conflicts, normalizePath, setFile } from './tree'
 import type {
   ParseIssue,
   ParseIssueRule,
@@ -81,6 +83,7 @@ export const parseLesson = (
   let chapterSkipped = false
   const stepLines = new Map<Step, { start: number; end: number }>()
   const chapterLines = new Map<Chapter, number>()
+  const headingOwners = new Map<Heading, { step?: Step; chapter?: Chapter }>()
 
   headings.forEach((heading, index) => {
     const next = headings[index + 1]
@@ -127,6 +130,7 @@ export const parseLesson = (
       chapter = { id, title: match![1], steps: [] }
       chapters.push(chapter)
       chapterLines.set(chapter, heading.line)
+      headingOwners.set(heading, { chapter })
       return
     }
 
@@ -150,14 +154,104 @@ export const parseLesson = (
     const step: Step = { id, title: match![1], body: '' }
     chapter.steps.push(step)
     // Body runs from after the heading line to the next H1/H2 (or the end of the file).
+    headingOwners.set(heading, { step, chapter })
     stepLines.set(step, {
       start: heading.line + 1,
       end: next?.line ?? lines.length,
     })
   })
 
-  for (const [step, { start, end }] of stepLines)
-    step.body = lines.slice(start, end).join('\n').trim()
+  // Which built step (if any) owns the lines after each heading; fences before every heading are base files.
+  const ownerOf = (
+    line: number,
+  ): { step?: Step; chapter?: Chapter } | 'base' => {
+    let owner: { step?: Step; chapter?: Chapter } | 'base' = 'base'
+    for (const heading of headings) {
+      if (heading.line > line) break
+      owner = headingOwners.get(heading) ?? {}
+    }
+    return owner
+  }
+
+  const baseFiles: AdjustmentsTree = {}
+  const baseTaken = new Set<string>()
+  const stepFiles = new Map<
+    Step,
+    { tree: AdjustmentsTree; taken: Set<string> }
+  >()
+  const cuts = new Map<Step, [number, number][]>()
+
+  for (const token of tokens) {
+    if (token.type !== 'fence' || token.level !== 0 || !token.map) continue
+    const { attrs } = parseFenceInfo(token.info)
+    if (!attrs.has('file')) continue
+    const line = token.map[0]
+    const owner = ownerOf(line)
+    const step = owner === 'base' ? undefined : owner.step
+    if (owner !== 'base' && !step) continue
+    const where = step
+      ? {
+          chapterId: owner !== 'base' ? owner.chapter?.id : undefined,
+          stepId: step.id,
+        }
+      : {}
+    if (step)
+      (cuts.get(step) ?? cuts.set(step, []).get(step)!).push([
+        line,
+        token.map[1],
+      ])
+
+    const path = normalizePath(attrs.get('file') ?? '')
+    if (path === '') {
+      report('missing-file-path', line, 'File fence needs file=<path>.', where)
+      continue
+    }
+    let files = baseFiles
+    let taken = baseTaken
+    if (step) {
+      const entry = stepFiles.get(step) ?? {
+        tree: {},
+        taken: new Set<string>(),
+      }
+      stepFiles.set(step, entry)
+      ;({ tree: files, taken } = entry)
+    }
+    if (conflicts(taken, path)) {
+      report('duplicate-file', line, `File "${path}" is defined twice.`, {
+        ...where,
+        path,
+      })
+      continue
+    }
+    taken.add(path)
+    setFile(files, path, token.content)
+  }
+
+  for (const [step, { start, end }] of stepLines) {
+    const out: string[] = []
+    let skipBlank = true
+    let cursor = start
+    const copy = (to: number) => {
+      for (; cursor < to; cursor++) {
+        const text = lines[cursor]
+        if (skipBlank && text.trim() === '') continue
+        skipBlank = false
+        out.push(text)
+      }
+    }
+    for (const [from, to] of (cuts.get(step) ?? []).sort(
+      (x, y) => x[0] - y[0],
+    )) {
+      copy(from)
+      cursor = to
+      // A removed fence between two blank lines must not leave a double gap.
+      skipBlank = out.length === 0 || out[out.length - 1].trim() === ''
+    }
+    copy(end)
+    step.body = out.join('\n').trim()
+    const files = stepFiles.get(step)
+    if (files) step.adjustments = files.tree
+  }
 
   for (const c of chapters) {
     if (c.steps.length > 0) continue
@@ -172,6 +266,7 @@ export const parseLesson = (
   }
 
   const lesson: Lesson = { chapters }
+  if (baseTaken.size > 0) lesson.files = baseFiles
   return {
     lesson,
     issues: issues.sort((a, b) => a.line - b.line),

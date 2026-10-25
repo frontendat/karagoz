@@ -30,9 +30,11 @@ describe('parse entry stays browser-safe', () => {
       )
       if (!spec.startsWith('.')) continue
       const target = resolve(dirname(file), spec)
-      // Inside src/parse, or the pure `types` module; never the package root or components.
+      // Inside src/parse, or the pure `types` and `lesson` modules; never the package root or components.
       const allowed =
-        target.startsWith(dir) || target === join(srcRoot, 'types')
+        target.startsWith(dir) ||
+        target === join(srcRoot, 'types') ||
+        target === join(srcRoot, 'lesson')
       expect(allowed, `${file} reaches ${spec}`).toBe(true)
     }
   })
