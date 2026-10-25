@@ -1,15 +1,15 @@
----
-immutable:
-  - package.json
-  - server.js
----
-
 <!--
 PROTOTYPE, throwaway. Answers: "does the single-file lesson format read well to author?"
 This is the docs counter demo lesson (apps/docs/lib/hayali-demo, English) written in the agreed syntax:
-H1 = chapter, H2 = step, `{#id}` required, `file=` fences, `from=` reuse, one `yaml krgz` block per step.
+H1 = chapter, H2 = step, `{#id}` required, `file=` fences, `from=` reuse, one `yaml krgz-step` block per step, one optional `yaml krgz-lesson` block for lesson-wide config.
 Not parsed by anything yet.
 -->
+
+```yaml krgz-lesson
+immutable:
+  - package.json
+  - server.js
+```
 
 ```json file=package.json
 {
@@ -102,7 +102,7 @@ This step *opened* `index.html` for you. Steps can also close tabs, highlight li
 
 The stylesheet and the script are linked, but still empty. The next steps fill them in.
 
-```yaml krgz
+```yaml krgz-step
 editor:
   open: [index.html]
 ```
@@ -137,7 +137,7 @@ button {
 }
 ```
 
-```yaml krgz
+```yaml krgz-step
 locks: [index.html]
 editor:
   open: [style.css]
@@ -168,7 +168,7 @@ button.addEventListener('click', () => {
 })
 ```
 
-```yaml krgz
+```yaml krgz-step
 editor:
   close: [style.css]
   open:
@@ -211,7 +211,7 @@ Changes you make are thrown away when you move to another step. Hayali asks for 
 </html>
 ```
 
-```yaml krgz
+```yaml krgz-step
 editor:
   open: [about.html]
 preview:
@@ -231,7 +231,7 @@ This step also used `close: 'all'` to close every tab before opening `index.html
 ```js file=app.js from=basics/behaviour
 ```
 
-```yaml krgz
+```yaml krgz-step
 removals: [about.html]
 editor:
   close: all
