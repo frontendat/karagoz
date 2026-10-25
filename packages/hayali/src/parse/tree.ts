@@ -50,3 +50,19 @@ export const setFile = (
   }
   define(level, name, { file: { contents } })
 }
+
+/** A `src=` path as a clean relative POSIX path, or `undefined` if it is empty, absolute or escapes the lesson folder. */
+export const normalizeSrcPath = (raw: string): string | undefined => {
+  if (raw === '' || raw.startsWith('/') || raw.includes('\\')) return undefined
+  if (/^[A-Za-z]:/.test(raw)) return undefined
+  const kept: string[] = []
+  for (const part of raw.split('/')) {
+    if (part === '' || part === '.') continue
+    if (part === '..') {
+      if (kept.pop() === undefined) return undefined
+    } else {
+      kept.push(part)
+    }
+  }
+  return kept.length > 0 ? kept.join('/') : undefined
+}

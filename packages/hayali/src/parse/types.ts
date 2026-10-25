@@ -10,6 +10,7 @@ export type ParseIssueRule =
   | 'duplicate-lesson-block'
   | 'duplicate-step-block'
   | 'empty-chapter'
+  | 'invalid-src'
   | 'invalid-value'
   | 'invalid-id'
   | 'malformed-yaml'
@@ -21,8 +22,10 @@ export type ParseIssueRule =
   | 'ref-missing-path'
   | 'ref-unknown-step'
   | 'ref-with-body'
+  | 'src-with-body'
   | 'step-outside-chapter'
   | 'unclosed-fence'
+  | 'unresolved-src'
   | 'unknown-fence'
   | 'unknown-key'
 

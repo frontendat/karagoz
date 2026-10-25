@@ -10,7 +10,7 @@ import {
 } from './blocks'
 import { parseFenceInfo } from './fenceInfo'
 import { resolveFiles, type Scope } from './resolve'
-import { conflicts, normalizePath } from './tree'
+import { conflicts, normalizePath, normalizeSrcPath } from './tree'
 import type {
   ParseIssue,
   ParseIssueRule,
@@ -47,10 +47,10 @@ const isHeading = (token: Token): boolean =>
 /** Never throws: a parser failure on pathological input yields an empty lesson. */
 export const parseLesson = (
   source: string,
-  // Consumed by the `src=` support.
-  _options: ParseLessonOptions = {},
+  { resolveSrc }: ParseLessonOptions = {},
 ): ParseLessonResult => {
   const issues: ParseIssue[] = []
+  const srcPaths: string[] = []
   const report = (
     rule: ParseIssueRule,
     line: number,
@@ -324,6 +324,52 @@ export const parseLesson = (
       )
       continue
     }
+    const src = attrs.get('src')
+    if (src !== undefined) {
+      if (token.content.trim() !== '') {
+        report(
+          'src-with-body',
+          line,
+          `"${path}" takes its content from src=, so its fence must be empty.`,
+          { ...where, path },
+        )
+        continue
+      }
+      const srcPath = normalizeSrcPath(src)
+      if (srcPath === undefined) {
+        report(
+          'invalid-src',
+          line,
+          `src="${src}" must be a relative path inside the lesson's folder.`,
+          { ...where, path },
+        )
+        continue
+      }
+      let contents: unknown
+      if (resolveSrc) {
+        if (!srcPaths.includes(srcPath)) srcPaths.push(srcPath)
+        try {
+          contents = resolveSrc(srcPath)
+        } catch {
+          contents = undefined
+        }
+      }
+      if (typeof contents !== 'string') {
+        report(
+          'unresolved-src',
+          line,
+          `Could not read src="${srcPath}" for "${path}".`,
+          { ...where, path },
+        )
+        continue
+      }
+      scope.entries.set(path, {
+        path,
+        line,
+        source: { kind: 'literal', contents },
+      })
+      continue
+    }
     scope.entries.set(path, {
       path,
       line,
@@ -380,7 +426,7 @@ export const parseLesson = (
   return {
     lesson,
     issues: issues.sort((a, b) => a.line - b.line),
-    srcPaths: [],
+    srcPaths,
     locate: () => undefined,
   }
 }
