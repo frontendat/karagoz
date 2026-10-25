@@ -14,6 +14,19 @@ export interface StepGroup {
   steps: StepGroupEntry[]
 }
 
+/** First step of the first non-empty chapter; blank IDs for a lesson with no steps. */
+export const firstPosition = (lesson: Lesson): Position => {
+  const chapter = lesson.chapters.find((c) => c.steps.length > 0)
+  return { chapterId: chapter?.id ?? '', stepId: chapter?.steps[0]?.id ?? '' }
+}
+
+/** Whether `target` names an existing step (step IDs are only unique within a chapter). */
+export const hasPosition = (lesson: Lesson, target: Position) =>
+  lesson.chapters.some(
+    (c) =>
+      c.id === target.chapterId && c.steps.some((s) => s.id === target.stepId),
+  )
+
 /**
  * Lesson traversal over a `{ chapterId, stepId }` position.
  * @param lesson

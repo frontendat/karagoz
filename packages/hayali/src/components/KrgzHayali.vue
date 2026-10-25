@@ -31,7 +31,11 @@ import {
 import { useI18n } from 'vue-i18n'
 
 import { warnIfNotIsolated } from '../composables/useIsolationWarning'
-import { useLessonPosition } from '../composables/useLessonPosition'
+import {
+  firstPosition,
+  hasPosition,
+  useLessonPosition,
+} from '../composables/useLessonPosition'
 import { useLessonReset } from '../composables/useLessonReset'
 import { useStepEntry } from '../composables/useStepEntry'
 import { useStepLocks } from '../composables/useStepLocks'
@@ -65,13 +69,30 @@ const props = withDefaults(
  */
 const positionModel = defineModel<Position>('position')
 const position = computed<Position>({
-  get: () => {
-    if (positionModel.value) return positionModel.value
-    const chapter = props.lesson.chapters[0]
-    return { chapterId: chapter?.id ?? '', stepId: chapter?.steps[0]?.id ?? '' }
-  },
+  get: () =>
+    positionModel.value && hasPosition(props.lesson, positionModel.value)
+      ? positionModel.value
+      : firstPosition(props.lesson),
   set: (value) => (positionModel.value = value),
 })
+
+// A bound `position` naming a step that doesn't exist (e.g. a stale URL) renders the first step and is corrected in the
+// model so the consumer's binding heals.
+watch(
+  [positionModel, () => props.lesson],
+  ([model, lesson]) => {
+    if (!model || hasPosition(lesson, model)) return
+    const fallback = firstPosition(lesson)
+    // An empty lesson has nothing to fall back to; writing blank IDs back would retrigger this watch forever.
+    if (!hasPosition(lesson, fallback)) return
+    if (import.meta.env.DEV)
+      console.warn(
+        `[hayali] Step "${model.chapterId}/${model.stepId}" not found; fell back to the first step "${fallback.chapterId}/${fallback.stepId}".`,
+      )
+    positionModel.value = fallback
+  },
+  { immediate: true },
+)
 
 const { t } = useI18n()
 const sandbox = useSandbox()

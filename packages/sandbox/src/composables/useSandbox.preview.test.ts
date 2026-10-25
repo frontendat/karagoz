@@ -45,17 +45,53 @@ afterEach(() => wrapper.unmount())
 
 describe('useSandbox().preview', () => {
   describe('navigate', () => {
-    it('sets the frame source relative to the preview origin', () => {
+    it('sets the frame source relative to the preview origin', async () => {
       const frame = { src: '' } as HTMLIFrameElement
       sandbox.preview.frame.value = frame
 
       sandbox.preview.navigate('/about.html?x=1#top')
+      await nextTick()
 
       expect(frame.src).toBe(`${origin}/about.html?x=1#top`)
     })
 
     it('does nothing without a frame', () => {
       expect(() => sandbox.preview.navigate('/about.html')).not.toThrow()
+    })
+
+    it('applies a navigation requested before the frame existed once the frame mounts', async () => {
+      sandbox.preview.navigate('/about.html')
+
+      const frame = { src: origin } as HTMLIFrameElement
+      sandbox.preview.frame.value = frame
+      await nextTick()
+
+      expect(frame.src).toBe(`${origin}/about.html`)
+    })
+
+    it('applies a pending navigation only once', async () => {
+      sandbox.preview.navigate('/about.html')
+      sandbox.preview.frame.value = { src: origin } as HTMLIFrameElement
+      await nextTick()
+
+      const remounted = { src: origin } as HTMLIFrameElement
+      sandbox.preview.frame.value = remounted
+      await nextTick()
+
+      expect(remounted.src).toBe(origin)
+    })
+  })
+
+  describe('reload', () => {
+    it('drops a navigation that was still waiting for the frame', async () => {
+      sandbox.preview.navigate('/about.html')
+
+      await sandbox.preview.reload()
+      const frame = { src: origin } as HTMLIFrameElement
+      sandbox.preview.frame.value = frame
+      await nextTick()
+
+      expect(frame.src).toBe(origin)
     })
   })
 

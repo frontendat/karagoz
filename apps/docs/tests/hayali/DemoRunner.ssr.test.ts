@@ -2,14 +2,21 @@ import { i18nMessages } from '@karagoz/hayali'
 import { describe, expect, it } from 'vitest'
 import { createSSRApp, h } from 'vue'
 import { createI18n } from 'vue-i18n'
+import { createMemoryHistory, createRouter } from 'vue-router'
 import { renderToString } from 'vue/server-renderer'
 
 import DemoRunner from '../../components/hayali/DemoRunner.vue'
 import { createDemoLesson } from '../../lib/hayali-demo'
 
-const render = (locale: string) => {
+const render = async (locale: string, url = '/') => {
+  const router = createRouter({
+    history: createMemoryHistory(),
+    routes: [{ path: '/:pathMatch(.*)*', component: { render: () => null } }],
+  })
   const app = createSSRApp({ render: () => h(DemoRunner as never, { locale }) })
   app.use(createI18n({ legacy: false, locale, messages: i18nMessages }))
+  app.use(router)
+  await router.push(url)
   return renderToString(app)
 }
 
@@ -35,5 +42,12 @@ describe('HayaliDemo server render', () => {
     const html = await render('de')
 
     expect(html).toContain('data-testid="krgz-hayali"')
+  })
+
+  it('renders the starting step even with ?step: the deployed HTML is prerendered, so the URL is applied after mount', async () => {
+    const html = await render('en', '/hayali?step=pages/about')
+
+    expect(html).toContain('Every page starts as HTML.')
+    expect(html).not.toContain('This step adds')
   })
 })

@@ -2,6 +2,7 @@
 import { mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent } from 'vue'
+import { createMemoryHistory, createRouter } from 'vue-router'
 
 import DemoRunner from '../../components/hayali/DemoRunner.vue'
 
@@ -21,6 +22,12 @@ vi.mock('@karagoz/hayali', () => ({
   KrgzHayali: defineComponent({ template: '<div />' }),
 }))
 
+const router = createRouter({
+  history: createMemoryHistory(),
+  routes: [{ path: '/', component: defineComponent({ template: '<div />' }) }],
+})
+const global = { plugins: [router] }
+
 const flush = async () => {
   for (let i = 0; i < 20; i++) await Promise.resolve()
 }
@@ -33,7 +40,7 @@ beforeEach(() => {
 describe('HayaliDemo container lifetime', () => {
   it('tears the WebContainer down when the demo goes away, so revisiting the page can boot a new one', async () => {
     hoisted.resolveBoot!({ teardown: hoisted.teardown })
-    const wrapper = mount(DemoRunner, { props: { locale: 'en' } })
+    const wrapper = mount(DemoRunner, { global, props: { locale: 'en' } })
     await flush()
     expect(hoisted.teardown).not.toHaveBeenCalled()
 
@@ -44,7 +51,7 @@ describe('HayaliDemo container lifetime', () => {
   })
 
   it('still tears it down when the demo goes away before the boot has finished', async () => {
-    const wrapper = mount(DemoRunner, { props: { locale: 'en' } })
+    const wrapper = mount(DemoRunner, { global, props: { locale: 'en' } })
 
     wrapper.unmount()
     await flush()
@@ -59,7 +66,7 @@ describe('HayaliDemo container lifetime', () => {
   it('does not throw when the boot fails', async () => {
     hoisted.boot = Promise.reject(new Error('boot failed'))
     hoisted.boot.catch(() => {})
-    const wrapper = mount(DemoRunner, { props: { locale: 'en' } })
+    const wrapper = mount(DemoRunner, { global, props: { locale: 'en' } })
 
     expect(() => wrapper.unmount()).not.toThrow()
     await flush()
@@ -69,11 +76,11 @@ describe('HayaliDemo container lifetime', () => {
 describe('HayaliDemo taking turns', () => {
   it('does not create the next demo until the previous one has torn its container down', async () => {
     hoisted.resolveBoot!({ teardown: hoisted.teardown })
-    const first = mount(DemoRunner, { props: { locale: 'en' } })
+    const first = mount(DemoRunner, { global, props: { locale: 'en' } })
     await flush()
 
     // Navigating: the next page's demo mounts before the old one unmounts.
-    const second = mount(DemoRunner, { props: { locale: 'en' } })
+    const second = mount(DemoRunner, { global, props: { locale: 'en' } })
     await flush()
     expect(second.findComponent({ name: 'DemoRunnerSession' }).exists()).toBe(
       false,
