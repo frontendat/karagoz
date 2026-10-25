@@ -3,12 +3,20 @@ import type { Lesson } from '../types'
 export type ParseIssueRule =
   | 'duplicate-file'
   | 'duplicate-id'
+  | 'duplicate-lesson-block'
+  | 'duplicate-step-block'
   | 'empty-chapter'
+  | 'invalid-value'
   | 'invalid-id'
+  | 'malformed-yaml'
+  | 'misplaced-lesson-block'
+  | 'misplaced-step-block'
   | 'missing-file-path'
   | 'missing-id'
   | 'step-outside-chapter'
   | 'unclosed-fence'
+  | 'unknown-fence'
+  | 'unknown-key'
 
 /** A problem found while parsing a lesson file. Distinct from a `LessonIssue`, which is found by `validateLesson`. */
 export interface ParseIssue {

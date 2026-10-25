@@ -2,6 +2,12 @@ import MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token.mjs'
 
 import type { AdjustmentsTree, Chapter, Lesson, Step } from '../types'
+import {
+  parseYamlBlock,
+  readLessonBlock,
+  readStepBlock,
+  type BlockIssue,
+} from './blocks'
 import { parseFenceInfo } from './fenceInfo'
 import { conflicts, normalizePath, setFile } from './tree'
 import type {
@@ -180,21 +186,97 @@ export const parseLesson = (
     { tree: AdjustmentsTree; taken: Set<string> }
   >()
   const cuts = new Map<Step, [number, number][]>()
+  let lessonBlockSeen = false
+  const stepBlockSeen = new Set<Step>()
+  let lessonConfig: Pick<Lesson, 'immutable'> = {}
 
   for (const token of tokens) {
     if (token.type !== 'fence' || token.level !== 0 || !token.map) continue
-    const { attrs } = parseFenceInfo(token.info)
-    if (!attrs.has('file')) continue
+    const { words, attrs } = parseFenceInfo(token.info)
+    const blockName = words.find((word) => word.startsWith('krgz-'))
+    if (!blockName && !attrs.has('file')) continue
     const line = token.map[0]
     const owner = ownerOf(line)
     const step = owner === 'base' ? undefined : owner.step
-    if (owner !== 'base' && !step) continue
     const where = step
       ? {
           chapterId: owner !== 'base' ? owner.chapter?.id : undefined,
           stepId: step.id,
         }
       : {}
+
+    if (blockName) {
+      if (step)
+        (cuts.get(step) ?? cuts.set(step, []).get(step)!).push([
+          line,
+          token.map[1],
+        ])
+      if (blockName !== 'krgz-lesson' && blockName !== 'krgz-step') {
+        report('unknown-fence', line, `Unknown fence "${blockName}".`, where)
+        continue
+      }
+      if (blockName === 'krgz-lesson') {
+        if (owner !== 'base') {
+          report(
+            'misplaced-lesson-block',
+            line,
+            'krgz-lesson must come before the first chapter heading.',
+            where,
+          )
+          continue
+        }
+        if (lessonBlockSeen) {
+          report(
+            'duplicate-lesson-block',
+            line,
+            'Only one krgz-lesson block is allowed.',
+          )
+          continue
+        }
+        lessonBlockSeen = true
+      } else {
+        if (!step) {
+          report(
+            'misplaced-step-block',
+            line,
+            'krgz-step must sit inside a step.',
+            where,
+          )
+          continue
+        }
+        if (stepBlockSeen.has(step)) {
+          report(
+            'duplicate-step-block',
+            line,
+            'Only one krgz-step block is allowed per step.',
+            where,
+          )
+          continue
+        }
+        stepBlockSeen.add(step)
+      }
+
+      const blockIssues: BlockIssue[] = []
+      const block = parseYamlBlock(token.content, line + 1, blockIssues)
+      const note = (rule: BlockIssue['rule'], path: string, message: string) =>
+        blockIssues.push({ rule, message, ...block.at(path) })
+      if (block.data) {
+        if (step) Object.assign(step, readStepBlock(block.data, note))
+        else lessonConfig = readLessonBlock(block.data, note)
+      }
+      for (const issue of blockIssues)
+        issues.push({
+          rule: issue.rule,
+          severity: 'error',
+          message: issue.message,
+          line: issue.line + 1,
+          column: issue.column,
+          ...where,
+        })
+      continue
+    }
+
+    if (owner !== 'base' && !step) continue
     if (step)
       (cuts.get(step) ?? cuts.set(step, []).get(step)!).push([
         line,
@@ -265,7 +347,7 @@ export const parseLesson = (
     )
   }
 
-  const lesson: Lesson = { chapters }
+  const lesson: Lesson = { chapters, ...lessonConfig }
   if (baseTaken.size > 0) lesson.files = baseFiles
   return {
     lesson,
