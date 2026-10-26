@@ -1,5 +1,13 @@
 # @karagoz/sandbox
 
+## 0.6.1
+
+### Patch Changes
+
+- Add README.md to @karagoz/hayali
+- Updated dependencies
+  - @karagoz/shared@0.6.1
+
 ## 0.6.0
 
 #### @karagoz/hayali (new)

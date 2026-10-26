@@ -1,5 +1,11 @@
 # @karagoz/shared
 
+## 0.6.1
+
+### Patch Changes
+
+- Add README.md to @karagoz/hayali
+
 ## 0.6.0
 
 ### @karagoz/hayali (new)
