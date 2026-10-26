@@ -40,6 +40,36 @@ _Avoid_: Callout type, variant
 A pure, browser-free check (`validateLesson`) of a lesson's directives against each step's resolved tree (base files + that step's adjustments − its removals; never cumulative). Reports issues, never throws.
 _Avoid_: Lint, schema check
 
+### Lesson authoring
+
+**Lesson File**:
+The single Markdown source of one lesson, compiled by `parseLesson` to a `Lesson`. Single-language; a translation is a separate file.
+_Avoid_: Lesson document, lesson script
+
+**Lesson Block**:
+The optional `krgz-lesson` fence before the first chapter heading, holding lesson-wide config (today only `immutable`).
+_Avoid_: Frontmatter, header
+
+**Step Block**:
+The `krgz-step` fence, at most one per step, holding that step's directives (`removals`, `locks`, `editor`, `preview`) and its `carry`.
+_Avoid_: Step config, directive block
+
+**File Fence**:
+A code fence whose info string has `file=<path>`: a base-tree file before the first chapter, a step's adjustment inside a step. Takes its content from its body, `from=` or `src=`, never more than one.
+_Avoid_: File block, file snippet
+
+**Reference**:
+A File Fence with `from=<ref>` that reuses another step's version of a file (or the base's). The parser expands it, so a compiled `Lesson` holds no references.
+_Avoid_: Include, link, snippet
+
+**Carry**:
+`carry: <ref>` in a Step Block: the step starts from another step's resolved adjustments, its own File Fences win on the same path. Only adjustments are carried, never locks, editor directives or removals.
+_Avoid_: Inherit, extend, previous
+
+**Parse Issue**:
+A problem `parseLesson` finds in a Lesson File, with a line number. Distinct from a Lesson Validation issue; consumers run both and use `locate()` to put validation issues on a line.
+_Avoid_: Syntax error, lint
+
 ### Editor directives
 
 **Editor Directive**:
