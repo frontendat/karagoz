@@ -11,13 +11,16 @@ import demoLesson from '../assets/demo-lesson.md?raw'
 import KrgzHayali from '../components/KrgzHayali.vue'
 import { parseLesson } from '../parse/index.ts'
 
-const { lesson: parsedLesson, issues } = parseLesson(demoLesson)
-
-// Temporary demo; remove as the lesson implementation progresses.
 const { boot } = useSandboxBoot()
 provideWebContainer(boot)
 const sandbox = useSandbox()
 onBeforeUnmount(() => sandbox.container.value?.teardown())
+
+const { lesson: parsedLesson, issues } = parseLesson(demoLesson)
+
+if (issues.length) {
+  console.warn(issues)
+}
 </script>
 
 <template>
