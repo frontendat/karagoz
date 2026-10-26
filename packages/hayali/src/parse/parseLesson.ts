@@ -427,6 +427,21 @@ export const parseLesson = (
     lesson,
     issues: issues.sort((a, b) => a.line - b.line),
     srcPaths,
-    locate: () => undefined,
+    locate: ({ chapterId, stepId, path }) => {
+      const found = chapters.find((c) => c.id === chapterId)
+      if (!found) return undefined
+      const chapterLine = (chapterLines.get(found) ?? 0) + 1
+      if (stepId === undefined) {
+        const fence = path && baseScope.entries.get(normalizePath(path))
+        return fence ? fence.line + 1 : chapterLine
+      }
+      const step = found.steps.find((x) => x.id === stepId)
+      const range = step && stepLines.get(step)
+      if (!step || !range) return undefined
+      const fence =
+        path && stepScopes.get(step)?.entries.get(normalizePath(path))
+      // A heading is the line before the start of its body.
+      return fence ? fence.line + 1 : range.start
+    },
   }
 }
