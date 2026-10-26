@@ -2,15 +2,21 @@ import MarkdownIt from 'markdown-it'
 import type Token from 'markdown-it/lib/token.mjs'
 
 import type { Chapter, Lesson, Step } from '../types'
+import { sliceBody, type LineRange } from './body'
 import {
+  BLOCK_PREFIX,
+  LESSON_BLOCK,
+  STEP_BLOCK,
   parseYamlBlock,
   readLessonBlock,
   readStepBlock,
   type BlockIssue,
+  type NoteBlockIssue,
 } from './blocks'
 import { parseFenceInfo } from './fenceInfo'
+import { readFileSource } from './fileSource'
 import { resolveFiles, type Scope } from './resolve'
-import { conflicts, normalizePath, normalizeSrcPath } from './tree'
+import { conflicts, normalizePath } from './tree'
 import type {
   ParseIssue,
   ParseIssueRule,
@@ -39,13 +45,20 @@ interface Heading {
   text: string
 }
 
+/** A built chapter, or a built step with its chapter. */
+interface Owner {
+  chapter: Chapter
+  step?: Step
+}
+
+type Placement = Owner | 'base' | 'rejected'
+
 const isHeading = (token: Token): boolean =>
   token.type === 'heading_open' &&
   token.level === 0 &&
   (token.tag === 'h1' || token.tag === 'h2')
 
-/** Never throws: a parser failure on pathological input yields an empty lesson. */
-export const parseLesson = (
+const compile = (
   source: string,
   { resolveSrc }: ParseLessonOptions = {},
 ): ParseLessonResult => {
@@ -91,7 +104,7 @@ export const parseLesson = (
   const stepLines = new Map<Step, { start: number; end: number }>()
   const chapterLines = new Map<Chapter, number>()
   const stepScopes = new Map<Step, Scope>()
-  const headingOwners = new Map<Heading, { step?: Step; chapter?: Chapter }>()
+  const headingOwners = new Map<Heading, Owner>()
 
   headings.forEach((heading, index) => {
     const next = headings[index + 1]
@@ -174,236 +187,169 @@ export const parseLesson = (
     })
   })
 
-  // Which built step (if any) owns the lines after each heading; fences before every heading are base files.
-  const ownerOf = (
-    line: number,
-  ): { step?: Step; chapter?: Chapter } | 'base' => {
-    let owner: { step?: Step; chapter?: Chapter } | 'base' = 'base'
+  /** What the lines after a heading belong to: the base tree, a built chapter or step, or a rejected heading. */
+  const placementOf = (line: number): Placement => {
+    let placement: Placement = 'base'
     for (const heading of headings) {
       if (heading.line > line) break
-      owner = headingOwners.get(heading) ?? {}
+      placement = headingOwners.get(heading) ?? 'rejected'
     }
-    return owner
+    return placement
   }
 
   const baseScope: Scope = { entries: new Map() }
-  const cuts = new Map<Step, [number, number][]>()
+  const cuts = new Map<Step, LineRange[]>()
+  const cut = (step: Step | undefined, range: LineRange) => {
+    if (!step) return
+    const ranges = cuts.get(step) ?? []
+    ranges.push(range)
+    cuts.set(step, ranges)
+  }
   let lessonBlockSeen = false
   const stepBlockSeen = new Set<Step>()
   let lessonConfig: Pick<Lesson, 'immutable'> = {}
 
-  for (const token of tokens) {
-    if (token.type !== 'fence' || token.level !== 0 || !token.map) continue
-    const { words, attrs } = parseFenceInfo(token.info)
-    const blockName = words.find((word) => word.startsWith('krgz-'))
-    if (!blockName && !attrs.has('file')) continue
-    const line = token.map[0]
-    const owner = ownerOf(line)
-    const step = owner === 'base' ? undefined : owner.step
-    const where = step
-      ? {
-          chapterId: owner !== 'base' ? owner.chapter?.id : undefined,
-          stepId: step.id,
-        }
-      : {}
-
-    if (blockName) {
-      if (step)
-        (cuts.get(step) ?? cuts.set(step, []).get(step)!).push([
+  const readBlock = (
+    token: Token,
+    name: string,
+    placement: Owner | 'base',
+    where: Partial<ParseIssue>,
+  ) => {
+    const line = token.map![0]
+    const step = placement === 'base' ? undefined : placement.step
+    if (name !== LESSON_BLOCK && name !== STEP_BLOCK) {
+      report('unknown-fence', line, `Unknown fence "${name}".`, where)
+      return
+    }
+    if (name === LESSON_BLOCK) {
+      if (placement !== 'base') {
+        report(
+          'misplaced-lesson-block',
           line,
-          token.map[1],
-        ])
-      if (blockName !== 'krgz-lesson' && blockName !== 'krgz-step') {
-        report('unknown-fence', line, `Unknown fence "${blockName}".`, where)
-        continue
+          `${LESSON_BLOCK} must come before the first chapter heading.`,
+          where,
+        )
+        return
       }
-      if (blockName === 'krgz-lesson') {
-        if (owner !== 'base') {
-          report(
-            'misplaced-lesson-block',
-            line,
-            'krgz-lesson must come before the first chapter heading.',
-            where,
-          )
-          continue
-        }
-        if (lessonBlockSeen) {
-          report(
-            'duplicate-lesson-block',
-            line,
-            'Only one krgz-lesson block is allowed.',
-          )
-          continue
-        }
-        lessonBlockSeen = true
-      } else {
-        if (!step) {
-          report(
-            'misplaced-step-block',
-            line,
-            'krgz-step must sit inside a step.',
-            where,
-          )
-          continue
-        }
-        if (stepBlockSeen.has(step)) {
-          report(
-            'duplicate-step-block',
-            line,
-            'Only one krgz-step block is allowed per step.',
-            where,
-          )
-          continue
-        }
-        stepBlockSeen.add(step)
+      if (lessonBlockSeen) {
+        report(
+          'duplicate-lesson-block',
+          line,
+          `Only one ${LESSON_BLOCK} block is allowed.`,
+        )
+        return
       }
-
-      const blockIssues: BlockIssue[] = []
-      const block = parseYamlBlock(token.content, line + 1, blockIssues)
-      const note = (rule: BlockIssue['rule'], path: string, message: string) =>
-        blockIssues.push({ rule, message, ...block.at(path) })
-      if (block.data) {
-        if (step) {
-          const { carry, ...directives } = readStepBlock(block.data, note)
-          Object.assign(step, directives)
-          const scope = stepScopes.get(step)
-          if (scope) {
-            scope.removals = (directives.removals ?? []).map(normalizePath)
-            if (carry) scope.carry = { ref: carry, ...block.at('carry') }
-          }
-        } else lessonConfig = readLessonBlock(block.data, note)
+      lessonBlockSeen = true
+    } else {
+      if (!step) {
+        report(
+          'misplaced-step-block',
+          line,
+          `${STEP_BLOCK} must sit inside a step.`,
+          where,
+        )
+        return
       }
-      for (const issue of blockIssues)
-        issues.push({
-          rule: issue.rule,
-          severity: 'error',
-          message: issue.message,
-          line: issue.line + 1,
-          column: issue.column,
-          ...where,
-        })
-      continue
+      if (stepBlockSeen.has(step)) {
+        report(
+          'duplicate-step-block',
+          line,
+          `Only one ${STEP_BLOCK} block is allowed per step.`,
+          where,
+        )
+        return
+      }
+      stepBlockSeen.add(step)
     }
 
-    if (owner !== 'base' && !step) continue
-    if (step)
-      (cuts.get(step) ?? cuts.set(step, []).get(step)!).push([
-        line,
-        token.map[1],
-      ])
+    const blockIssues: BlockIssue[] = []
+    const block = parseYamlBlock(token.content, line + 1, blockIssues)
+    const note: NoteBlockIssue = (rule, path, message) =>
+      blockIssues.push({ rule, message, ...block.at(path) })
+    if (block.data) {
+      if (step) {
+        const { carry, ...directives } = readStepBlock(block.data, note)
+        Object.assign(step, directives)
+        const scope = stepScopes.get(step)
+        if (scope) {
+          scope.removals = (directives.removals ?? []).map(normalizePath)
+          if (carry) scope.carry = { ref: carry, ...block.at('carry') }
+        }
+      } else {
+        lessonConfig = readLessonBlock(block.data, note)
+      }
+    }
+    for (const issue of blockIssues)
+      issues.push({
+        rule: issue.rule,
+        severity: 'error',
+        message: issue.message,
+        line: issue.line + 1,
+        column: issue.column,
+        ...where,
+      })
+  }
 
+  const readFile = (
+    token: Token,
+    attrs: Map<string, string>,
+    placement: Owner | 'base',
+    where: Partial<ParseIssue>,
+  ) => {
+    const line = token.map![0]
+    const step = placement === 'base' ? undefined : placement.step
+    if (placement !== 'base' && !step) {
+      report(
+        'file-outside-step',
+        line,
+        'A file fence must sit inside a step or before the first chapter.',
+        where,
+      )
+      return
+    }
     const path = normalizePath(attrs.get('file') ?? '')
     if (path === '') {
       report('missing-file-path', line, 'File fence needs file=<path>.', where)
-      continue
+      return
     }
+    const fail = (rule: ParseIssueRule, message: string) =>
+      report(rule, line, message, { ...where, path })
     const scope = (step && stepScopes.get(step)) || baseScope
     if (conflicts(scope.entries.keys(), path)) {
-      report('duplicate-file', line, `File "${path}" is defined twice.`, {
-        ...where,
-        path,
-      })
-      continue
+      fail('duplicate-file', `File "${path}" is defined twice.`)
+      return
     }
-    const from = attrs.get('from')
-    if (from !== undefined && attrs.has('src')) {
-      report(
-        'conflicting-file-source',
-        line,
-        `"${path}" cannot take its content from both from= and src=.`,
-        { ...where, path },
-      )
-      continue
-    }
-    if (from !== undefined && token.content.trim() !== '') {
-      report(
-        'ref-with-body',
-        line,
-        `"${path}" reuses another step's file, so its fence must be empty.`,
-        { ...where, path },
-      )
-      continue
-    }
-    const src = attrs.get('src')
-    if (src !== undefined) {
-      if (token.content.trim() !== '') {
-        report(
-          'src-with-body',
-          line,
-          `"${path}" takes its content from src=, so its fence must be empty.`,
-          { ...where, path },
-        )
-        continue
-      }
-      const srcPath = normalizeSrcPath(src)
-      if (srcPath === undefined) {
-        report(
-          'invalid-src',
-          line,
-          `src="${src}" must be a relative path inside the lesson's folder.`,
-          { ...where, path },
-        )
-        continue
-      }
-      let contents: unknown
-      if (resolveSrc) {
-        if (!srcPaths.includes(srcPath)) srcPaths.push(srcPath)
-        try {
-          contents = resolveSrc(srcPath)
-        } catch {
-          contents = undefined
-        }
-      }
-      if (typeof contents !== 'string') {
-        report(
-          'unresolved-src',
-          line,
-          `Could not read src="${srcPath}" for "${path}".`,
-          { ...where, path },
-        )
-        continue
-      }
-      scope.entries.set(path, {
-        path,
-        line,
-        source: { kind: 'literal', contents },
-      })
-      continue
-    }
-    scope.entries.set(path, {
-      path,
-      line,
-      source:
-        from === undefined
-          ? { kind: 'literal', contents: token.content }
-          : { kind: 'from', ref: from },
-    })
+    const source = readFileSource(
+      { attrs, content: token.content, path },
+      { fail, resolveSrc, srcPaths },
+    )
+    if (source) scope.entries.set(path, { path, line, source })
+  }
+
+  for (const token of tokens) {
+    if (token.type !== 'fence' || token.level !== 0 || !token.map) continue
+    const { words, attrs } = parseFenceInfo(token.info)
+    const blockName = words.find((word) => word.startsWith(BLOCK_PREFIX))
+    if (!blockName && !attrs.has('file')) continue
+    const placement = placementOf(token.map[0])
+    // The heading was already reported; its fences add nothing but noise.
+    if (placement === 'rejected') continue
+    const step = placement === 'base' ? undefined : placement.step
+    const where =
+      placement === 'base'
+        ? {}
+        : { chapterId: placement.chapter.id, stepId: step?.id }
+
+    // Block and file fences are authoring syntax, not body text.
+    cut(step, [token.map[0], token.map[1]])
+    if (blockName) readBlock(token, blockName, placement, where)
+    else readFile(token, attrs, placement, where)
   }
 
   const trees = resolveFiles(baseScope, [...stepScopes.values()], report)
 
   for (const [step, { start, end }] of stepLines) {
-    const out: string[] = []
-    let skipBlank = true
-    let cursor = start
-    const copy = (to: number) => {
-      for (; cursor < to; cursor++) {
-        const text = lines[cursor]
-        if (skipBlank && text.trim() === '') continue
-        skipBlank = false
-        out.push(text)
-      }
-    }
-    for (const [from, to] of (cuts.get(step) ?? []).sort(
-      (x, y) => x[0] - y[0],
-    )) {
-      copy(from)
-      cursor = to
-      // A removed fence between two blank lines must not leave a double gap.
-      skipBlank = out.length === 0 || out[out.length - 1].trim() === ''
-    }
-    copy(end)
-    step.body = out.join('\n').trim()
+    step.body = sliceBody(lines, start, end, cuts.get(step) ?? [])
     const tree = trees.get(stepScopes.get(step) as Scope)
     if (tree) step.adjustments = tree
   }
@@ -443,5 +389,29 @@ export const parseLesson = (
       // A heading is the line before the start of its body.
       return fence ? fence.line + 1 : range.start
     },
+  }
+}
+
+/** Never throws: if compiling fails on pathological input, the result is an empty lesson with one issue. */
+export const parseLesson = (
+  source: string,
+  options: ParseLessonOptions = {},
+): ParseLessonResult => {
+  try {
+    return compile(source, options)
+  } catch (error) {
+    return {
+      lesson: { chapters: [] },
+      issues: [
+        {
+          rule: 'parser-failure',
+          severity: 'error',
+          message: `The lesson file could not be parsed: ${String(error)}`,
+          line: 1,
+        },
+      ],
+      srcPaths: [],
+      locate: () => undefined,
+    }
   }
 }

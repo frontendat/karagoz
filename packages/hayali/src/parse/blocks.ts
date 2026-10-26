@@ -5,6 +5,10 @@ import type { EditorDirective, Lesson, LineSpec, Step } from '../types'
 
 export type BlockRule = 'invalid-value' | 'malformed-yaml' | 'unknown-key'
 
+export const BLOCK_PREFIX = 'krgz-'
+export const LESSON_BLOCK = 'krgz-lesson'
+export const STEP_BLOCK = 'krgz-step'
+
 /** A problem inside a YAML block; `line` is 0-based in the lesson file. */
 export interface BlockIssue {
   rule: BlockRule
@@ -103,13 +107,18 @@ export const parseLinesShorthand = (text: string): LineSpec | undefined => {
   return items
 }
 
-type Report = (rule: BlockRule, path: string, message: string) => void
+/** Reports a problem at the key or list item with this dotted path. */
+export type NoteBlockIssue = (
+  rule: BlockRule,
+  path: string,
+  message: string,
+) => void
 
 const checkKeys = (
   data: Record<string, unknown>,
   allowed: string[],
   prefix: string,
-  report: Report,
+  report: NoteBlockIssue,
 ) => {
   for (const key of Object.keys(data))
     if (!allowed.includes(key))
@@ -122,7 +131,7 @@ const checkKeys = (
 
 export const readLessonBlock = (
   data: Record<string, unknown>,
-  report: Report,
+  report: NoteBlockIssue,
 ): Pick<Lesson, 'immutable'> => {
   checkKeys(data, ['immutable'], '', report)
   const out: Pick<Lesson, 'immutable'> = {}
@@ -136,7 +145,7 @@ export const readLessonBlock = (
 
 const readEditor = (
   value: unknown,
-  report: Report,
+  report: NoteBlockIssue,
 ): EditorDirective | undefined => {
   if (!isRecord(value)) {
     report('invalid-value', 'editor', 'editor must be a mapping.')
@@ -233,7 +242,7 @@ export type StepBlock = Partial<
 
 export const readStepBlock = (
   data: Record<string, unknown>,
-  report: Report,
+  report: NoteBlockIssue,
 ): StepBlock => {
   checkKeys(
     data,

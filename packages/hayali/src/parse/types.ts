@@ -1,6 +1,9 @@
 import type { Lesson } from '../types'
+import type { BlockRule } from './blocks'
 
 export type ParseIssueRule =
+  | BlockRule
+  | 'file-outside-step'
   | 'carry-cycle'
   | 'carry-drops-removals'
   | 'carry-unknown-step'
@@ -11,13 +14,12 @@ export type ParseIssueRule =
   | 'duplicate-step-block'
   | 'empty-chapter'
   | 'invalid-src'
-  | 'invalid-value'
   | 'invalid-id'
-  | 'malformed-yaml'
   | 'misplaced-lesson-block'
   | 'misplaced-step-block'
   | 'missing-file-path'
   | 'missing-id'
+  | 'parser-failure'
   | 'ref-cycle'
   | 'ref-missing-path'
   | 'ref-unknown-step'
@@ -27,7 +29,6 @@ export type ParseIssueRule =
   | 'unclosed-fence'
   | 'unresolved-src'
   | 'unknown-fence'
-  | 'unknown-key'
 
 /** A problem found while parsing a lesson file. Distinct from a `LessonIssue`, which is found by `validateLesson`. */
 export interface ParseIssue {

@@ -139,4 +139,29 @@ describe('file fence rules', () => {
     )
     expect(l.files).toEqual({ 'a.js': { file: { contents: '1\n' } } })
   })
+
+  it('reports a file fence in a chapter intro instead of dropping it silently', () => {
+    const { issues, lesson: l } = parseLesson(
+      '# A {#a}\n\n```js file=a.js\n1\n```\n\n## One {#one}\nProse.\n',
+    )
+    expect(issues).toContainEqual(
+      expect.objectContaining({
+        rule: 'file-outside-step',
+        severity: 'error',
+        line: 3,
+        chapterId: 'a',
+      }),
+    )
+    expect(l.chapters[0].steps[0].adjustments).toBeUndefined()
+  })
+
+  it('stays quiet about fences under a heading that was already rejected', () => {
+    const { issues } = parseLesson(
+      '# A {#a}\n\n## One\n\n```js file=a.js\n1\n```\n\n```yaml krgz-step\n```\n',
+    )
+    expect(issues.map((i) => i.rule).sort()).toEqual([
+      'empty-chapter',
+      'missing-id',
+    ])
+  })
 })
