@@ -27,32 +27,37 @@ export const useSandboxProcessTabs = (options: SandboxOptions) => {
     )
 
     // Do not await `exit`, otherwise this function won't resolve until the process finishes.
-    process.exit.then((exitCode) => {
-      processTabs.updateContext(id, (ctx) => ({
-        ...ctx,
-        exitCode,
-      }))
-    })
+    // `exit` rejects ("Process aborted") when the container is torn down while the process runs.
+    process.exit
+      .then((exitCode) => {
+        processTabs.updateContext(id, (ctx) => ({
+          ...ctx,
+          exitCode,
+        }))
+      })
+      .catch(() => {})
 
     // Handle process output
     if (process && !process?.output.locked) {
       // Do not await `pipeTo` either.
-      process?.output.pipeTo(
-        new WritableStream({
-          write(data) {
-            // The output cannot be streamed multiple times (will be locked), that's why we have to
-            // persist it in `tab.context.logs` in order to render it again, when `KrgzProcess` is re-mounted.
-            processTabs.updateContext(id, (ctx) => ({
-              ...ctx,
-              logs: [...(ctx.logs ?? []), data],
-            }))
-            // For the same reason we use processOutputHandler to handle the output while `KrgzProcess` is rendered
-            // to pass the logs to the `xterm` instance.
-            // Use 'processTabs.findTab' instead of `process` to make sure we're accessing the right instance.
-            processTabs.findTab(id)?.context?.processOutputHandler?.(data)
-          },
-        }),
-      )
+      process?.output
+        .pipeTo(
+          new WritableStream({
+            write(data) {
+              // The output cannot be streamed multiple times (will be locked), that's why we have to
+              // persist it in `tab.context.logs` in order to render it again, when `KrgzProcess` is re-mounted.
+              processTabs.updateContext(id, (ctx) => ({
+                ...ctx,
+                logs: [...(ctx.logs ?? []), data],
+              }))
+              // For the same reason we use processOutputHandler to handle the output while `KrgzProcess` is rendered
+              // to pass the logs to the `xterm` instance.
+              // Use 'processTabs.findTab' instead of `process` to make sure we're accessing the right instance.
+              processTabs.findTab(id)?.context?.processOutputHandler?.(data)
+            },
+          }),
+        )
+        .catch(() => {})
     }
 
     // The `xterm` instance in `KrgzProcess` can handle user input in the terminal using `processInputHandler`.

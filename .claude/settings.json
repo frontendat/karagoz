@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // empty'); case \"$file\" in *apps/docs*) for d in packages/shared packages/sandbox packages/puppeteer; do [ ! -d \"$d/dist\" ] && echo \"WARNING: $d/dist missing\" && exit 2; done ;; esac; true"
+            "command": "input=$(cat); file=$(echo \"$input\" | jq -r '.tool_input.file_path // empty'); case \"$file\" in *apps/docs*) for d in packages/shared packages/sandbox packages/hayali; do [ ! -d \"$d/dist\" ] && echo \"WARNING: $d/dist missing\" && exit 2; done ;; esac; true"
           }
         ]
       }
@@ -25,33 +25,6 @@
   },
   "enabledPlugins": {
     "mattpocock-skills@mattpocock": true
-  },
-  "permissions": {
-    "allow": [
-      "Bash(sandboxed)",
-      "Bash(npm view *)",
-      "Bash(pnpm --filter * exec vue-tsc --noEmit*)",
-      "Bash(pnpm exec vue-tsc --noEmit*)",
-      "Bash(curl -s http://localhost:*)",
-      "Bash(curl -s http://127.0.0.1:*)",
-      "Bash(pnpm list *)",
-      "Bash(pnpm why *)",
-      "Bash(nx show *)",
-      "Bash(nx graph *)",
-      "Bash(nx affected *)",
-      "Bash(nx run-many *)",
-      "Bash(pnpm --filter * run typecheck*)",
-      "Bash(pnpm --filter * run lint*)",
-      "mcp__claude-design__list_files",
-      "mcp__claude-design__read_file",
-      "mcp__claude-design__get_project",
-      "mcp__claude-design__list_projects",
-      "mcp__claude-design__get_conversation",
-      "mcp__claude-design__list_comments",
-      "mcp__claude-design__list_members",
-      "mcp__claude-design__list_design_systems"
-    ],
-    "excludedCommands": ["docker *"]
   },
   "sandbox": {
     "enabled": true,
@@ -83,8 +56,7 @@
         "*.stackblitz.io",
         "*.staticblitz.com",
         "w-corp-staticblitz.com"
-      ],
-      "allowLocalPortBinding": true
+      ]
     },
     "credentials": {
       "files": [

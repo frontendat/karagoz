@@ -25,10 +25,11 @@ count: 2
 
     ::::landing-teaser
     ---
-    headline: Karagöz Puppeteer
-    buttonText: Demnächst verfügbar
+    headline: Karagöz Hayali
+    buttonText: Jetzt starten
+    buttonLink: /hayali
     ---
-    Bring deine Programmier-Tutorials mit einer umfassenden UI auf das nächste Level.
+    Bring deine Programmier-Tutorials mit geführten, interaktiven Lektionen auf das nächste Level.
     ::::
 
 :::

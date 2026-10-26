@@ -1,8 +1,13 @@
-import { asyncComputed, createSharedComposable } from '@vueuse/core'
+import {
+  asyncComputed,
+  createSharedComposable,
+  useEventListener,
+} from '@vueuse/core'
 import { type IFSWatcher, reloadPreview } from '@webcontainer/api'
-import { computed, reactive, readonly, ref } from 'vue'
+import { computed, nextTick, reactive, readonly, ref, watch } from 'vue'
 
 import type { SandboxOptions } from '../types/Sandbox.ts'
+import { previewScript } from '../utils/previewScript.ts'
 import { strToCmd } from '../utils/strToCmd.ts'
 import { injectWebContainer } from '../utils/WebContainer.ts'
 import { useSandboxEditorTabs } from './useSandboxEditorTabs.ts'
@@ -14,11 +19,18 @@ function useSandboxInternal() {
   const container = asyncComputed(async () => {
     const c = await injectWebContainer()
     // Hook into the server-ready event to update the previewUrl
-    c.on('server-ready', (_, url) => (previewUrl.value = url))
+    c.on('server-ready', (_, url) => {
+      previewUrl.value = url
+      // A new preview server: forget the location of the previous one.
+      previewHref.value = undefined
+    })
     return c
   }, null)
   const previewFrame = ref<HTMLIFrameElement>()
   const previewUrl = ref<string>()
+  const previewHref = ref<string>()
+  // A navigation requested while the frame or the server was not there yet; applied once, when both are.
+  let pendingPreviewPath: string | undefined
   const previewConsoleShown = ref(false)
   const explorerShown = ref(true)
   const watchers = ref<{
@@ -90,6 +102,27 @@ function useSandboxInternal() {
       maxCount: 3,
     },
   })
+
+  // Track the location reported by the injected preview script. `useEventListener` is a no-op on the server.
+  useEventListener('message', (message: MessageEvent) => {
+    if (
+      !previewUrl.value ||
+      message.origin !== new URL(previewUrl.value).origin
+    )
+      return
+    if (message.data?.type === 'navigation' && message.data?.href) {
+      previewHref.value = message.data.href
+    }
+  })
+
+  const applyPendingPreviewPath = () => {
+    if (!pendingPreviewPath || !previewFrame.value || !previewUrl.value) return
+    previewFrame.value.src = new URL(pendingPreviewPath, previewUrl.value).href
+    pendingPreviewPath = undefined
+  }
+  // The frame is rendered with the Result panel and the URL arrives with the dev server: whichever comes last
+  // triggers the navigation. `post`, so a freshly mounted frame is already in the DOM.
+  watch([previewFrame, previewUrl], applyPendingPreviewPath, { flush: 'post' })
 
   const explorer = useSandboxExplorer(options)
   const editorTabs = useSandboxEditorTabs(options)
@@ -165,42 +198,7 @@ function useSandboxInternal() {
     processTabs.close(options.process.commands.devServer)
     processTabs.close(options.process.commands.install)
     if (!watchers.value.reinstall) {
-      // This code gets injected into every preview and helps emit the current URL to the parent window
-      // to be shown in the address bar of the preview panel, and forwards console output to the parent
-      // window to be shown in the console panel.
-      await container.value?.setPreviewScript(`
-        window.parent.postMessage({ type: 'navigation', href: window.location.href, initial: true}, '*');
-        window.addEventListener('hashchange', () => {
-          window.parent.postMessage({ type: 'navigation', href: window.location.href}, '*');
-        });
-        (function () {
-          const serialize = (arg) => {
-            if (typeof arg === 'string') return arg;
-            if (arg instanceof Error) return arg.stack || arg.message;
-            try {
-              return JSON.stringify(arg);
-            } catch (e) {
-              return String(arg);
-            }
-          };
-          ['log', 'info', 'warn', 'error', 'debug'].forEach((level) => {
-            const original = console[level];
-            console[level] = function (...args) {
-              try {
-                window.parent.postMessage({
-                  type: 'console',
-                  level,
-                  args: args.map(serialize),
-                }, '*');
-              } catch (e) {}
-              original.apply(console, args);
-            };
-          });
-          window.addEventListener('error', (event) => {
-            window.parent.postMessage({ type: 'console', level: 'error', args: [event.message] }, '*');
-          });
-        })();
-      `)
+      await container.value?.setPreviewScript(previewScript)
       // Open terminal first to avoid waiting for other processes.
       await options.process.starters?.terminal?.()
     }
@@ -281,9 +279,33 @@ function useSandboxInternal() {
        */
       hideConsole: () => (previewConsoleShown.value = false),
       /**
-       * Reload the preview.
+       * Navigate the preview to a root-relative path (e.g. `/about.html?x=1#top`), resolved against the preview origin.
+       * Until the preview frame and URL are available (the Result panel may not be shown yet) the latest path is kept
+       * and applied as soon as they are. Applied after the next render, because the frame's `src` is bound to the
+       * preview URL and that binding would otherwise reset a navigation requested while the server was becoming ready.
+       */
+      navigate: (path: string) => {
+        pendingPreviewPath = path
+        void nextTick(applyPendingPreviewPath)
+      },
+      /**
+       * Read-only computed ref containing the current path of the preview (pathname, query and hash), kept up to date
+       * on load, hashchange, popstate and history.pushState / replaceState. Empty until the preview reports a location.
+       */
+      path: computed(() => {
+        if (!previewHref.value) return ''
+        try {
+          const { pathname, search, hash } = new URL(previewHref.value)
+          return `${pathname}${search}${hash}`
+        } catch {
+          return ''
+        }
+      }),
+      /**
+       * Reload the preview. A navigation still waiting for the frame is dropped: the reload supersedes it.
        */
       reload: async () => {
+        pendingPreviewPath = undefined
         if (previewFrame.value) {
           await reloadPreview(previewFrame.value)
         }

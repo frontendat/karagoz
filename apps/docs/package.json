@@ -8,11 +8,12 @@
   },
   "type": "module",
   "scripts": {
-    "prebuild": "nx run @karagoz/sandbox:docs",
+    "prebuild": "nx run-many -t docs -p @karagoz/sandbox @karagoz/hayali",
     "build": "NODE_OPTIONS=--max-old-space-size=3584 nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "test": "vitest run",
     "postinstall": "nuxt prepare",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
@@ -22,6 +23,7 @@
     "deploy": "nuxthub deploy"
   },
   "dependencies": {
+    "@karagoz/hayali": "workspace:^",
     "@karagoz/sandbox": "workspace:^",
     "@karagoz/shared": "workspace:^",
     "@nuxt/content": "^3.14.0",

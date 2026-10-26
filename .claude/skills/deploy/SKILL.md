@@ -6,11 +6,11 @@ allowed-tools: Bash
 ---
 
 ## Dist status
-- !`ls packages/shared/dist packages/sandbox/dist packages/puppeteer/dist 2>&1 | grep -E "(dist|No such)"`
+- !`ls packages/shared/dist packages/sandbox/dist packages/hayali/dist 2>&1 | grep -E "(dist|No such)"`
 
 Deploy pipeline:
 
-1. `nx run @karagoz/docs:build` — Nx builds upstream deps (shared → sandbox → puppeteer) automatically via `dependsOn`.
+1. `nx run @karagoz/docs:build` — Nx builds upstream deps (shared → sandbox → hayali) automatically via `dependsOn`.
 2. `nx run @karagoz/docs:deploy`
 
 Report the deploy URL on success.

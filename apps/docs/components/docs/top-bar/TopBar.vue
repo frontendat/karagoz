@@ -3,8 +3,6 @@ import { Button, KaragozLogo } from '@karagoz/shared'
 import { useDark, useToggle } from '@vueuse/core'
 import { MoonStar, Sun } from 'lucide-vue-next'
 
-import { navigationMenuTriggerStyle } from '~/components/ui/navigation-menu'
-
 const { t } = useI18n()
 const localePath = useLocalePath()
 const isDark = useDark()
@@ -14,7 +12,10 @@ const isDev = import.meta.dev
 
 <template>
   <header class="sticky z-40 top-0 bg-background/80 backdrop-blur-lg border-b">
-    <div class="container flex h-14 items-center max-w-384 mx-auto px-8">
+    <div
+      class="container flex h-14 items-center max-w-494 mx-auto px-4 md:px-8"
+    >
+      <DocsTopBarMobileNav class="md:hidden" />
       <NuxtLink class="flex gap-2 items-center me-6" :to="localePath('/')">
         <KaragozLogo
           aria-hidden="true"
@@ -25,11 +26,14 @@ const isDev = import.meta.dev
           t('layouts.siteName')
         }}</span>
       </NuxtLink>
-      <UiNavigationMenu>
+      <UiNavigationMenu class="max-md:hidden">
         <UiNavigationMenuList>
-          <UiNavigationMenuItem>
+          <UiNavigationMenuItem
+            v-for="section in docsNavSections"
+            :key="section.id"
+          >
             <UiNavigationMenuTrigger>{{
-              t('layouts.default.topBar.nav.sandbox')
+              t(section.label)
             }}</UiNavigationMenuTrigger>
             <UiNavigationMenuContent>
               <ul
@@ -39,67 +43,26 @@ const isDev = import.meta.dev
                   <UiNavigationMenuLink as-child>
                     <NuxtLink
                       class="flex h-full w-full select-none flex-col justify-end rounded-md bg-muted p-4 no-underline outline-none focus:shadow-md"
-                      :to="localePath({ path: '/sandbox' })"
+                      :to="localePath({ path: section.base })"
                     >
                       <div class="mb-2 mt-4 text-lg font-medium">
                         {{ t('layouts.siteName') }} <br />
-                        {{ t('layouts.default.topBar.nav.sandbox') }}
+                        {{ t(section.label) }}
                       </div>
                       <p class="text-xs leading-tight text-muted-foreground">
-                        {{ t('layouts.default.topBar.nav.sandboxTeaser') }}
+                        {{ t(section.teaser) }}
                       </p>
                     </NuxtLink>
                   </UiNavigationMenuLink>
                 </li>
-
-                <li>
+                <li v-for="link in section.links" :key="link.path">
                   <UiNavigationMenuLink as-child>
                     <NuxtLink
-                      :to="localePath({ path: '/sandbox/setup' })"
+                      :to="localePath({ path: link.path })"
                       class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                     >
                       <div class="text-sm font-medium leading-none">
-                        {{ t('layouts.default.topBar.nav.sandboxSetup') }}
-                      </div>
-                    </NuxtLink>
-                  </UiNavigationMenuLink>
-                </li>
-                <li>
-                  <UiNavigationMenuLink as-child>
-                    <NuxtLink
-                      :to="localePath({ path: '/sandbox/getting-started' })"
-                      class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                    >
-                      <div class="text-sm font-medium leading-none">
-                        {{
-                          t('layouts.default.topBar.nav.sandboxGettingStarted')
-                        }}
-                      </div>
-                    </NuxtLink>
-                  </UiNavigationMenuLink>
-                </li>
-                <li>
-                  <UiNavigationMenuLink as-child>
-                    <NuxtLink
-                      :to="localePath({ path: '/sandbox/handbook' })"
-                      class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                    >
-                      <div class="text-sm font-medium leading-none">
-                        {{ t('layouts.default.topBar.nav.sandboxHandbook') }}
-                      </div>
-                    </NuxtLink>
-                  </UiNavigationMenuLink>
-                </li>
-                <li>
-                  <UiNavigationMenuLink as-child>
-                    <NuxtLink
-                      :to="localePath({ path: '/sandbox/api-reference' })"
-                      class="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                    >
-                      <div class="text-sm font-medium leading-none">
-                        {{
-                          t('layouts.default.topBar.nav.sandboxApiReference')
-                        }}
+                        {{ t(link.label) }}
                       </div>
                     </NuxtLink>
                   </UiNavigationMenuLink>
