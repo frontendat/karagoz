@@ -38,16 +38,16 @@
   "scripts": {
     "dev": "pnpm --filter @karagoz/sandbox --parallel /^watch:/",
     "dev-hmr": "vite",
-    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly",
+    "build": "vite build && vue-tsc -p tsconfig.build.json --declaration --emitDeclarationOnly",
     "prepublish": "pnpm build",
     "preview": "vite preview",
     "watch:vite": "vite build --watch",
-    "watch:vue-tsc": "vue-tsc --declaration --emitDeclarationOnly --watch",
+    "watch:vue-tsc": "vue-tsc -p tsconfig.build.json --declaration --emitDeclarationOnly --watch",
     "lint": "oxlint src",
     "lint:fix": "oxlint --fix src",
     "fmt": "oxfmt src",
     "fmt:check": "oxfmt --check src",
-    "test": "vitest run",
+    "test": "vitest run --coverage",
     "test:watch": "vitest",
     "docs": "pnpm docs:typescript && sleep 1 && pnpm docs:components && pnpm docs:copy",
     "docs:components": "vue-docgen -c docs/docgen.config.cjs",
@@ -73,5 +73,8 @@
     "radix-vue": "^1.9.17",
     "vue": "^3.5.21",
     "vue-codemirror": "^6.1.1"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "5.0.3"
   }
 }

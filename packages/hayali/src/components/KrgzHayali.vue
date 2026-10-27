@@ -239,7 +239,11 @@ const toolbarProps = computed(() => ({
         </Tabs>
       </div>
       <ResizablePanelGroup direction="horizontal" class="min-h-0 flex-1">
-        <ResizablePanel :default-size="30" data-hf-pane="lesson">
+        <ResizablePanel
+          :default-size="30"
+          data-hf-pane="lesson"
+          data-testid="lesson-pane"
+        >
           <StepList
             class="h-full overflow-auto"
             :steps="steps"
@@ -250,7 +254,11 @@ const toolbarProps = computed(() => ({
           />
         </ResizablePanel>
         <ResizableHandle data-hf-handle />
-        <ResizablePanel :default-size="70" data-hf-pane="sandbox">
+        <ResizablePanel
+          :default-size="70"
+          data-hf-pane="sandbox"
+          data-testid="sandbox-pane"
+        >
           <div
             ref="sandboxPane"
             class="m-3 h-[calc(100%-1.5rem)] overflow-hidden rounded-lg border shadow-sm [margin-inline-end:var(--hf-sandbox-me,0.75rem)]"

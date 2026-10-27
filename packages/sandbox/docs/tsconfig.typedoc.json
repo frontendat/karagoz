@@ -3,7 +3,9 @@
   "exclude": [
     "../src/components",
     "../src/index.ts",
-    "../src/main.ts"
+    "../src/main.ts",
+    "../src/**/*.test.ts",
+    "../src/test-support"
   ],
   "include": ["../src/**/*.ts"],
   "compilerOptions": {

@@ -14,6 +14,8 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "test": "vitest run",
+    "e2e": "playwright test --project=blocking",
+    "e2e:smoke": "playwright test --project=smoke --global-timeout=600000",
     "postinstall": "nuxt prepare",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",
@@ -42,8 +44,25 @@
     "vue-router": "^5.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.61.1",
     "nuxthub": "^0.9.4",
     "vite-plugin-vue-tracer": "^1.4.0",
     "wrangler": "^4.105.0"
+  },
+  "nx": {
+    "targets": {
+      "e2e": {
+        "dependsOn": [
+          "build"
+        ],
+        "cache": false
+      },
+      "e2e:smoke": {
+        "dependsOn": [
+          "build"
+        ],
+        "cache": false
+      }
+    }
   }
 }

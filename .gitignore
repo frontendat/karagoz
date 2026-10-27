@@ -25,7 +25,7 @@ node_modules
 # misc
 /.sass-cache
 /connect.lock
-/coverage
+coverage
 /libpeerconnection.log
 npm-debug.log
 yarn-error.log
@@ -65,3 +65,7 @@ apps/docs/.data
 # Claude Code local/runtime files
 .claude/settings.local.json
 .claude/launch.json
+
+# Playwright
+test-results
+playwright-report
