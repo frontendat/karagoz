@@ -15,7 +15,7 @@
     "preview": "nuxt preview",
     "test": "vitest run",
     "e2e": "playwright test --project=blocking",
-    "e2e:smoke": "playwright test --project=smoke --global-timeout=600000 --workers=1",
+    "e2e:smoke": "playwright test --project=smoke --global-timeout=600000",
     "postinstall": "nuxt prepare",
     "lint": "oxlint .",
     "lint:fix": "oxlint --fix .",

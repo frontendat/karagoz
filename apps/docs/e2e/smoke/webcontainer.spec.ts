@@ -23,7 +23,7 @@ test.describe('boot and preview', () => {
       page
         .getByTestId('sandbox-pane')
         .getByRole('link', { name: /webcontainer/ }),
-    ).toHaveText(/\//)
+    ).toHaveText(/webcontainer-api\.io\//)
   })
 })
 
