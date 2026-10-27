@@ -11,8 +11,17 @@ test.describe('boot and preview', () => {
     await bootDemo(page)
 
     await expect(page.getByTestId('sandbox-placeholder')).toHaveCount(0)
+    // The sandbox can come up showing only the code panel, depending on the width of its pane.
+    const result = page
+      .getByTestId('sandbox-pane')
+      .getByRole('button', { name: 'Result' })
+      .first()
+    if ((await result.getAttribute('aria-pressed')) !== 'true') {
+      await result.click()
+    }
     const preview = page.getByTestId('sandbox-pane').locator('iframe')
-    await expect(preview).toBeVisible()
+    // The dev server has to start before the preview has anything to show.
+    await expect(preview).toBeVisible({ timeout: 45_000 })
     await expect(
       page
         .frameLocator('[data-testid="sandbox-pane"] iframe')
@@ -48,8 +57,11 @@ test.describe('go to a line with the sandbox pane hidden', () => {
     await page.getByTestId('layout-toggle').getByRole('tab').nth(1).click()
 
     await expect(page.getByTestId('sandbox-pane')).toBeVisible()
+    // Every open editor has an active line; the one in app.js is the line the step goes to.
     await expect(
-      page.getByTestId('sandbox-pane').locator('.cm-activeLine'),
-    ).toContainText('button.addEventListener')
+      page
+        .getByTestId('sandbox-pane')
+        .locator('.cm-activeLine', { hasText: 'button.addEventListener' }),
+    ).toBeVisible()
   })
 })
