@@ -27,5 +27,16 @@ export default defineConfig({
       retries: 0,
       use: { ...devices['Desktop Chrome'] },
     },
+    {
+      // Boots the real WebContainer, so it needs outbound access to the StackBlitz hosts and is advisory. StackBlitz-side
+      // flake is absorbed by the retries. One worker: only one WebContainer can run per browser anyway, and parallel
+      // boots against the same hosts would only add load. The global timeout is set by the `e2e:smoke` script.
+      name: 'smoke',
+      testDir: './e2e/smoke',
+      retries: 2,
+      timeout: 60_000,
+      workers: 1,
+      use: { ...devices['Desktop Chrome'] },
+    },
   ],
 })
