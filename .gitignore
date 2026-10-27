@@ -65,3 +65,7 @@ apps/docs/.data
 # Claude Code local/runtime files
 .claude/settings.local.json
 .claude/launch.json
+
+# Playwright
+test-results
+playwright-report
