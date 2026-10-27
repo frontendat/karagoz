@@ -1,4 +1,4 @@
-import { expect, test } from '../fixtures'
+import { expect, gotoDemo, test } from '../fixtures'
 
 test.use({ viewport: { width: 1440, height: 900 } })
 
@@ -12,7 +12,7 @@ test.describe('wide layout', () => {
   test('shows the lesson and sandbox panes side by side without the layout toggle', async ({
     page,
   }) => {
-    await page.goto('/hayali')
+    await gotoDemo(page)
 
     const lesson = page.getByTestId('lesson-pane')
     const sandbox = page.getByTestId('sandbox-pane')
