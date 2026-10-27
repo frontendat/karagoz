@@ -18,6 +18,13 @@ export default mergeConfig(shared, {
         'src/utils/codemirror.ts',
         'src/utils/codemirrorHighlight.ts',
       ],
+      // Global, no ratchet and no per-file thresholds.
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        statements: 80,
+        branches: 75,
+      },
     },
   },
 })
