@@ -5,7 +5,7 @@ import {
   AlertTitle,
   type AlertVariants,
 } from '@karagoz/shared'
-import { BookOpenText, TriangleAlert } from 'lucide-vue-next'
+import { BookOpenText, Info, Lightbulb, TriangleAlert } from 'lucide-vue-next'
 import type { Component } from 'vue'
 
 const IconMap: Partial<
@@ -13,6 +13,9 @@ const IconMap: Partial<
 > = {
   default: BookOpenText,
   destructive: TriangleAlert,
+  tip: Lightbulb,
+  warning: TriangleAlert,
+  note: Info,
 }
 
 const props = withDefaults(

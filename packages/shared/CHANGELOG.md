@@ -1,5 +1,11 @@
 # @karagoz/shared
 
+## 1.0.0
+
+### Major Changes
+
+- Expansion of automated testing for first major release.
+
 ## 0.6.1
 
 ### Patch Changes
