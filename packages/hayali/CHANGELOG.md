@@ -1,5 +1,17 @@
 # @karagoz/hayali
 
+## 1.0.0
+
+### Major Changes
+
+- Expansion of automated testing for first major release.
+
+### Patch Changes
+
+- Updated dependencies
+  - @karagoz/sandbox@1.0.0
+  - @karagoz/shared@1.0.0
+
 ## 0.6.1
 
 ### Patch Changes
