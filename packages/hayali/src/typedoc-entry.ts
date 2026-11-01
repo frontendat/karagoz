@@ -15,3 +15,11 @@ export type {
 } from './types'
 export { validateLesson } from './validateLesson'
 export type { LessonIssue, LessonIssueRule } from './validateLesson'
+// The Vue-free `@karagoz/hayali/parse` entry.
+export { parseLesson } from './parse'
+export type {
+  ParseIssue,
+  ParseIssueRule,
+  ParseLessonOptions,
+  ParseLessonResult,
+} from './parse'

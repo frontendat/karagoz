@@ -167,3 +167,12 @@ describe('parseLesson structure rules', () => {
     expect(lesson.chapters[0].steps.map((s) => s.body)).toEqual(['first'])
   })
 })
+
+describe('parse entry', () => {
+  it('exports validateLesson so a Node script can check a parsed lesson', async () => {
+    const { validateLesson } = await import('./index')
+    const { lesson } = parseLesson('# Page {#p}\n\n## Step {#s}\n\nBody.\n')
+
+    expect(validateLesson(lesson)).toEqual([])
+  })
+})

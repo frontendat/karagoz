@@ -7,9 +7,13 @@ import { describe, expect, it } from 'vitest'
 const dir = dirname(fileURLToPath(import.meta.url))
 const srcRoot = resolve(dir, '..')
 
-const sources = readdirSync(dir)
-  .filter((f) => f.endsWith('.ts') && !f.endsWith('.test.ts'))
-  .map((f) => join(dir, f))
+const sources = [
+  ...readdirSync(dir)
+    .filter((f) => f.endsWith('.ts') && !f.endsWith('.test.ts'))
+    .map((f) => join(dir, f)),
+  // Re-exported from the parse entry, so it must stay as pure as the parser.
+  join(srcRoot, 'validateLesson.ts'),
+]
 
 const specifiers = (file: string): string[] =>
   [
@@ -30,11 +34,12 @@ describe('parse entry stays browser-safe', () => {
       )
       if (!spec.startsWith('.')) continue
       const target = resolve(dirname(file), spec)
-      // Inside src/parse, or the pure `types` and `lesson` modules; never the package root or components.
+      // Inside src/parse, or the pure `types`, `lesson` and `validateLesson` modules; never the package root or components.
       const allowed =
         target.startsWith(dir) ||
         target === join(srcRoot, 'types') ||
-        target === join(srcRoot, 'lesson')
+        target === join(srcRoot, 'lesson') ||
+        target === join(srcRoot, 'validateLesson')
       expect(allowed, `${file} reaches ${spec}`).toBe(true)
     }
   })
