@@ -1,5 +1,16 @@
 # @karagoz/hayali
 
+## 1.1.0
+
+### Minor Changes
+
+- Export `validateLesson` and the `LessonIssue` / `LessonIssueRule` types from the Vue-free `@karagoz/hayali/parse` entry, so a Node script can parse and check lessons without Vue, vue-i18n, radix-vue or `@karagoz/sandbox`. The API reference now covers the `./parse` entry.
+
+### Patch Changes
+
+- @karagoz/sandbox@1.1.0
+  - @karagoz/shared@1.1.0
+
 ## 1.0.0
 
 ### Major Changes
