@@ -90,7 +90,21 @@ export default defineNuxtConfig({
     vueI18n: './i18n.config.ts', // if you are using custom path, default
   },
 
-  modules: ['@nuxt/content', '@nuxtjs/i18n', '@nuxthub/core'],
+  modules: ['@nuxt/content', '@nuxtjs/i18n', '@nuxthub/core', 'nuxt-llms'],
+
+  // Serves /llms.txt; @nuxt/content adds the /raw/<path>.md routes when this
+  // module is present. Collection paths carry no locale, so the de and ar raw
+  // routes would collide with the English ones: only English is exposed.
+  llms: {
+    domain: 'https://karagoz.dev',
+    title: 'Karagöz',
+    description:
+      'Interactive code education platform: a WebContainer-powered sandbox and the Hayali lesson components.',
+    contentRawMarkdown: {
+      excludeCollections: ['content_de', 'content_ar'],
+    },
+    sections: [{ title: 'Documentation', contentCollection: 'content_en' }],
+  },
 
   postcss: {
     plugins: {
